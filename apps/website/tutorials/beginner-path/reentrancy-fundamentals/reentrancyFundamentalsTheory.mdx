@@ -22,8 +22,8 @@ import VulnerableContract from '!!raw-loader!@contracts/reentrancy-fundamentals/
 
 ## Vulnerability Summary {#vuln-summary}
 
-- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `AttackerContract`) the ability to invoke the vulnerable contract (i.e., `VulnerableContract`) in an unexpected state. In other words, when `VulnerableContract` invokes `AttackerContract`, it's possible for `AttackerContract` to immediately call (or "re-enter") the `VulnerableContract`. The vulnerability manifests when the developer doesn't expect this condition to occur.
-- In the diagram (below), you'll go through logic that's vulnerable to a reentrancy attack. After you've learned the theory, you'll create your own `AttackerContract` and exploit this vulnerability within the lab environment!
+- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `AttackerContract`) the ability to invoke the vulnerable contract (i.e., `VulnerableContract`) in an unexpected state. As you'll see in the process diagram (below), `AttackerContract` will unexpectedly call (or "re-enter") the `VulnerableContract`.
+- In this lesson, you'll learn the theory behind Reentrancy attacks. After you've learned the theory, you'll create your own `AttackerContract` and exploit this vulnerability within the lab environment!
 
 
 <CodeExample smartContracts={[{
@@ -33,8 +33,22 @@ import VulnerableContract from '!!raw-loader!@contracts/reentrancy-fundamentals/
              SVG={SVG}/>
 
 ## Explanation
-+ In progress
+- **Seeding Phase - 1:** In this example, the attack starts when `AttackerContract` creates a balance within `VulnerableContract`.
+- **Transfer Phase - 2:** Note the `AttackerContract` balance (on the blockchain), is now 0 eth.
+- **Transfer Phase - 3a/3b:** When `AttackerContract` attempts to withdraw 1 eth, the `VulnerableContract` checks to see if `AttackerContract` has 1 eth available
+- **Transfer Phase - 4a/4b**: Given that `AttackerContract` has 1 eth available (in `VulnerableContract`'s state), the transfer is successful.
+- **Transfer Phase - 5**: When the developer created `VulnerableContract`, they assumed that after `AttackerContract` received 1 eth, the execution would immediately go into the **Deduction Phase**. However, the calling entity can be a smart contract. As `AttackerContract` is a smart contract, it can immediately execute code when receiving eth. This is the crux of Reentrancy.
+- **Transfer Phase - 3a:** After receiving the eth, `AttackerContract` can immediately attempt another withdrawal. In other words, `AttackerContract` is "re-entering" the `VulnerableContract`. As the **Deduction Phase** hasn't occurred, **Transfer Phase - 3b** will evaluate to `True` and the `VulnerableContract` will transfer unintended eth to `AttackerContract`. Unfortunately, this transfer can start the "attack loop" again (see red lines).
+- The "attack loop" can keep going until all eth (that's attached to underlying `VulnerableContract`) has been drained.
 
-{
-// (TODO - Put in tutorial from blockbash-internal)
-}
+# Next Steps
+- In the Attack Lab, you'll create the `AttackerContract` and get some "hands on" experience with this vulnerability!
+
+## Inspiration
+
+- https://solidity-by-example.org/hacks/re-entrancy/
+
+## Real World Examples
+
+- https://blog.openzeppelin.com/exploiting-uniswap-from-reentrancy-to-actual-profit
+- https://blog.chain.link/reentrancy-attacks-and-the-dao-hack/>
