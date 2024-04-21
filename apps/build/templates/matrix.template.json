@@ -1,0 +1,6 @@
+[
+  {
+    "dockerfile_path": $dockerfile_path,
+    "image_name_short": $image_name_short
+  }
+]

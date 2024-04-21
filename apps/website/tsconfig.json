@@ -1,0 +1,40 @@
+{
+  // Inspired from https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-tsconfig/tsconfig.json
+  "compilerOptions": {
+    "checkJs": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    // Keep 'paths' in sync with jsconfig.json, docusaurus.config.ts
+    "paths": {
+      "@components": ["./src/components"],
+      "@features": ["./src/features"],
+      "@hooks": ["./src/hooks"],
+      "@site/*": ["./*"],
+      "@src/*": ["./src/*"],
+      "@utils": ["./src/utils"],
+      "@contracts": ["./../lab-core/contracts"],
+      "@partials": ["./tutorials/partials"]
+    },
+    "plugins": [{"name": "typescript-plugin-css-modules"}],
+    "skipLibCheck": true,
+    "types": [
+      "@docusaurus/module-type-aliases",
+      "@docusaurus/theme-classic",
+      "node"
+    ]
+  },
+  "extends": [
+    "@tsconfig/node20/tsconfig",
+    "@tsconfig/strictest/tsconfig"
+  ],
+  "include": ["**/*"]
+}

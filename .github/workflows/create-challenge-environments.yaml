@@ -1,0 +1,96 @@
+# ##############################################################################
+# PURPOSE: A factory for creating challenge images
+# - Images are consumed within the challenge environment.
+# ##############################################################################
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+    inputs:
+      challenge_environment_dir_path:
+        required: true
+        type: string
+      is_enabled:
+        required: true
+        type: string
+      primary_json_string:
+        required: true
+        type: string
+      target_arch:
+        required: true
+        type: string
+    secrets:
+      COSIGN_KEY_BASE64:
+        required: true
+      COSIGN_PASSWORD_BASE64:
+        required: true
+      _GITHUB_TOKEN:
+        required: true
+
+jobs:
+  create_challenge_environments:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-22.04
+    steps:
+      - if: ${{ false }}
+        shell: bash
+        id: "null"
+        # language=sh
+        run: |
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+          # echo "build_scripts_workflow_steps_dir_path=null" >> $GITHUB_ENV
+      - if: inputs.is_enabled == 'true'
+        # See commentary in create-deployment.yaml as to why we are doing this if
+        # statement on all job steps
+        name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - if: inputs.is_enabled == 'true'
+        name: Job Init
+        uses: ./.github/workflows/composite-actions/job-init
+        with:
+          cosign_key_base64: ${{secrets.COSIGN_KEY_BASE64}}
+          cosign_password_base64: ${{secrets.COSIGN_PASSWORD_BASE64}}
+          _github_token: ${{ secrets._GITHUB_TOKEN }}
+          primary_json_string: ${{ inputs.primary_json_string }}
+      - if: inputs.is_enabled == 'true'
+        name: Setup PNPM Cache
+        uses: ./.github/workflows/composite-actions/setup-pnpm
+        with: # We dont want a matrix job to persist into a single cache. Additionally, this step should leverage the pnpm cache that was created in global.yaml
+          fail_on_cache_miss: "true"
+      - id: create_challenge_environments
+        if: inputs.is_enabled == 'true'
+        name: Execute create-challenge-environments.sh script
+        # language=sh
+        run: |
+          # RUNNER_ARCH: Is set via current Github runner
+          bash "${build_scripts_workflow_steps_dir_path}/create-challenge-environments.sh" \
+            --branch_name=${branch_name} \
+            --challenge_environment_dir_path='${{ inputs.challenge_environment_dir_path }}' \
+            --current_arch=${RUNNER_ARCH} \
+            --is_scheduled_execution=${is_scheduled_execution} \
+            --should_publish=${should_publish} \
+            --should_publish_images=${should_publish_images} \
+            --target_arch='${{ inputs.target_arch }}'
+
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_OUTPUT
+          # echo "hashed_matrix_guid=null" >> $GITHUB_OUTPUT
+          # echo "image_name_with_branch_arch_full=null" >> $GITHUB_OUTPUT
+          # echo "image_name_with_branch_full=null" >> $GITHUB_OUTPUT
+          # echo "image_name_with_sha_full=null" >> $GITHUB_OUTPUT
+      - if: inputs.is_enabled == 'true'
+        name: publish-images
+        uses: ./.github/workflows/composite-actions/publish-images
+        with:
+          hashed_matrix_guid: ${{ steps.create_challenge_environments.outputs.hashed_matrix_guid }}
+          image_name_with_branch_arch_full: ${{ steps.create_challenge_environments.outputs.image_name_with_branch_arch_full }}
+          image_name_with_branch_full: ${{ steps.create_challenge_environments.outputs.image_name_with_branch_full }}
+          image_name_with_sha_full: ${{ steps.create_challenge_environments.outputs.image_name_with_sha_full }}
+      - id: cleanup_actions
+        if: inputs.is_enabled == 'true' && always()
+        name: Execute Cleanup Actions
+        # language=sh
+        run: |
+          bash '${{ env.build_scripts_workflow_steps_dir_path }}/cleanup-job.sh' \
+            --is_docker_build="false"

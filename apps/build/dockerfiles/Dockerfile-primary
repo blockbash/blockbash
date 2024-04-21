@@ -1,0 +1,476 @@
+# syntax=docker/dockerfile:1
+
+# ##############################################################################
+# PURPOSE: Houses the "primary" docker images leveraged in blockbash
+# - If updating ANY build args in this file you MUST:
+#   1. Pass in the --build-arg via build_flags within create-base-images.sh AND
+#   2. Update the enviornment vars that are passed into `devcontainer build`
+#      within create-challenge-environments.sh AND
+#   3. Update the challenge's build-time.devcontainer.json and/or build-time.devcontainer.base.json
+# - Wherever possible, put command execution into a seperate *.sh file
+#   instead of putting scripts in the Dockerfile.  This helps with syntax highlighting offered by IDE plugin
+# ##############################################################################
+
+# ##############################################################################
+# GLOBAL ARGUMENTS
+# ##############################################################################
+
+# The node version should be in sync with the volta config within blockbash/package.json
+ARG node_version=20.12.2
+# Stores apt lists
+ARG apt_lists_dir_path=/var/lib/apt/lists
+# Stores .debs
+ARG apt_debs_dir_path=/var/cache/apt/archives
+
+# ##############################################################################
+# PURPOSE: Image that attempts to mimic the Github Actions runner
+# - Installs any custom clis (leveraged within Github Actions) to make local
+# development quicker.
+# - The catthehacker image is recommended by act and contains functionality
+# that mimics the Github Actions runner.
+# ##############################################################################
+
+FROM ghcr.io/catthehacker/ubuntu:act-latest as bb-runner
+LABEL org.opencontainers.image.source=https://github.com/blockbash/blockbash
+SHELL ["/bin/bash", "-Eeu", "-o", "pipefail", "-c"]
+
+# https://serverfault.com/a/797318
+ARG DEBIAN_FRONTEND=noninteractive
+
+# TARGETPLATFORM should be automatically set by buildx
+ARG TARGETPLATFORM
+ARG _=${TARGETPLATFORM:?}
+
+# ##############################################################################
+# GLOBAL ARGs
+# ##############################################################################
+
+# need to re-declare global args to pull global args into execution scoope
+ARG apt_lists_dir_path
+ARG _=${apt_lists_dir_path:?}
+
+ARG apt_debs_dir_path
+ARG _=${apt_debs_dir_path:?}
+
+# ##############################################################################
+# --build-args
+# ##############################################################################
+
+# BLOCKBASH_* ARGs:
+# - Are uppercase on purpose (they are "global" environment variables)
+# - Are "environment variables" that should always be set
+
+# Docker ARGs
+# + These environment variables are only available during the docker build.
+
+ARG BLOCKBASH_IS_LOCAL
+ARG _=${BLOCKBASH_IS_LOCAL:?}
+ENV BLOCKBASH_IS_LOCAL=${BLOCKBASH_IS_LOCAL}
+
+ARG BLOCKBASH_LOG_LEVEL
+ARG _=${BLOCKBASH_LOG_LEVEL:?}
+ENV BLOCKBASH_LOG_LEVEL=${BLOCKBASH_LOG_LEVEL}
+
+ARG build_scripts_dir_path
+ARG _=${build_scripts_dir_path:?}
+
+ARG build_scripts_workflow_steps_dir_path
+ARG _=${build_scripts_workflow_steps_dir_path:?}
+
+ARG common_scripts_init_dir_path
+ARG _=${common_scripts_init_dir_path:?}
+
+ARG build_global_config_file_path
+ARG _=${build_global_config_file_path:?}
+
+ARG container_repo_dir_path
+ARG _=${container_repo_dir_path:?}
+
+ARG common_config_dir_path
+ARG _=${common_config_dir_path:?}
+
+ARG common_scripts_dir_path
+ARG _=${common_scripts_dir_path:?}
+
+ARG current_arch
+ARG _=${current_arch:?}
+
+ARG build_security_tools_debs_dir_path
+ARG _=${build_security_tools_debs_dir_path:?}
+
+ARG is_scheduled_execution
+ARG _=${is_scheduled_execution:?}
+
+ARG utils_local_config_dir_path
+ARG _=${utils_local_config_dir_path:?}
+
+# ##############################################################################
+# EXECUTION LOGIC
+# ##############################################################################
+
+# run_cache_prefix: Also used in the non-runner "base" image.  We dont want cache entries to overlap
+ARG run_cache_prefix="runner-${TARGETPLATFORM}"
+ARG apt_lists_id="${run_cache_prefix}-apt-lists"
+ARG apt_debs_id="${run_cache_prefix}-apt-debs"
+
+WORKDIR $container_repo_dir_path
+
+COPY ${common_scripts_init_dir_path} ${common_scripts_init_dir_path}
+# utils_local_config_dir_path: "Core" logic within this file is NOT in Github (most of this directory's contents are declared within the .gitignore). However, in the local environment, this directory could house helpful files (e.g., utils/local-config/overrides.env).
+COPY ${utils_local_config_dir_path} ${utils_local_config_dir_path}
+RUN \
+    # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#example-cache-apt-packages
+    # For local development, we download all updates and persist them into the docker cache
+    # When is_scheduled_execution == true, the image will be rebuilt without a cache.
+    # (This will install all updates)
+    --mount=type=cache,target=${apt_lists_dir_path},sharing=locked,id=${apt_lists_id} \
+  --mount=type=cache,target=${apt_debs_dir_path},sharing=locked,id=${apt_debs_id} \
+  . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && install_apt_updates
+
+RUN \
+    --mount=type=cache,target=${apt_lists_dir_path},sharing=locked,id=${apt_lists_id} \
+  --mount=type=cache,target=${apt_debs_dir_path},sharing=locked,id=${apt_debs_id} \
+  . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && install_runner_apt_clis
+
+
+# base files needed for internal script invocactions
+COPY $common_scripts_dir_path $common_scripts_dir_path
+
+COPY ${build_scripts_workflow_steps_dir_path}/create-security-tools-debs.sh ${build_scripts_workflow_steps_dir_path}/create-security-tools-debs.sh
+RUN \
+    --mount=type=cache,target=$build_security_tools_debs_dir_path,sharing=locked,id=${TARGETPLATFORM}-security-tools \
+  bash "${build_scripts_workflow_steps_dir_path}/create-security-tools-debs.sh" \
+  --enable_security_tools_install="true" \
+  --enable_security_tools_download="true" \
+  --current_arch="${TARGETPLATFORM}" \
+  --is_scheduled_execution=${is_scheduled_execution}
+
+COPY ${build_scripts_workflow_steps_dir_path}/cleanup-job.sh ${build_scripts_workflow_steps_dir_path}/cleanup-job.sh
+RUN \
+    # Must add cleanup-job at the end of all build stages
+    bash "${build_scripts_workflow_steps_dir_path}/cleanup-job.sh" \
+    --is_docker_build="true"
+
+ENTRYPOINT ["sleep", "infinity"]
+
+# ##############################################################################
+# PURPOSE: BASE IMAGE
+# - Used as the "base" for any internal services/functionality
+# - Do updates and other "shared" functionality within this image
+# - If updating build args review comment at the top of this file
+# ##############################################################################
+
+# We don't leverage alpine because vscode extensions have dependencies on glibc
+# https://code.visualstudio.com/docs/devcontainers/containers
+FROM node:${node_version}-bookworm-slim as base
+SHELL ["/bin/bash", "-Eeu", "-o", "pipefail", "-c"]
+LABEL org.opencontainers.image.source=https://github.com/blockbash/blockbash
+
+# https://serverfault.com/a/797318
+ARG DEBIAN_FRONTEND=noninteractive
+
+# _=${INSERT_BUILD_ARG:?} will enforce --build-arg within `docker build`
+# https://github.com/moby/buildkit/issues/3208#issuecomment-1287968369
+
+# TARGETPLATFORM should be automatically set by buildx
+ARG TARGETPLATFORM
+ARG _=${TARGETPLATFORM:?}
+
+# ##############################################################################
+# GLOBAL ARGs
+# ##############################################################################
+
+# need to re-declare global args to pull global args into execution scoope
+ARG apt_lists_dir_path
+ARG _=${apt_lists_dir_path:?}
+
+ARG apt_debs_dir_path
+ARG _=${apt_debs_dir_path:?}
+
+# ##############################################################################
+# --build-args
+# ##############################################################################
+
+# BLOCKBASH_* ARGs:
+# - Are uppercase on purpose (they are "global" environment variables)
+# - Are "environment variables" that should always be set
+
+# Docker ARGs
+# + These environment variables are only available during the docker build.
+
+ARG BLOCKBASH_IS_LOCAL
+ARG _=${BLOCKBASH_IS_LOCAL:?}
+ENV BLOCKBASH_IS_LOCAL=${BLOCKBASH_IS_LOCAL}
+
+ARG BLOCKBASH_LOG_LEVEL
+ARG _=${BLOCKBASH_LOG_LEVEL:?}
+ENV BLOCKBASH_LOG_LEVEL=${BLOCKBASH_LOG_LEVEL}
+
+ARG container_repo_dir_path
+ARG _=${container_repo_dir_path:?}
+
+ARG common_scripts_init_dir_path
+ARG _=${common_scripts_init_dir_path:?}
+
+ARG shared_pnpm_root_dir_path
+ARG _=${shared_pnpm_root_dir_path:?}
+
+ARG shared_pnpm_store_dir_path
+ARG _=${shared_pnpm_store_dir_path:?}
+
+ARG utils_local_config_dir_path
+ARG _=${utils_local_config_dir_path:?}
+
+# ##############################################################################
+# ENVIRONMENT VARIABLES
+# ##############################################################################
+
+# ENV: Unlike docker ARGs, are available at run time (and build time)
+ENV PNPM_HOME="${shared_pnpm_root_dir_path}"
+ENV PATH="${PATH}:${PNPM_HOME}"
+ENV NODE_ENV=production
+
+# ##############################################################################
+# CORE LOGIC
+# ##############################################################################
+
+WORKDIR $container_repo_dir_path
+
+ARG run_cache_prefix="base-${TARGETPLATFORM}"
+ARG apt_lists_id="${run_cache_prefix}-apt-lists"
+ARG apt_debs_id="${run_cache_prefix}-apt-debs"
+
+COPY ${common_scripts_init_dir_path} ${common_scripts_init_dir_path}
+# utils_local_config_dir_path: "Core" logic within this file is NOT in Github (most of this directory's contents are declared within the .gitignore). However, in the local environment, this directory could house helpful files (e.g., utils/local-config/overrides.env).
+COPY ${utils_local_config_dir_path} ${utils_local_config_dir_path}
+
+RUN \
+    # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#example-cache-apt-packages
+    # For local development, we download all updates and persist them into the docker cache
+    # When is_scheduled_execution == true, the image will be rebuilt without a cache.
+    # (This will install all updates)
+    --mount=type=cache,target=${apt_lists_dir_path},sharing=locked,id=${apt_lists_id} \
+  --mount=type=cache,target=${apt_debs_dir_path},sharing=locked,id=${apt_debs_id} \
+  . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && install_apt_updates
+
+RUN \
+    --mount=type=cache,target=${apt_lists_dir_path},sharing=locked,id=${apt_lists_id} \
+  --mount=type=cache,target=${apt_debs_dir_path},sharing=locked,id=${apt_debs_id} \
+  . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && install_base_apt_clis
+
+# Remove downloaded packages, etc.  (This shouldn't effect the docker cache)
+RUN \
+    # shellcheck disable=SC1090
+    . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && apt_cleanup
+
+
+# ############################################################################## \
+# Dont do cleanup-job.sh here because:
+# + We haven't loaded $common_scripts_dir_path into the build context.  (If we did, we'd have a higher number of docker cache invalidations).
+# + We don't publish the "base" tag anways
+# ############################################################################## \
+
+ENTRYPOINT ["sleep", "infinity"]
+
+# ##############################################################################
+# PURPOSE: The "base image" for challenges (challenge_base)
+# - Houses all shared functionality (across different challenge images)
+# - When built via create-base-images.sh, a cache image will be created.
+#   This cache image can then be leveraged for individual challenge builds via
+#   create-challenge-environment.sh
+# - If it's not possible to leverage the cache image (above),
+#   create-challenge-enviornment.sh can build this build stage
+#   (and any parent build stage)
+# ##############################################################################
+
+# challenge_base: Tag needs to be in alignment with docker_challenge_base_image_name_short
+FROM base as challenge_base
+
+# TARGETPLATFORM should be automatically set by buildx
+ARG TARGETPLATFORM
+ARG _=${TARGETPLATFORM:?}
+
+# ##############################################################################
+# --build-args
+# ##############################################################################
+
+# _=${INSERT_BUILD_ARG:?} will enforce --build-arg within `docker build`
+# https://github.com/moby/buildkit/issues/3208#issuecomment-1287968369
+
+ARG branch_name
+ARG _=${branch_name:?}
+
+ARG common_scripts_init_dir_path
+ARG _=${common_scripts_init_dir_path:?}
+
+ARG common_scripts_dir_path
+ARG _=${common_scripts_dir_path:?}
+
+ARG build_global_config_file_path
+ARG _=${build_global_config_file_path:?}
+
+ARG build_scripts_workflow_steps_dir_path
+ARG _=${build_scripts_workflow_steps_dir_path:?}
+
+ARG build_devcontainer_dir_path
+ARG _=${build_devcontainer_dir_path:?}
+
+ARG container_repo_dir_path
+ARG _=${container_repo_dir_path:?}
+
+ARG lab_core_contracts_dir_path
+ARG _=${lab_core_contracts_dir_path:?}
+
+ARG lab_core_dir_path
+ARG _=${lab_core_dir_path:?}
+
+ARG lab_shell_config_dir_path
+ARG _=${lab_shell_config_dir_path:?}
+
+ARG lab_shell_dir_path
+ARG _=${lab_shell_dir_path:?}
+
+ARG lab_shell_scripts_dir_path
+ARG _=${lab_shell_scripts_dir_path:?}
+
+ARG lab_shell_scripts_aliases_dir_path
+ARG _=${lab_shell_scripts_aliases_dir_path:?}
+
+ARG packages_dir_path
+ARG _=${packages_dir_path:?}
+
+ARG shared_pnpm_root_dir_path
+ARG _=${shared_pnpm_root_dir_path:?}
+
+ARG shared_pnpm_store_dir_path
+ARG _=${shared_pnpm_store_dir_path:?}
+
+# ##############################################################################
+# ENV VARS
+# ##############################################################################
+
+# TERM: Support colors in shell
+ENV TERM=xterm-256color
+# PATH: Put commands such as `cv` on PATH
+ENV PATH="${PATH}:${container_repo_dir_path}/${lab_shell_scripts_aliases_dir_path}"
+
+WORKDIR $container_repo_dir_path
+
+# package.json: Needed for pnpm_init()
+COPY package.json ./
+
+RUN \
+    --mount=type=cache,sharing=private,target=/root/.cache/node \
+  . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && pnpm_init
+
+# pnpm-lock.yaml: Needed for pnpm_fetch()
+COPY pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# RUN --mount=type=cache wont work because /pnpm/store cant be on a separate device
+RUN \
+    # shellcheck disable=SC1090
+    . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true && pnpm_fetch "${shared_pnpm_store_dir_path}"
+
+COPY .prettierrc .npmrc ./
+# lab_shell_dir_path: Needed for learner's shell environment and add package.json for next RUN step
+COPY $lab_shell_dir_path $lab_shell_dir_path
+# $lab_core_dir_path: Needed to execute challenge engine and add package.json for next RUN step
+COPY $lab_core_dir_path $lab_core_dir_path
+
+# $packages_dir_path: Needed for shared functionality. Include base files needed for internal script invocactions (e.g., source-all.sh).
+COPY $packages_dir_path $packages_dir_path
+
+RUN \
+    # shellcheck disable=SC1090
+    . "${common_scripts_init_dir_path}/source-init.sh" --die_on_error=true &&\
+    pnpm_install "@blockbash/lab-shell..." "${shared_pnpm_store_dir_path}" &&\
+    pnpm_install "@blockbash/lab-core..." "${shared_pnpm_store_dir_path}" &&\
+    pnpm_prune "${shared_pnpm_store_dir_path}" &&\
+    chmod -R 0755 ${lab_shell_scripts_dir_path}
+
+
+COPY ${build_scripts_workflow_steps_dir_path}/cleanup-job.sh ${build_scripts_workflow_steps_dir_path}/cleanup-job.sh
+
+RUN \
+    # Must add cleanup-job at the end of all build stages
+    bash "${build_scripts_workflow_steps_dir_path}/cleanup-job.sh" \
+    --is_docker_build="true"
+
+ENTRYPOINT ["sleep", "infinity"]
+
+# ##############################################################################
+# PURPOSE: "leaf" challenge images
+
+# - IMPORTANT: THIS SECTION HAS TO BE LAST OR DEVCONTAINER CLI WONT WORK
+
+# - Different challenge scenarios can require unique software/functionality
+#   For each different challenge scenario, we can create a unique image
+# - These image targets are referenced in each challenge's .devcontainer.json
+# ##############################################################################
+
+FROM challenge_base as challenge_1
+
+ARG lab_shell_scripts_dir_path
+ARG _=${lab_shell_scripts_dir_path:?}
+
+ARG build_templates_dir_path
+ARG _=${build_templates_dir_path:?}
+
+# container_challenge_open_file_paths:
+    # Space seperated string of files to be opened when the devcontainer is launched.
+    # File paths can be relative to the workspace root (e.g., "Foo.sol Bar.sol")
+ARG container_challenge_open_file_paths
+ARG _=${container_challenge_open_file_paths:?}
+
+ARG challenge_repo_name_full
+ARG _=${challenge_repo_name_full:?}
+
+ARG challenge_release
+ARG _=${challenge_release:?}
+
+ARG container_repo_dir_path
+ARG _=${container_repo_dir_path:?}
+
+ARG challenge_guid_bash
+ARG _=${challenge_guid_bash:?}
+
+ARG challenge_guid_typescript
+ARG _=${challenge_guid_typescript:?}
+
+ARG challenge_contracts_dir_name
+ARG _=${challenge_contracts_dir_name:?}
+
+ARG should_user_environment_die_on_error
+ARG _=${should_user_environment_die_on_error:?}
+
+WORKDIR $container_repo_dir_path
+
+# build_devcontainer_dir_path/build_templates_dir_path: Needed for create_configurations()
+COPY $build_devcontainer_dir_path $build_devcontainer_dir_path
+COPY $build_templates_dir_path $build_templates_dir_path
+
+RUN \
+# create_configurations() is executed on the runner but its artifact isn't \
+    # within the docker build context (the artifact is declared within the .dockerignore).
+    # If create_configurations() code changes (or the branch_name changes), \
+    # There will be a docker cache invalidation and this step will re-run.
+    # shellcheck disable=SC1090
+    . "${common_scripts_dir_path}/source-all.sh" --absolute_paths=true --die_on_error=true &&\
+    create_configurations "${branch_name}" &&\
+    create_challenge_container_configurations "${challenge_guid_bash}" &&\
+    chmod +x $lab_shell_scripts_dir_path/entrypoint.sh
+
+
+RUN \
+    # Must add cleanup-job at the end of all build stages
+    bash "${build_scripts_workflow_steps_dir_path}/cleanup-job.sh" \
+    --is_docker_build="true"
+
+# Set "global" log level for user.  This can be overridden on a script-by-script bases
+ENV BLOCKBASH_LOG_LEVEL=error
+
+# ENTRYPOINT: Tried passing ARG/ENV forms of $lab_shell_scripts_dir_path
+# (within ENTRYPOINT), but it doesnt dont work.
+ENTRYPOINT ["./apps/lab-shell/scripts/entrypoint.sh"]
+CMD ["--workflow=devcontainer-vscode"]
+

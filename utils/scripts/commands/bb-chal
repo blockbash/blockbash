@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# ##############################################################################
+: << COMMENT
+
+PURPOSE: "ssh" into challenge environment
+- View README.md's 'Workflows: Emulating The Challenge Environment' for more context
+PREREQUISITES:
+- Executing bb-act-no-cred/bb-act-cred
+- Setting bb_current_challenge_guid_bash
+MNEMONIC:
+- Block
+- Bash
+- Challenge
+
+COMMENT
+# ##############################################################################
+
+# shellcheck source=./../../../packages/common/scripts/source-all.sh
+
+script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+# shellcheck source=./../shared.sh
+. "${script_dir}/../shared.sh"
+
+main() {
+  if is_null "${bb_current_challenge_guid_bash}"; then
+    die "You must set bb_current_challenge_guid_bash!  Please see the README.md's 'Workflows: Emulating The Challenge Environment' for more context."
+  fi
+  if ! does_file_exist "${run_time_vscode_devcontainer_file_path}"; then
+    die "You must execute bb-act-no-cred or bb-act-cred before using this command!  Please see the README.md's 'Workflows: Emulating The Challenge Environment' for more context."
+  fi
+  update_path "${build_bin_dir_path}"
+  devcontainer up --workspace-folder="${blockbash_root_dir_path}" &&
+    devcontainer exec --workspace-folder="${blockbash_root_dir_path}" bash
+}
+
+# https://unix.stackexchange.com/a/333204
+# Pipes stderr to terminal (and log file)
+exec 3>&1
+main 2>&1 >&3 | tee -a "${bash_log_file_path}"

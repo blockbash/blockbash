@@ -1,0 +1,49 @@
+// https://hardhat.org/hardhat-runner/docs/guides/typescript#enabling-typescript-support
+
+// CompilerOptions taken from strictest
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "baseUrl": ".",
+    "checkJs": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@lib/deploy": [
+        "./lib/deploy"
+      ],
+      "@lib/test": [
+        "./lib/test"
+      ],
+      "@typechain": [
+        "./artifacts/types/typechain"
+      ]
+    },
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "extends": "@tsconfig/node20/tsconfig",
+  "include": [
+    "**/*"
+  ],
+  // ts-node is required for hardhat typescript support
+  "ts-node": {
+    //https://hardhat.org/hardhat-runner/docs/guides/typescript#running-your-tests-and-scripts-directly-with--ts-node
+    "files": true,
+    "require": [
+      "tsconfig-paths/register"
+    ],
+    // Quickens ts-node operations
+    "transpileOnly": true
+  }
+}

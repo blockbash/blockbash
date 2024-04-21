@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "extends": [
+    "@tsconfig/node20/tsconfig",
+    "@tsconfig/strictest/tsconfig"
+  ],
+  "include": [
+    "**/*"
+  ],
+  "ts-node": {
+    "files": true,
+    "require": [
+      "tsconfig-paths/register"
+    ],
+    // Quickens ts-node operations
+    "swc": true
+  }
+}

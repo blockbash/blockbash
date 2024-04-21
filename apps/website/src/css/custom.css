@@ -1,0 +1,22 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+
+:root {
+    /* Based on the "Beginner Path" button. Updated color slightly to align with WCAG-AA contrast ratio */
+    --ifm-color-primary: #e22424;
+    --ifm-color-primary-dark: #d01c1c;
+    --ifm-color-primary-darker: #c51a1a;
+    --ifm-color-primary-darkest: #a21515;
+    --ifm-color-primary-light: #e53b3b;
+    --ifm-color-primary-lighter: #e74747;
+    --ifm-color-primary-lightest: #eb6969;
+    --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
+}
+
+
+

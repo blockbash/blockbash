@@ -1,0 +1,45 @@
+description: "null"
+name: setup-pnpm
+
+# ##############################################################################
+# KNOWN ISSUES:
+# - For some reason, I can't get the Intellij Github Workflow plugin to resolve steps within Composite actions
+# ##############################################################################
+
+inputs:
+  fail_on_cache_miss:
+    description: "null"
+    required: true
+runs:
+  steps:
+    - if: ${{ false }}
+      shell: bash
+      id: "null"
+      # language=sh
+      run: |
+        # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+        # echo "cache_key_pnpm=null" >> $GITHUB_ENV
+        # echo "shared_pnpm_store_dir_path=null" >> $GITHUB_ENV
+    - name: Initialize pnpm
+      # language=sh
+      run: |
+        . ${common_scripts_init_dir_path}/source-init.sh --die_on_error=true
+        pnpm_init
+      shell: bash
+    - id: pnpm_cache
+      name: Setup pnpm cache
+      uses: actions/cache@v4
+      with:
+        fail-on-cache-miss: ${{ inputs.fail_on_cache_miss }}
+        key: ${{ format('{0}-{1}', env.cache_key_pnpm, hashFiles('pnpm-lock.yaml')) }}
+        path: ${{ env.shared_pnpm_store_dir_path }}
+    # Pattern taken from https://github.com/actions/cache/tree/704facf57e6136b1bc63b828d79edcd491f0ee84?tab=readme-ov-file#skipping-steps-based-on-cache-hit
+    - if: steps.pnpm_cache.outputs.cache-hit != 'true'
+      name: Fetch PNPM Packages
+      # language=sh
+      run: |
+        . ${common_scripts_init_dir_path}/source-init.sh --die_on_error=true
+        # shared_pnpm_store_dir_path: is set within create-outputs.sh
+        pnpm_fetch "${shared_pnpm_store_dir_path}"
+      shell: bash
+  using: composite

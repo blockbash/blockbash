@@ -1,0 +1,12 @@
+{
+  "name": "@blockbash/build",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@devcontainers/cli": "^0.59.1",
+    "wrangler": "^3.51.2"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*"
+  }
+}

@@ -1,0 +1,136 @@
+# ##############################################################################
+# PURPOSE: All configurations should flow through this action.
+# - This allows us to use configuration values outside of bash/typescript contexts.  For example, ${{ needs.global.outputs.CONFIG_FOO }} within Github Workflow files
+# - This action should be the first job that is executed.
+# - Provides general input validation for the overarching workflow
+# - Sets outputs (and environment variables) that are reused in downstream jobs
+# ##############################################################################
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+    outputs:
+      challenge_environments_dir_paths_json_string:
+        value: ${{ jobs.global.outputs.challenge_environments_dir_paths_json_string }}
+      create_base_images_container_matrix_json_string:
+        value: ${{ jobs.global.outputs.create_base_images_container_matrix_json_string }}
+      primary_json_string:
+        value: ${{ jobs.global.outputs.primary_json_string }}
+      target_archs_json_string:
+        value: ${{ jobs.global.outputs.target_archs_json_string }}
+      null_credential:
+        value: ${{ jobs.global.outputs.null_credential }}
+
+# ##############################################################################
+# NEVER leverage action context(s) directly within action
+# Always pass them in via environment variable
+# https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+# ##############################################################################
+
+jobs:
+  global: # null_environment: Leveraged in workflows that don't leverage any external secrets.  In this case, the environment makes sure that the workflow file can only be leveraged on a protected branch.
+    environment: "null_environment"
+    env: #
+      # MANDATORY/OPTIONAL ENVIRONMENT VARIABLES (see 'Environment Variables' in README.md for more context)
+      # These variables will be automatically set in all downstream jobs
+      # Within the local environment, these values will be overridden within execute-workflow.sh/global.sh
+      BLOCKBASH_IS_LOCAL: false
+      BLOCKBASH_LOG_LEVEL: info
+
+      # BLOCKBASH_GLOBAL_* values (for this job) can be overridden within overrides.env
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_BASE_IMAGES_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_ENVIRONMENTS_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_REPOS_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_FRONT_END_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MATRIX_OUTPUTS_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MULTI_ARCH_IMAGES_JOB: true
+      BLOCKBASH_GLOBAL_ACTIVATE_SECURITY_VALIDATIONS: true
+      BLOCKBASH_GLOBAL_BRANCH_NAME: ${{ github.ref_name }}
+      # BLOCKBASH_GLOBAL_IS_SCHEDULED_EXECUTION: If true, refreshes any caches. This allows container images to be rebuilt with software updates, etc.
+      BLOCKBASH_GLOBAL_IS_SCHEDULED_EXECUTION: ${{ contains(fromJSON('["schedule"]'), github.event_name) }}
+      # BLOCKBASH_GLOBAL_SHOULD_PUBLISH: If this variable is true (and BLOCKBASH_GLOBAL_SHOULD_PUBLISH_IMAGES is false), you can test other state changing operations without incurring the bandwidth overhead of publishing a docker image (e.g., create challenge repos in Github, etc.)
+      BLOCKBASH_GLOBAL_SHOULD_PUBLISH: true
+      # BLOCKBASH_GLOBAL_SHOULD_PUBLISH_IMAGES: Is a subset of BLOCKBASH_GLOBAL_SHOULD_PUBLISH.  If BLOCKBASH_GLOBAL_SHOULD_PUBLISH is false, this variable must be false.
+      BLOCKBASH_GLOBAL_SHOULD_PUBLISH_IMAGES: true
+      # BLOCKBASH_GLOBAL_TARGET_ARCHS: The architectures we want to build our docker images for
+      #      BLOCKBASH_GLOBAL_TARGET_ARCHS: '["linux/amd64"]'
+      BLOCKBASH_GLOBAL_TARGET_ARCHS: '["linux/amd64", "linux/arm64"]'
+      BLOCKBASH_GLOBAL_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+      # BLOCKBASH_GLOBAL_WORKFLOW_VARIANT: Can be $act_workflow_variant_create_runner_image or null.  If null, the "traditional" CI process (that is invoked in Github) will be leveraged.
+      BLOCKBASH_GLOBAL_WORKFLOW_VARIANT: "null"
+    permissions:
+      contents: read
+    runs-on: ubuntu-22.04
+    steps:
+      - if: ${{ false }}
+        shell: bash
+        id: "null"
+        # language=sh
+        run: |
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+          # echo "activate_security_validations=null" >> $GITHUB_ENV
+          # echo "build_scripts_workflow_steps_dir_path=null" >> $GITHUB_ENV
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: create_outputs
+        name: Execute create-outputs.sh
+        # language=sh
+        run: |
+          # Can't leverage variable path as this is the first script to load
+          bash "apps/build/scripts/actions/steps/create-outputs.sh" \
+            --activate_create_base_images_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_BASE_IMAGES_JOB}" \
+            --activate_create_challenge_environments_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_ENVIRONMENTS_JOB}" \
+            --activate_create_challenge_repos_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_REPOS_JOB}" \
+            --activate_create_front_end_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_FRONT_END_JOB}" \
+            --activate_create_matrix_outputs_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MATRIX_OUTPUTS_JOB}" \
+            --activate_create_multi_arch_images_job="${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MULTI_ARCH_IMAGES_JOB}" \
+            --activate_security_validations="${BLOCKBASH_GLOBAL_ACTIVATE_SECURITY_VALIDATIONS}" \
+            --blockbash_log_level="${BLOCKBASH_LOG_LEVEL}" \
+            --blockbash_is_local="${BLOCKBASH_IS_LOCAL}" \
+            --branch_name="${BLOCKBASH_GLOBAL_BRANCH_NAME}" \
+            --is_scheduled_execution="${BLOCKBASH_GLOBAL_IS_SCHEDULED_EXECUTION}" \
+            --should_publish="${BLOCKBASH_GLOBAL_SHOULD_PUBLISH}" \
+            --should_publish_images="${BLOCKBASH_GLOBAL_SHOULD_PUBLISH_IMAGES}" \
+            --target_archs='${{ env.BLOCKBASH_GLOBAL_TARGET_ARCHS }}' \
+            --triggering_actor="${BLOCKBASH_GLOBAL_TRIGGERING_ACTOR}" \
+            --workflow_variant="${BLOCKBASH_GLOBAL_WORKFLOW_VARIANT}"
+
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_OUTPUTS
+          # echo "primary_json_string=null" >> $GITHUB_OUTPUT
+          # echo "target_archs_json_string=null" >> $GITHUB_OUTPUT
+          # echo "create_base_images_container_matrix_json_string=null" >> $GITHUB_OUTPUT
+          # echo "challenge_environments_dir_paths_json_string=null" >> $GITHUB_OUTPUT
+          # echo "challenge_environments_dir_paths_json_string=null" >> $GITHUB_OUTPUT
+          # echo "null_credential=null" >> $GITHUB_OUTPUT
+      - name: Job Init
+        uses: ./.github/workflows/composite-actions/job-init
+        with:
+          primary_json_string: ${{ steps.create_outputs.outputs.primary_json_string }}
+      - if: env.activate_security_validations == 'true'
+        name: Setup Security Tools
+        uses: ./.github/workflows/composite-actions/setup-security-tools-installers
+        with: # We primarily leverage this step for caching
+          # However, we need to install the dependencies
+          # (grype) so we can cache the grype db
+          enable_security_tools_download: "true"
+          enable_security_tools_install: "true"
+      - name: Setup PNPM Cache
+        # Cache any new packages before downstream jobs execute
+        uses: ./.github/workflows/composite-actions/setup-pnpm
+        with:
+          fail_on_cache_miss: "false"
+      - id: cleanup_actions
+        name: Execute Cleanup Actions
+        # language=sh
+        run: |
+          bash '${{ env.build_scripts_workflow_steps_dir_path }}/cleanup-job.sh' \
+            --is_docker_build="false"
+
+    outputs:
+      challenge_environments_dir_paths_json_string: ${{ steps.create_outputs.outputs.challenge_environments_dir_paths_json_string }}
+      create_base_images_container_matrix_json_string: ${{ steps.create_outputs.outputs.create_base_images_container_matrix_json_string }}
+      primary_json_string: ${{ steps.create_outputs.outputs.primary_json_string }}
+      target_archs_json_string: ${{ steps.create_outputs.outputs.target_archs_json_string }}
+      null_credential: ${{ steps.create_outputs.outputs.null_credential }}

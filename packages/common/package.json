@@ -1,0 +1,20 @@
+{
+  "name": "@blockbash/common",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "depcheck": "depcheck --skip-missing=true"
+  },
+  "dependencies": {
+    "@types/lodash": "4.17.0",
+    "ethers": "6.7.1",
+    "lodash": "4.17.21",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

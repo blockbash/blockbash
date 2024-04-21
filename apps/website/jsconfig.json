@@ -1,0 +1,17 @@
+{
+  // This is leveraged to allow custom paths to be found within mdx files
+  // https://youtrack.jetbrains.com/issue/WEB-55563/Support-path-mappings-from-tsconfig.json-jsconfig.json-in-.mdx-files#focus=Comments-27-7930930.0-0
+  "compilerOptions": {
+    // Keep 'paths' in sync with tsconfig.json, docusaurus.config.ts
+    "paths": {
+      "@components": ["./src/components"],
+      "@features": ["./src/features"],
+      "@hooks": ["./src/hooks"],
+      "@site/*": ["./*"],
+      "@src/*": ["./src/*"],
+      "@utils": ["./src/utils"],
+      "@contracts": ["./../lab-core/contracts"],
+      "@partials": ["./tutorials/partials"]
+    }
+  }
+}

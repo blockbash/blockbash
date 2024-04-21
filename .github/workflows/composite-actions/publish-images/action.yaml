@@ -1,0 +1,103 @@
+# ##############################################################################
+# KNOWN ISSUES:
+# - For some reason, I can't get the Intellij Github Workflow plugin to resolve steps within Composite actions
+# ##############################################################################
+
+# ##############################################################################
+# DEPENDENCIES:
+# - SECRETS: COSIGN_KEY_BASE64, COSIGN_PASSWORD_BASE64, GITHUB_TOKEN
+# ##############################################################################
+
+description: "Publishes container images to the Github Container Registry (GHCR), enforces security validations, signs the images, and uploads the artifacts to the Github artifact store."
+name: publish-images
+
+inputs:
+  hashed_matrix_guid:
+    description: "null"
+    required: true
+  image_name_with_branch_arch_full:
+    description: "null"
+    required: true
+  image_name_with_branch_full:
+    description: "null"
+    required: true
+  image_name_with_sha_full:
+    description: "null"
+    required: true
+runs:
+  steps:
+    - if: ${{ false }}
+      shell: bash
+      id: "null"
+      # language=sh
+      run: |
+        # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+        # echo "activate_security_validations=null" >> $GITHUB_ENV
+        # echo "build_security_tools_grype_db_dir_path=null" >> $GITHUB_ENV
+        # echo "build_security_tools_grype_sbom_dir_path=null" >> $GITHUB_ENV
+        # echo "publish_images_matrix_outputs_pre=null" >> $GITHUB_ENV
+        # echo "build_matrix_outputs_dir_path=null" >> $GITHUB_ENV
+    - if: ${{ env.activate_security_validations == 'true' }}
+      name: Setup Security Tools
+      uses: ./.github/workflows/composite-actions/setup-security-tools-installers
+      with: # Should leveraged cached downloads that were set in global job
+        enable_security_tools_download: "false"
+        enable_security_tools_install: "true"
+    - id: sbom_cache
+      if: ${{ env.activate_security_validations == 'true' }}
+      name: Setup SBOM cache
+      uses: actions/cache@v4
+      with: # If possible, try to leverage cache to prohibit recreating SBOM.
+        # Each sbom is tied to the container image hash.
+        key: sbom-${{ inputs.image_name_with_sha_full }}
+        path: ${{ env.build_security_tools_grype_db_dir_path }}
+    - if: ${{ env.activate_security_validations == 'true' }}
+      name: Build SBOM
+      run: |
+        sbom_cache_hit='${{ steps.sbom_cache.outputs.cache-hit == 'true' && true || false }}'
+        bash "${build_scripts_workflow_steps_dir_path}/prepublish-security-actions.sh" \
+          --branch_name=${branch_name} \
+          --image_name_with_branch_arch_full='${{ inputs.image_name_with_branch_arch_full }}' \
+          --image_name_with_sha_full='${{ inputs.image_name_with_sha_full }}' \
+          --is_scheduled_execution=${is_scheduled_execution} \
+          --sbom_cache_hit=${sbom_cache_hit}
+      shell: bash
+    # TODO: Upload SARIF results to Github.  sarif is generated in previous step (in ticktick)
+    #    - name: Upload SARIF report to Github
+    #      env:
+    #        GITHUB_REPOSITORY: blockbash/blockbash
+    #        GITHUB_RUN_ATTEMPT: 1
+    #      uses: github/codeql-action/upload-sarif@v2
+    #      with:
+    #        token: ${{ inputs.github_token }}
+    #        sarif_file: /tmp/txt.sarif
+    - name: Publish Image
+      # language=sh
+      run: |
+        bash "${build_scripts_workflow_steps_dir_path}/publish-image.sh" \
+          --image_name_with_branch_arch_full='${{ inputs.image_name_with_branch_arch_full }}' \
+          --should_publish=${should_publish} \
+          --should_publish_images=${should_publish_images}
+      shell: bash
+    - if: ${{ env.activate_security_validations == 'true' }}
+      name: Sign and upload image artifacts
+      # language=sh
+      run: |
+        bash "${build_scripts_workflow_steps_dir_path}/sign-image-artifacts.sh" \
+          --branch_name=${branch_name} \
+          --image_name_with_sha_full='${{ inputs.image_name_with_sha_full }}' \
+          --should_publish=${should_publish} \
+          --should_publish_images=${should_publish_images}
+      shell: bash
+    - uses: actions/upload-artifact@v3
+      # TODO: Cant upgrade to @v4 until this is fixed: https://github.com/nektos/act/issues/2135
+      # Corresponding PR: https://github.com/nektos/act/pull/2224
+      # Uploads image manifest artifacts that were created in create-base-images.sh and
+      # create-challenge-environments.sh
+      # publish_images_matrix_outputs_pre: Will be normalized by create-matrix-outputs job
+      with:
+        if-no-files-found: error
+        name: ${{ env.publish_images_matrix_outputs_pre }}
+        path: ${{ env.build_matrix_outputs_dir_path }}
+        retention-days: 1
+  using: composite

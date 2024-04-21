@@ -1,0 +1,79 @@
+{
+  "build": {
+    "args": {
+      "BLOCKBASH_IS_LOCAL": "${localEnv:BLOCKBASH_IS_LOCAL}",
+      "BLOCKBASH_LOG_LEVEL": "${localEnv:BLOCKBASH_LOG_LEVEL}",
+      "branch_name": "${localEnv:branch_name}",
+      "build_dir_path": "${localEnv:build_dir_path}",
+      "build_devcontainer_dir_path": "${localEnv:build_devcontainer_dir_path}",
+      "build_templates_dir_path": "${localEnv:build_templates_dir_path}",
+      "build_global_config_file_path": "${localEnv:build_global_config_file_path}",
+      "build_scripts_dir_path": "${localEnv:build_scripts_dir_path}",
+      "build_shared_utils_file_path": "${localEnv:build_shared_utils_file_path}",
+      "build_scripts_workflow_steps_dir_path": "${localEnv:build_scripts_workflow_steps_dir_path}",
+      "challenge_release": "${localEnv:challenge_release}",
+      "challenge_repo_name_full": "${localEnv:challenge_repo_name_full}",
+      "common_config_dir_path": "${localEnv:common_config_dir_path}",
+      "common_scripts_dir_path": "${localEnv:common_scripts_dir_path}",
+      "common_scripts_init_dir_path": "${localEnv:common_scripts_init_dir_path}",
+      "container_repo_dir_path": "${localEnv:container_repo_dir_path}",
+      "current_arch": "${localEnv:current_arch}",
+      "eslint_dir_path": "${localEnv:eslint_dir_path}",
+      "is_scheduled_execution": "${localEnv:is_scheduled_execution}",
+      "lab_core_contracts_dir_path": "${localEnv:lab_core_contracts_dir_path}",
+      "lab_core_dir_path": "${localEnv:lab_core_dir_path}",
+      "lab_shell_config_dir_path": "${localEnv:lab_shell_config_dir_path}",
+      "lab_shell_dir_path": "${localEnv:lab_shell_dir_path}",
+      "lab_shell_scripts_aliases_dir_path": "${localEnv:lab_shell_scripts_aliases_dir_path}",
+      "lab_shell_scripts_dir_path": "${localEnv:lab_shell_scripts_dir_path}",
+      "packages_dir_path": "${localEnv:packages_dir_path}",
+      "build_security_tools_debs_dir_path": "${localEnv:build_security_tools_debs_dir_path}",
+      "shared_pnpm_root_dir_path": "${localEnv:shared_pnpm_root_dir_path}",
+      "shared_pnpm_store_dir_path": "${localEnv:shared_pnpm_store_dir_path}",
+      "should_user_environment_die_on_error": "${localEnv:should_user_environment_die_on_error}",
+      "website_dir_path": "${localEnv:website_dir_path}",
+      "utils_local_config_dir_path": "${localEnv:utils_local_config_dir_path}"
+    }
+  },
+  "containerEnv": {
+    "BLOCKBASH_WORKSPACE_DIR_PATH": "${containerWorkspaceFolder}"
+  },
+  "context": "../../../../../../",
+  "customizations": {
+    "codespaces": {
+      "openFiles": []
+    },
+    "comments": {
+      "userEnvProbe": "If not none, the bashrc file will be executed an extra time.  Setting to none shouldn't have negative ramifications as all environment variables are passed in via various scripts.  (They aren't grabbed from bashrc file)",
+      "localEnv": "https://github.com/microsoft/vscode-remote-release/issues/8411"
+    },
+    "vscode": {
+      "extensions": [
+        "JuanBlanco.solidity@0.0.165"
+      ],
+      "settings": {
+        "dev.containers.logLevel": "info",
+        "editor.formatOnSave": true,
+        "files.exclude": {
+          ".prettierrc": true,
+          ".solhint/": true,
+          ".vscode/": true,
+          "README.md": true,
+          "solutions/": true
+        },
+        "solidity.compileUsingLocalVersion": "\($container_lab_core_compiler_file_path)",
+        "solidity.defaultCompiler": "localFile",
+        "task.problemMatchers.neverPrompt": true,
+        "terminal.integrated.detectLocale": false,
+        "terminal.integrated.inheritEnv": false,
+        "terminal.integrated.tabs.enableAnimation": false,
+        "terminal.integrated.tabs.enabled": false,
+        "window.title": "Blockbash"
+      }
+    }
+  },
+  "dockerFile": "./../../../../dockerfiles/Dockerfile-primary",
+  "overrideCommand": false,
+  "userEnvProbe": "none",
+  "workspaceMount": ""
+}

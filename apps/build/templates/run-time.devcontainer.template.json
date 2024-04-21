@@ -1,0 +1,18 @@
+{
+  "customizations": {
+    "blockbash": {
+      "challenge_release": $challenge_release
+    },
+    "codespaces": {
+      "openFiles": []
+    },
+    "comments": {
+      "openFiles": "Without this setting, Codespaces will try to open the project's README.md.  By passing a blank array, we suppress the default behavior.  Placing this within the build's devcontainer wont work."
+    }
+  },
+  "image": $image_name_with_branch_full,
+  "initializeCommand": $initialize_command,
+  "runArgs": $docker_run_args,
+  "workspaceMount": "",
+  "userEnvProbe": "none"
+}

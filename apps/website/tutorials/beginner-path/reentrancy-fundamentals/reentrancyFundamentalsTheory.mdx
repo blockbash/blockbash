@@ -1,0 +1,40 @@
+---
+title: Theory
+pagination_label: Reentrancy Fundamentals Theory
+sidebar_label: Theory
+description: "null"
+keywords: ["reentrancy"]
+sidebar_position: 1
+slug: "/tutorials/reentrancy-fundamentals-theory"
+hide_title: true
+hide_table_of_contents: true
+---
+
+import SVG
+  from "./diagrams/theory.svg"
+// noinspection NpmUsedModulesInstalled
+import CodeExample from "@partials/_code_example.mdx";
+import VulnerableContract from '!!raw-loader!@contracts/reentrancy-fundamentals/Vulnerable.sol';
+
+## Prerequisites {#prerequisites}
+
+- Basic Ethereum knowledge
+
+## Vulnerability Summary {#vuln-summary}
+
+- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `AttackerContract`) the ability to invoke the vulnerable contract (i.e., `VulnerableContract`) in an unexpected state. In other words, when `VulnerableContract` invokes `AttackerContract`, it's possible for `AttackerContract` to immediately call (or "re-enter") the `VulnerableContract`. The vulnerability manifests when the developer doesn't expect this condition to occur.
+- In the diagram (below), you'll go through logic that's vulnerable to a reentrancy attack. After you've learned the theory, you'll create your own `AttackerContract` and exploit this vulnerability within the lab environment!
+
+
+<CodeExample smartContracts={[{
+  code: VulnerableContract,
+  title: "Vulnerable.sol"
+}]}
+             SVG={SVG}/>
+
+## Explanation
++ In progress
+
+{
+// (TODO - Put in tutorial from blockbash-internal)
+}

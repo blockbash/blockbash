@@ -1,0 +1,103 @@
+# ##############################################################################
+# PURPOSE: Create challenge repos in "challenges" Github Org
+# - Each challenge needs a separate repo so we can create URIs like `https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/blockbash-challenges-dev/reentrancy-fundamentals-attack-prompt`
+# ##############################################################################
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+    inputs:
+      challenge_dir_path:
+        required: true
+        type: string
+      primary_json_string:
+        required: true
+        type: string
+      is_enabled:
+        required: true
+        type: string
+    secrets:
+      BLOCKBASH_APP_PRIVATE_KEY_BASE64:
+        required: true
+
+jobs:
+  create_challenge_repos:
+    runs-on: ubuntu-22.04
+    environment: ${{ github.ref_name }}
+    steps:
+      - if: ${{ false }}
+        shell: bash
+        id: "null"
+        # language=sh
+        run: |
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+          # echo "build_scripts_workflow_steps_dir_path=null" >> $GITHUB_ENV
+          # echo "should_publish=null" >> $GITHUB_ENV
+          # echo "github_challenges_org_app_id=null" >> $GITHUB_ENV
+          # echo "github_challenges_org_name=null" >> $GITHUB_ENV
+          # echo "BLOCKBASH_APP_PRIVATE_KEY_BASE64=null" >> $GITHUB_ENV
+      # See commentary in create-deployment.yaml as to why we are doing this if
+      # statement on all job steps
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        if: inputs.is_enabled == 'true'
+        with:
+          persist-credentials: false
+      - name: Job Init
+        uses: ./.github/workflows/composite-actions/job-init
+        if: inputs.is_enabled == 'true'
+        with:
+          blockbash_app_private_key_base64: ${{ secrets.BLOCKBASH_APP_PRIVATE_KEY_BASE64 }}
+          primary_json_string: ${{ inputs.primary_json_string }}
+      - if: inputs.is_enabled == 'true' && env.should_publish == 'true'
+        name: create-github-app-env-vars
+        # language=sh
+        run: |
+          bash "${build_scripts_workflow_steps_dir_path}/create-github-app-env-vars.sh"
+      - id: generate_token
+        if: inputs.is_enabled == 'true' && env.should_publish == 'true'
+        name: create-github-app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ env.github_challenges_org_app_id }}
+          owner: ${{ env.github_challenges_org_name }}
+          private-key: ${{ env.BLOCKBASH_APP_PRIVATE_KEY_BASE64 }}
+      - if: inputs.is_enabled == 'true' && env.should_publish == 'true'
+        # Need to run "Job Init" again as we need to register the token created
+        # within generate_token
+        name: Job Init
+        uses: ./.github/workflows/composite-actions/job-init
+        with:
+          _github_token: ${{ steps.generate_token.outputs.token }}
+          primary_json_string: ${{ inputs.primary_json_string }}
+      - id: create_repo_sync_file
+        if: inputs.is_enabled == 'true'
+        name: Create Repo Sync File
+        # language=sh
+        run: |
+          bash "${build_scripts_workflow_steps_dir_path}/create-repo-sync-file.sh" \
+              --branch_name=${branch_name} \
+              --challenge_environment_dir_path='${{ inputs.challenge_dir_path }}'
+      - id: create_repo
+        if: inputs.is_enabled == 'true' && env.should_publish == 'true'
+        name: Create Repo
+        # language=sh
+        run: |
+          bash "${build_scripts_workflow_steps_dir_path}/create-challenge-repo.sh" \
+            --challenge_environment_dir_path='${{ inputs.challenge_dir_path }}' \
+            --branch_name=${branch_name}
+      - if: inputs.is_enabled == 'true' && env.should_publish == 'true'
+        name: Run GitHub File Sync
+        uses: BetaHuhn/repo-file-sync-action@v1
+        with:
+          COMMIT_BODY: syncing challenge files
+          GH_INSTALLATION_TOKEN: ${{ steps.generate_token.outputs.token }}
+          ORIGINAL_MESSAGE: false
+          SKIP_PR: true
+      - id: cleanup_actions
+        if: inputs.is_enabled == 'true' && always()
+        name: Execute Cleanup Actions
+        # language=sh
+        run: |
+          bash '${{ env.build_scripts_workflow_steps_dir_path }}/cleanup-job.sh' \
+            --is_docker_build="false"

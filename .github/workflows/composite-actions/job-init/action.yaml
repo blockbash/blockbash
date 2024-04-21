@@ -1,0 +1,69 @@
+description: This should run as the first step within any job.  It should be leveraged to set secrets (and environment variables) for the job.  Additionally, any configuration generation should be done here.
+name: job-init
+
+# ##############################################################################
+# INPUTS:
+# - Except github_token, all secrets are base64-encoded.
+#   When applicable, we base64 $null_credential and set it as our default text.
+#   This signifies the absence of a credential.
+# ##############################################################################
+
+# ##############################################################################
+# KNOWN ISSUES:
+# - For some reason, I can't get the Intellij Github Workflow plugin to resolve steps within Composite actions
+# ##############################################################################
+
+
+inputs:
+  cloudflare_token_base64:
+    default: "ZHVtbXlfY3JlZAo="
+    description: "null"
+    required: false
+  cosign_key_base64:
+    default: "ZHVtbXlfY3JlZAo="
+    description: "null"
+    required: false
+  cosign_password_base64:
+    default: "ZHVtbXlfY3JlZAo="
+    description: "null"
+    required: false
+  blockbash_app_private_key_base64:
+    default: "ZHVtbXlfY3JlZAo="
+    description: "null"
+    required: false
+  _github_token:
+    default: "dummy_cred"
+    description: "null"
+    required: false
+  primary_json_string:
+    description: "null"
+    required: true
+runs: # eslint-disable yml/sort-keys
+  using: composite
+  steps:
+    - name: Set Environment Variables For Job
+      id: set_env_vars
+      # language=sh
+      run: |
+        primary_json_string='${{ inputs.primary_json_string }}'
+        echo "$primary_json_string" | jq --raw-output --exit-status --sort-keys --compact-output 'to_entries[] | "\(.key)=\(.value)"' >> $GITHUB_ENV
+      shell: bash
+    - name: Create Configurations
+      # language=sh
+      run: |
+        # shellcheck disable=SC1090
+        . "${common_scripts_dir_path}/source-all.sh" --absolute_paths=true --die_on_error=true
+        create_configurations "${branch_name}"
+      shell: bash
+    - name: Set Secrets For Job
+      env:
+        CLOUDFLARE_TOKEN_BASE64: ${{ inputs.cloudflare_token_base64 }}
+        COSIGN_KEY_BASE64: ${{ inputs.cosign_key_base64 }}
+        COSIGN_PASSWORD_BASE64: ${{ inputs.cosign_password_base64 }}
+        BLOCKBASH_APP_PRIVATE_KEY_BASE64: ${{ inputs.blockbash_app_private_key_base64 }}
+        _GITHUB_TOKEN: ${{ inputs._github_token }}
+      # language=sh
+      run: |
+        bash "${build_scripts_workflow_steps_dir_path}/set-secrets.sh"
+      shell: bash
+# eslint-enable yml/sort-keys

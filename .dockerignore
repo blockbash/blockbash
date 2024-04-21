@@ -1,0 +1,55 @@
+# IMPORTANT:
+#   + All entries within the .gitignore file should be copied within .dockerignore
+#       + EXCEPTIONS:
+#           + utils/local-config/overrides.env: Should be be ignored in .gitignore but should NOT be ignored within .dockerignore.  This is because the local docker environment needs these overrides.
+#   + If you need an ignored file within the local environment's build (e.g., overrides.env), you MUST set the file/directory as a bind mount.  This is because act doesn't copy ignored files into the container.  You can set the bind mount by altering act_flags within execute-workflow.sh (https://github.com/nektos/act/blob/069720abff4e169834dda534da5b0013c03775a3/pkg/runner/action.go#L226C4-L229)
+
+# MISC
+*.log
+.devcontainer/*
+.DS_Store
+.env*
+.git
+.idea/
+.run/
+logs/*
+node_modules/
+# *.dtmp/*.bkp: Temporary drawio files
+*.dtmp
+*.bkp
+
+# UTILS
+utils/local-config/*
+!utils/local-config/overrides.example.env
+# overrides.env - IMPORTANT: THIS VALUE SHOULD BE UNCOMMENTED IN .dockerignore (see above comment for details)
+!utils/local-config/overrides.env
+
+# APPS/BUILD ARTIFACTS
+apps/build/artifacts/challenges/**/*.json
+apps/build/artifacts/dummy-secrets/*
+apps/build/artifacts/matrix-outputs/final/*
+apps/build/artifacts/matrix-outputs/raw/*
+apps/build/artifacts/matrix-outputs/scratch/*
+apps/build/artifacts/security-tools/debs/*
+apps/build/artifacts/security-tools/grype/db/*
+apps/build/artifacts/security-tools/grype/sbom/*
+
+# APPS/LAB-CORE ARTIFACTS
+apps/lab-core/artifacts/challenge-results/*
+apps/lab-core/artifacts/hardhat-artifacts/*
+apps/lab-core/artifacts/hardhat-cache/*
+apps/lab-core/artifacts/types/typechain/*
+
+# WEBSITE
+apps/website/artifacts/build/*
+apps/website/artifacts/.docusaurus/*
+
+# ##############################################################################
+# IMPORTANT: MUST GO LAST!
+#
+# .gitkeep: To keep an empty directory, add a .gitkeep file to it and ignore
+# the directory with a wildcard: /path/to/dir/*
+#
+# This will ignore the content but not the director itself.
+# ##############################################################################
+!/**/.gitkeep

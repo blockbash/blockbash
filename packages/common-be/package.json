@@ -1,0 +1,38 @@
+{
+  "name": "@blockbash/common-be",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "depcheck": "depcheck --skip-missing=true --ignore=''"
+  },
+  "dependencies": {
+    "@blockbash/common": "workspace:*",
+    "@ethersproject/bignumber": "5.7.0",
+    "@nomicfoundation/hardhat-ethers": "3.0.4",
+    "@types/jsonpath": "0.2.1",
+    "@types/lodash": "4.17.0",
+    "@types/mochawesome": "6.2.2",
+    "@types/shelljs": "0.8.13",
+    "app-root-path": "3.1.0",
+    "chalk": "4.1.2",
+    "ethers": "6.7.1",
+    "hardhat": "2.18.0",
+    "hardhat-deploy": "0.11.42",
+    "hardhat-deploy-ethers": "0.4.1",
+    "jsonpath": "1.1.1",
+    "lodash": "4.17.21",
+    "mochawesome": "7.1.3",
+    "ora": "5.4.1",
+    "shelljs": "0.8.5",
+    "winston": "3.11.0"
+  },
+  "dependenciesComments": {
+    "chalk": "Upgrading chalk breaks due to requiring ESM"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

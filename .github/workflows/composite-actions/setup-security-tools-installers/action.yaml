@@ -1,0 +1,71 @@
+description: "null"
+name: setup-security-tools-installers
+
+# ##############################################################################
+# KNOWN ISSUES:
+# - For some reason, I can't get the Intellij Github Workflow plugin to resolve steps within Composite actions
+# ##############################################################################
+
+inputs:
+  enable_security_tools_download:
+    description: "null"
+    required: true
+  enable_security_tools_install:
+    description: "null"
+    required: true
+runs:
+  steps:
+    - if: ${{ false }}
+      shell: bash
+      id: "null"
+      # language=sh
+      run: |
+        # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+        # echo "build_security_tools_debs_dir_path=null" >> $GITHUB_ENV
+        # echo "cache_key_security_tools_debs=null" >> $GITHUB_ENV
+        # echo "build_security_tools_grype_db_dir_path=null" >> $GITHUB_ENV
+        # echo "cache_key_grype=null" >> $GITHUB_ENV
+        # echo "create_grype_db=null" >> $GITHUB_ENV
+    - name: Initialize .debs Cache
+      uses: actions/cache/restore@v4
+      with: # We always want to restore the cache. To do this, we set key and
+        # restore-keys to the values below.
+        key: this_security_tools_debs_cache_key_will_never_match
+        path: ${{ env.build_security_tools_debs_dir_path }}
+        restore-keys: ${{ env.cache_key_security_tools_debs }}
+    - id: download_debs
+      name: Download .debs
+      # language=sh
+      run: |
+        bash "${build_scripts_workflow_steps_dir_path}/create-security-tools-debs.sh" \
+          --enable_security_tools_install='${{ inputs.enable_security_tools_install }}' \
+          --enable_security_tools_download='${{ inputs.enable_security_tools_download }}' \
+          --current_arch=${RUNNER_ARCH} \
+          --is_scheduled_execution=${is_scheduled_execution}
+      shell: bash
+    - if: steps.download_debs.outputs.new_deb_files == 'true'
+      name: Cache .debs
+      uses: actions/cache/save@v4
+      with:
+        key: ${{ format('{0}-{1}', env.cache_key_security_tools_debs, steps.download_debs.outputs.debs_dir_hash) }}
+        path: ${{ env.build_security_tools_debs_dir_path }}
+    - name: Init Grype Cache
+      uses: actions/cache/restore@v4
+      with: # We always want to restore the cache.  To do this, we set key and
+        # restore-keys to the values below.
+        key: this_security_tools_grype_cache_key_will_never_match
+        path: ${{ env.build_security_tools_grype_db_dir_path }}
+        restore-keys: ${{ env.cache_key_grype }}
+    - id: create_grype_db
+      name: Create/Update Grype DB
+      # language=sh
+      run: |
+        bash "${build_scripts_workflow_steps_dir_path}/create-security-tools-grype-db.sh"
+      shell: bash
+    - if: ${{ steps.create_grype_db.outputs.new_grype_db_file == 'true' }}
+      name: Save Security Tools Grype DB Cache
+      uses: actions/cache/save@v4
+      with:
+        key: ${{ format('{0}-{1}', env.cache_key_grype, steps.create_grype_db.outputs.grype_db_dir_hash) }}
+        path: ${{ env.build_security_tools_grype_db_dir_path }}
+  using: composite

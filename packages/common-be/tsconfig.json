@@ -1,0 +1,36 @@
+// Must include 'hardhat.config.ts' or typing information within blockchain.ts
+// wont work correctly
+// https://github.com/wighawag/hardhat-deploy#typescript-support
+{
+  "compilerOptions": {
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "error",
+    "lib": ["es2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2022"
+  },
+  //  "extends": [
+  //    "@tsconfig/node20/tsconfig",
+  //    "@tsconfig/strictest/tsconfig"
+  //  ],
+  "include": [
+    "**/*",
+    "../../apps/lab-core/hardhat.config.ts"
+  ]
+}

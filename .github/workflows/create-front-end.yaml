@@ -1,0 +1,68 @@
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+    inputs:
+      is_enabled:
+        required: true
+        type: string
+      primary_json_string:
+        required: true
+        type: string
+    secrets:
+      CLOUDFLARE_TOKEN_BASE64:
+        required: true
+
+jobs:
+  create_front_end:
+    runs-on: ubuntu-22.04
+    environment: ${{ github.ref_name }}
+    steps:
+      - if: ${{ false }}
+        shell: bash
+        id: "null"
+        # language=sh
+        run: |
+          # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
+          # echo "build_scripts_workflow_steps_dir_path=null" >> $GITHUB_ENV
+          # echo "should_publish=null" >> $GITHUB_ENV
+          # echo "publish_images_matrix_outputs_post=null" >> $GITHUB_ENV
+          # echo "build_matrix_outputs_final_dir_path=null" >> $GITHUB_ENV
+      # See commentary in create-deployment.yaml as to why we are doing this if
+      # statement on all job steps
+      - if: inputs.is_enabled == 'true'
+        name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - if: inputs.is_enabled == 'true'
+        name: Job Init
+        uses: ./.github/workflows/composite-actions/job-init
+        with:
+          cloudflare_token_base64: ${{ secrets.CLOUDFLARE_TOKEN_BASE64 }}
+          primary_json_string: ${{ inputs.primary_json_string }}
+      - if: inputs.is_enabled == 'true'
+        name: Setup PNPM Cache
+        uses: ./.github/workflows/composite-actions/setup-pnpm
+        with:
+          fail_on_cache_miss: "true"
+      - id: create_website_build
+        if: inputs.is_enabled == 'true'
+        name: Create Website Build
+        # language=sh
+        run: |
+          bash "${build_scripts_workflow_steps_dir_path}/create-website-build.sh" \
+            --branch_name=${branch_name}
+      - id: create_deployment
+        if: env.should_publish == 'true' && inputs.is_enabled == 'true'
+        name: Publish Website
+        # language=sh
+        run: |
+          bash "${build_scripts_workflow_steps_dir_path}/create-website-deployment.sh" \
+            --branch_name=${branch_name}
+      - id: cleanup_actions
+        if: inputs.is_enabled == 'true' && always()
+        name: Execute Cleanup Actions
+        # language=sh
+        run: |
+          bash '${{ env.build_scripts_workflow_steps_dir_path }}/cleanup-job.sh' \
+            --is_docker_build="false"

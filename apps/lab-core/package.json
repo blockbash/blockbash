@@ -1,0 +1,53 @@
+{
+  "name": "@blockbash/lab-core",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "challenge:automation_tests": "pnpm run --workspace-root build;LAB_EXEC_ENV=automation pnpm exec mocha challenges",
+    "challenge:user_test": "pnpm run --workspace-root build; LAB_EXEC_ENV=user pnpm exec mocha",
+    "challenge:user_tests": "pnpm run --workspace-root build; LAB_EXEC_ENV=user pnpm exec mocha challenges",
+    "contract:compile": "hardhat compile",
+    "contract:reset": "hardhat clean --global && rm -rf types",
+    "depcheck": "depcheck --skip-missing=true --ignores='mochawesome'",
+    "hardhat:build_caches": "hardhat compile --force"
+  },
+  "scriptsComments": {
+    "depcheckIgnores": {
+      "mochawesome": "Is a hardhat test reporter that is referenced within hardhat.config.ts"
+    }
+  },
+  "dependencies": {
+    "@blockbash/common-be": "workspace:*",
+    "@nomicfoundation/hardhat-chai-matchers": "2.0.2",
+    "@nomicfoundation/hardhat-ethers": "3.0.4",
+    "@typechain/ethers-v6": "0.5.0",
+    "@typechain/hardhat": "9.0.0",
+    "@types/chai": "4.3.7",
+    "@types/mocha": "10.0.2",
+    "@types/node": "18.15.0",
+    "chai": "4.3.10",
+    "ethers": "6.7.1",
+    "hardhat": "2.18.0",
+    "hardhat-deploy": "0.11.42",
+    "hardhat-deploy-ethers": "0.4.1",
+    "hardhat-ignore-warnings": "0.2.9",
+    "hardhat-tracer": "2.6.0",
+    "mocha": "10.2.0",
+    "mochawesome": "7.1.3",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0",
+    "typechain": "8.3.1"
+  },
+  "dependenciesComments": {
+    "ts-node": "ts-node doesn't create regular releases so we need to pin to a commit to get recent changes"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*"
+  },
+  "devDependenciesComments": {
+    "meta": ["In 'production', we execute the cli with ts-node.  This is why we keep devDependencies to a minimum"]
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

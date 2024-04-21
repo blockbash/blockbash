@@ -1,0 +1,97 @@
+{
+  "problemMatcher": [],
+  "tasks": [
+    {
+      "args": [
+        "--init-file",
+        "\($container_lab_shell_scripts_hooks_dir_path)/project-open.sh"
+      ],
+      "command": "/bin/bash",
+      "label": "Initialize Blockbash",
+      "presentation": {
+        "close": false,
+        "echo": false,
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "type": "process"
+    },
+    {
+      "command": "/bin/bash \($container_lab_shell_scripts_hooks_dir_path)/fetch-runtime-logs.sh",
+      "label": "bb-fetch-runtime-logs",
+      "presentation": {
+        "close": true,
+        "echo": false,
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "type": "shell"
+    },
+    {
+      "command": "${command:remote-containers.rebuildContainerNoCache}",
+      "label": "bb-update-rebuild-container"
+    },
+    {
+      "command": "${command:terminal.focus}",
+      "label": "bb-terminal-focus"
+    },
+    {
+      "command": "${command:remote-containers.revealLogTerminal}",
+      "label": "bb-remote-reveal-logs"
+    },
+    {
+      "command": "${command:workbench.action.terminal.selectAll}",
+      "label": "bb-terminal-select-all"
+    },
+    {
+      "command": "${command:editor.action.clipboardCopyAction}",
+      "label": "bb-clipboard-copy"
+    },
+    {
+      "command": "${command:workbench.action.focusActiveEditorGroup}",
+      "label": "bb-focus-editor"
+    },
+    {
+      "command": "${command:editor.action.selectAll}",
+      "label": "bb-editor-select-all"
+    },
+    {
+      "command": "${command:workbench.action.terminal.kill}",
+      "label": "bb-kill-terminal"
+    },
+    {
+      "dependsOn": [
+        "bb-update-rebuild-container"
+      ],
+      "dependsOrder": "sequence",
+      "label": "update"
+    },
+    {
+      "dependsOn": [
+        "bb-remote-reveal-logs",
+        "bb-terminal-select-all",
+        "bb-clipboard-copy",
+        "bb-kill-terminal"
+      ],
+      "dependsOrder": "sequence",
+      "label": "help-init-logs"
+    },
+    {
+      "dependsOn": [
+        "bb-fetch-runtime-logs",
+        "bb-focus-editor",
+        "bb-editor-select-all",
+        "bb-clipboard-copy"
+      ],
+      "dependsOrder": "sequence",
+      "label": "help-runtime-logs"
+    }
+  ],
+  "version": "2.0.0"
+}
+

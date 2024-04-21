@@ -1,0 +1,33 @@
+{
+  "name": "@blockbash/lab-shell",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "challenge:smoke_test": "pnpm run challenge:verify reentrancyFundamentalsAttackPrompt",
+    "challenge:verify": "tsx src/main.ts challenge verify",
+    "depcheck": "depcheck --skip-missing=true"
+  },
+  "dependencies": {
+    "@blockbash/common-be": "workspace:*",
+    "@commander-js/extra-typings": "11.0.0",
+    "@swc/core": "1.3.99",
+    "@types/mochawesome": "6.2.4",
+    "chalk": "4.1.2",
+    "commander": "11.0.0",
+    "tsx": "4.7.1"
+  },
+  "dependenciesComments": {
+    "chalk": "Upgrading chalk breaks due to requiring ESM"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*"
+  },
+  "devDependenciesComments": {
+    "meta": [
+      "In 'production', we execute the cli with ts-node.  This is why we keep devDependencies to a minimum"
+    ]
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

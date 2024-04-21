@@ -1,0 +1,60 @@
+{
+  "name": "@blockbash/website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "depcheck": "depcheck --skip-missing=true --ignores='@docusaurus/*,@mdx-js/*,stylelint*,typescript-plugin-css-modules'",
+    "reset": "docusaurus clear",
+    "start": "pnpm run --workspace-root build; DOCUSAURUS_GENERATED_FILES_DIR_NAME=artifacts/.docusaurus docusaurus start"
+  },
+  "scriptsComments": {
+    "build": "There isn't a build script entry as we want to add dynamic logic. The logic we can use here is limited.  See create-website-build.sh",
+    "start": "Used for local development only",
+    "depcheckIgnores": {
+      "@docusaurus/*": "components are referenced within docusaurus.config.js and internally within docusaurus",
+      "@mdx-js/*": "Referenced interally within docusaurus",
+      "stylelint": "Used within IDE",
+      "typescript-plugin-css-modules": "Used within tsconfig.json"
+    }
+  },
+  "dependencies": {
+    "@blockbash/common": "workspace:*",
+    "raw-loader": "^4.0.2",
+    "@chakra-ui/icons": "2.1.1",
+    "@chakra-ui/react": "2.8.1",
+    "@docusaurus/core": "3.0.0",
+    "@docusaurus/plugin-ideal-image": "3.0.0",
+    "@docusaurus/preset-classic": "3.0.0",
+    "@docusaurus/theme-common": "3.0.0",
+    "@emotion/react": "11.11.1",
+    "@emotion/styled": "11.11.0",
+    "@mdx-js/react": "3.0.0",
+    "@swc/core": "1.3.99",
+    "ethers": "6.7.1",
+    "fuse.js": "6.6.2",
+    "lodash": "4.17.21",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "swc-loader": "0.2.3",
+    "tslog": "4.9.1"
+  },
+  "devDependencies": {
+    "@blockbash/eslint-config-ts": "workspace:*",
+    "@docusaurus/module-type-aliases": "3.0.0",
+    "@docusaurus/types": "3.0.0",
+    "@types/lodash": "4.17.0",
+    "@types/react": "18.2.0",
+    "stylelint": "15.10.3",
+    "stylelint-config-rational-order": "0.1.2",
+    "stylelint-config-standard": "34.0.0",
+    "typescript-plugin-css-modules": "5.0.1"
+  },
+  "devDependenciesComments": {
+    "meta": [
+      "docusaurus leverages webpack for the production build.  Compared to other projects that leverage ts-node (in production), this allows us to increase the scope of our devDependencies"
+    ]
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

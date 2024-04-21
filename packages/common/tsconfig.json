@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "resolveJsonModule": true
+  },
+  "extends": [
+    "@tsconfig/node20/tsconfig",
+    "@tsconfig/strictest/tsconfig"
+  ],
+  "include": ["**/*"]
+}
