@@ -71,3 +71,8 @@ export enum TutorialTypeName {
   defendLab = "defend lab",
   theory = "theory",
 }
+
+export enum ExecutionEnvironmentName {
+  githubCodespace = "Github Codespace",
+  visualStudioCode = "Visual Studio Code",
+}
