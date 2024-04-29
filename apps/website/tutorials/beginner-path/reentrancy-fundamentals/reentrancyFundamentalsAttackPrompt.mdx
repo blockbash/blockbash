@@ -14,7 +14,30 @@ import {Lab} from "@components";
 // noinspection NpmUsedModulesInstalled
 import Preamble from "@partials/lab/_preamble.mdx";
 
-<Preamble goal={<Text as="span">In this lab, you'll leverage your Reentrancy knowledge to steal funds from a <Code>VulnerableContract</Code></Text>}></Preamble>
+<Preamble
+  goal={<Text as="span">In this lab, you'll leverage your Reentrancy knowledge to steal funds from a <Code>VulnerableContract</Code></Text>}
+  LabSteps={
+    <LabSteps steps={[
+      <Link href={vscodeURL} shouldOpenTab>
+        <Button
+          border="none"
+          colorScheme="red"
+          size="sm"
+          textTransform="capitalize"
+        >
+          Initialize Visual Studio Code Lab
+        </Button>
+      </Link>
+      <Lab
+        tutorialGUID={
+          tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt
+        }
+      />,
+      <>Add your exploit code to the <Code>attack()</Code> and <Code>receive()</Code> methods within <Code>AttackerContract</Code></>,
+      <>In the terminal, execute <Code>cv</Code> to check your solution</>
+    ]}>
+    </LabSteps>
+  }/>
 
 <LabSteps steps={[
   <Lab
