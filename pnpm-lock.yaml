@@ -26,7 +26,7 @@ importers:
         version: 9.0.0(eslint@8.51.0)
       eslint-config-standard:
         specifier: 17.1.0
-        version: 17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
+        version: 17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
       eslint-mdx:
         specifier: 2.2.0
         version: 2.2.0(eslint@8.51.0)
@@ -122,8 +122,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/common-be
       '@nomicfoundation/hardhat-chai-matchers':
-        specifier: 2.0.2
-        version: 2.0.2(@nomicfoundation/hardhat-ethers@3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5)))(chai@4.3.10)(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))
+        specifier: 2.0.6
+        version: 2.0.6(@nomicfoundation/hardhat-ethers@3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5)))(chai@4.3.10)(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))
       '@nomicfoundation/hardhat-ethers':
         specifier: 3.0.4
         version: 3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))
@@ -164,11 +164,11 @@ importers:
         specifier: 2.6.0
         version: 2.6.0(chai@4.3.10)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))
       mocha:
-        specifier: 10.2.0
-        version: 10.2.0
+        specifier: 10.4.0
+        version: 10.4.0
       mochawesome:
         specifier: 7.1.3
-        version: 7.1.3(mocha@10.2.0)
+        version: 7.1.3(mocha@10.4.0)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5)
@@ -204,8 +204,8 @@ importers:
         specifier: 11.0.0
         version: 11.0.0
       tsx:
-        specifier: 4.7.1
-        version: 4.7.1
+        specifier: 4.7.3
+        version: 4.7.3
     devDependencies:
       '@blockbash/eslint-config-ts':
         specifier: workspace:*
@@ -276,6 +276,9 @@ importers:
       tslog:
         specifier: 4.9.1
         version: 4.9.1
+      unist-util-visit:
+        specifier: ^5.0.0
+        version: 5.0.0
     devDependencies:
       '@blockbash/eslint-config-ts':
         specifier: workspace:*
@@ -289,9 +292,15 @@ importers:
       '@types/lodash':
         specifier: 4.17.0
         version: 4.17.0
+      '@types/mdast':
+        specifier: ^4.0.3
+        version: 4.0.3
       '@types/react':
         specifier: 18.2.0
         version: 18.2.0
+      mdast:
+        specifier: ^3.0.0
+        version: 3.0.0
       stylelint:
         specifier: 15.10.3
         version: 15.10.3(typescript@5.4.5)
@@ -304,6 +313,9 @@ importers:
       typescript-plugin-css-modules:
         specifier: 5.0.1
         version: 5.0.1(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.13)(typescript@5.4.5))(typescript@5.4.5)
+      unified:
+        specifier: ^11.0.4
+        version: 11.0.4
 
   packages/common:
     dependencies:
@@ -373,7 +385,7 @@ importers:
         version: 4.17.21
       mochawesome:
         specifier: 7.1.3
-        version: 7.1.3(mocha@10.2.0)
+        version: 7.1.3(mocha@10.4.0)
       ora:
         specifier: 5.4.1
         version: 5.4.1
@@ -2527,8 +2539,8 @@ packages:
     resolution: {integrity: sha512-Bj3KZT64j54Tcwr7Qm/0jkeZXJMfdcAtRBedou+Hx0dPOSIgqaIr0vvLwP65TpHbak2DmAq+KJbW2KNtIoFwvA==}
     engines: {node: '>=14'}
 
-  '@nomicfoundation/hardhat-chai-matchers@2.0.2':
-    resolution: {integrity: sha512-9Wu9mRtkj0U9ohgXYFbB/RQDa+PcEdyBm2suyEtsJf3PqzZEEjLUZgWnMjlFhATMk/fp3BjmnYVPrwl+gr8oEw==}
+  '@nomicfoundation/hardhat-chai-matchers@2.0.6':
+    resolution: {integrity: sha512-Te1Uyo9oJcTCF0Jy9dztaLpshmlpjLf2yPtWXlXuLjMt3RRSmJLm/+rKVTW6gfadAEs12U/it6D0ZRnnRGiICQ==}
     peerDependencies:
       '@nomicfoundation/hardhat-ethers': ^3.0.0
       chai: ^4.2.0
@@ -3030,9 +3042,6 @@ packages:
 
   '@types/mdast@3.0.13':
     resolution: {integrity: sha512-HjiGiWedR0DVFkeNljpa6Lv4/IZU1+30VY5d747K7lBudFc3R0Ibr6yJ9lN3BE28VnZyDfLF/VB1Ql1ZIbKrmg==}
-
-  '@types/mdast@4.0.1':
-    resolution: {integrity: sha512-IlKct1rUTJ1T81d8OHzyop15kGv9A/ff7Gz7IJgrk6jDb4Udw77pCJ+vq8oxZf4Ghpm+616+i1s/LNg/Vh7d+g==}
 
   '@types/mdast@4.0.3':
     resolution: {integrity: sha512-LsjtqsyF+d2/yFOYaN22dHZI1Cpwkrj+g06G8+qtUKlhovPW89YhqSnfKtMbkgmEtYpH2gydRNULd6y8mciAFg==}
@@ -6889,6 +6898,10 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
+  mdast@3.0.0:
+    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
+    deprecated: '`mdast` was renamed to `remark`'
+
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
 
@@ -7263,8 +7276,8 @@ packages:
   mnemonist@0.38.5:
     resolution: {integrity: sha512-bZTFT5rrPKtPJxj8KSV0WkPyNxl72vQepqqVUAW2ARUpUSF2qXMB6jZj7hW5/k7C1rtpzqbD/IIbJwLXUjCHeg==}
 
-  mocha@10.2.0:
-    resolution: {integrity: sha512-IDY7fl/BecMwFHzoqF2sg/SHHANeBoMMXFlS9r0OXKDssYE1M5O43wUY/9BVPeIvfH2zmEbBfseqN9gBQZzXkg==}
+  mocha@10.4.0:
+    resolution: {integrity: sha512-eqhGB8JKapEYcC4ytX/xrzKforgEc3j1pGlAXVy3eRwrtAy5/nIfT1SvgGzfN0XZZxeLq0aQWkOUAmqIJiv+bA==}
     engines: {node: '>= 14.0.0'}
     hasBin: true
 
@@ -7315,11 +7328,6 @@ packages:
 
   mvdan-sh@0.10.1:
     resolution: {integrity: sha512-kMbrH0EObaKmK3nVRKUIIya1dpASHIEusM13S4V1ViHFuxuNxCo+arxoa6j/dbV22YBGjl7UKJm9QQKJ2Crzhg==}
-
-  nanoid@3.3.3:
-    resolution: {integrity: sha512-p1sjXuopFs0xg+fPASzQ28agW1oHD7xDsd9Xkf3T15H3c/cifrFHVwrh74PdoklAPi+i7MdRsE47vm2r6JoB+w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
 
   nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
@@ -9634,8 +9642,8 @@ packages:
   tsort@0.0.1:
     resolution: {integrity: sha512-Tyrf5mxF8Ofs1tNoxA13lFeZ2Zrbd6cKbuH3V+MQ5sb6DtBj5FjrXVsRWT8YvNAQTqNoz66dz1WsbigI22aEnw==}
 
-  tsx@4.7.1:
-    resolution: {integrity: sha512-8d6VuibXHtlN5E3zFkgY8u4DX7Y3Z27zvvPKVmLon/D4AjuKzarkUBTLDBgj9iTQ0hg5xM7c/mYiRVM+HETf0g==}
+  tsx@4.7.3:
+    resolution: {integrity: sha512-+fQnMqIp/jxZEXLcj6WzYy9FhcS5/Dfk8y4AtzJ6ejKcKqmfTF8Gso/jtrzDggCF2zTU20gJa6n8XqPYwDAUYQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -9780,9 +9788,6 @@ packages:
 
   unified@10.1.2:
     resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}
-
-  unified@11.0.3:
-    resolution: {integrity: sha512-jlCV402P+YDcFcB2VcN/n8JasOddqIiaxv118wNBoZXEhOn+lYG7BR4Bfg2BwxvlK58dwbuH2w7GX2esAjL6Mg==}
 
   unified@11.0.4:
     resolution: {integrity: sha512-apMPnyLjAX+ty4OrNap7yumyVAMlKx5IWU2wlzzUdYJO9A8f1p9m/gywF/GM2ZDFcjQPrx59Mc90KwmxsoklxQ==}
@@ -12223,7 +12228,7 @@ snapshots:
       remark-gfm: 4.0.0
       stringify-object: 3.3.0
       tslib: 2.6.2
-      unified: 11.0.3
+      unified: 11.0.4
       unist-util-visit: 5.0.0
       url-loader: 4.1.1(file-loader@6.2.0(webpack@5.88.2(@swc/core@1.3.99)))(webpack@5.88.2(@swc/core@1.3.99))
       vfile: 6.0.1
@@ -13581,7 +13586,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@nomicfoundation/hardhat-chai-matchers@2.0.2(@nomicfoundation/hardhat-ethers@3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5)))(chai@4.3.10)(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))':
+  '@nomicfoundation/hardhat-chai-matchers@2.0.6(@nomicfoundation/hardhat-ethers@3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5)))(chai@4.3.10)(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))':
     dependencies:
       '@nomicfoundation/hardhat-ethers': 3.0.4(ethers@6.7.1)(hardhat@2.18.0(ts-node@10.9.2(@swc/core@1.3.99)(@types/node@18.15.0)(typescript@5.4.5))(typescript@5.4.5))
       '@types/chai-as-promised': 7.1.6
@@ -14108,10 +14113,6 @@ snapshots:
   '@types/mdast@3.0.13':
     dependencies:
       '@types/unist': 2.0.8
-
-  '@types/mdast@4.0.1':
-    dependencies:
-      '@types/unist': 3.0.0
 
   '@types/mdast@4.0.3':
     dependencies:
@@ -16223,7 +16224,7 @@ snapshots:
       '@typescript-eslint/eslint-plugin': 6.7.3(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)(typescript@5.4.5)
       '@typescript-eslint/parser': 6.7.5(eslint@8.51.0)(typescript@5.4.5)
       eslint: 8.51.0
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
       eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)
       eslint-plugin-n: 16.1.0(eslint@8.51.0)
       eslint-plugin-promise: 6.1.1(eslint@8.51.0)
@@ -16231,7 +16232,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0):
     dependencies:
       eslint: 8.51.0
       eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)
@@ -17425,7 +17426,7 @@ snapshots:
       keccak: 3.0.4
       lodash: 4.17.21
       mnemonist: 0.38.5
-      mocha: 10.2.0
+      mocha: 10.4.0
       p-map: 4.0.0
       raw-body: 2.5.2
       resolve: 1.17.0
@@ -17483,7 +17484,7 @@ snapshots:
       keccak: 3.0.4
       lodash: 4.17.21
       mnemonist: 0.38.5
-      mocha: 10.2.0
+      mocha: 10.4.0
       p-map: 4.0.0
       raw-body: 2.5.2
       resolve: 1.17.0
@@ -18718,7 +18719,7 @@ snapshots:
 
   mdast-util-frontmatter@2.0.1:
     dependencies:
-      '@types/mdast': 4.0.1
+      '@types/mdast': 4.0.3
       devlop: 1.1.0
       escape-string-regexp: 5.0.0
       mdast-util-from-markdown: 2.0.0
@@ -18939,6 +18940,8 @@ snapshots:
   mdast-util-to-string@4.0.0:
     dependencies:
       '@types/mdast': 4.0.3
+
+  mdast@3.0.0: {}
 
   mdn-data@2.0.14: {}
 
@@ -19622,7 +19625,7 @@ snapshots:
     dependencies:
       obliterator: 2.0.4
 
-  mocha@10.2.0:
+  mocha@10.4.0:
     dependencies:
       ansi-colors: 4.1.1
       browser-stdout: 1.3.1
@@ -19631,13 +19634,12 @@ snapshots:
       diff: 5.0.0
       escape-string-regexp: 4.0.0
       find-up: 5.0.0
-      glob: 7.2.0
+      glob: 8.1.0
       he: 1.2.0
       js-yaml: 4.1.0
       log-symbols: 4.1.0
       minimatch: 5.0.1
       ms: 2.1.3
-      nanoid: 3.3.3
       serialize-javascript: 6.0.0
       strip-json-comments: 3.1.1
       supports-color: 8.1.1
@@ -19661,7 +19663,7 @@ snapshots:
       validator: 13.11.0
       yargs: 17.7.2
 
-  mochawesome@7.1.3(mocha@10.2.0):
+  mochawesome@7.1.3(mocha@10.4.0):
     dependencies:
       chalk: 4.1.2
       diff: 5.1.0
@@ -19670,7 +19672,7 @@ snapshots:
       lodash.isfunction: 3.0.9
       lodash.isobject: 3.0.2
       lodash.isstring: 4.0.1
-      mocha: 10.2.0
+      mocha: 10.4.0
       mochawesome-report-generator: 6.2.0
       strip-ansi: 6.0.1
       uuid: 8.3.2
@@ -19709,8 +19711,6 @@ snapshots:
   mustache@4.2.0: {}
 
   mvdan-sh@0.10.1: {}
-
-  nanoid@3.3.3: {}
 
   nanoid@3.3.6: {}
 
@@ -21018,10 +21018,10 @@ snapshots:
 
   remark-frontmatter@5.0.0:
     dependencies:
-      '@types/mdast': 4.0.1
+      '@types/mdast': 4.0.3
       mdast-util-frontmatter: 2.0.1
       micromark-extension-frontmatter: 2.0.0
-      unified: 11.0.3
+      unified: 11.0.4
     transitivePeerDependencies:
       - supports-color
 
@@ -22449,7 +22449,7 @@ snapshots:
 
   tsort@0.0.1: {}
 
-  tsx@4.7.1:
+  tsx@4.7.3:
     dependencies:
       esbuild: 0.19.12
       get-tsconfig: 4.7.2
@@ -22649,16 +22649,6 @@ snapshots:
       is-plain-obj: 4.1.0
       trough: 2.1.0
       vfile: 5.3.7
-
-  unified@11.0.3:
-    dependencies:
-      '@types/unist': 3.0.0
-      bail: 2.0.2
-      devlop: 1.1.0
-      extend: 3.0.2
-      is-plain-obj: 4.1.0
-      trough: 2.1.0
-      vfile: 6.0.1
 
   unified@11.0.4:
     dependencies:

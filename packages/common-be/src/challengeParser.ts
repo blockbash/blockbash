@@ -28,7 +28,8 @@ export class ChallengeParser {
     injectedDependencies,
   }: {
     injectedDependencies: ChallengeParserDependencies
-  }) {
+  })
+  {
     this.logger = injectedDependencies.logger
     this.jsonpLib = injectedDependencies.jsonpLib
     this.logger.setGlobalContext({
@@ -37,26 +38,41 @@ export class ChallengeParser {
     })
   }
 
-  private base64Decode({ text }: { text: string }) {
+  private base64Decode({text}: {
+    text: string
+  })
+  {
     return Buffer.from(text, "base64").toString("ascii")
   }
 
-  private base64Encode({ text }: { text: string }) {
+  private base64Encode({text}: {
+    text: string
+  })
+  {
     return Buffer.from(text).toString("base64")
   }
 
-  private extractRawFailedChallenges({ json }: { json: Mochawesome.Output }) {
+  private extractRawFailedChallenges({json}: {
+    json: Mochawesome.Output
+  })
+  {
     return this.jsonpLib.query(
       json,
-      `$..tests[?(@.err.message.indexOf('${ChallengeParser.challengeContextStartDelimiter}') >= 0 && @.err.message.indexOf('${ChallengeParser.challengeContextEndDelimiter}') >= 0)]`,
+      `$..tests[?(@.fail == true)]`,
     ) as RawFailedChallengeResults
   }
 
-  private getDeserializedArrayOfStrings({ input }: { input: string }) {
+  private getDeserializedArrayOfStrings({input}: {
+    input: string
+  })
+  {
     return JSON.parse(input) as string[]
   }
 
-  private getSerializedArrayOfStrings({ inputs }: { inputs: string[] }) {
+  private getSerializedArrayOfStrings({inputs}: {
+    inputs: string[]
+  })
+  {
     return JSON.stringify(inputs)
   }
 
@@ -79,12 +95,13 @@ export class ChallengeParser {
   }: {
     testRunnerStdout: string
     textReplacements: tutorialConfigTypes.ChallengeTextReplacements
-  }) {
+  })
+  {
     let mutatedOutput = testRunnerStdout
     if (typeof textReplacements === "undefined") {
       return mutatedOutput
     }
-    for (const { matchRegex, replaceWithText } of textReplacements) {
+    for (const {matchRegex, replaceWithText} of textReplacements) {
       mutatedOutput = mutatedOutput.replaceAll(
         new RegExp(matchRegex, "gm"),
         replaceWithText,
@@ -93,7 +110,10 @@ export class ChallengeParser {
     return mutatedOutput
   }
 
-  createChallengeContexts({ contexts }: { contexts: string[] }) {
+  createChallengeContexts({contexts}: {
+    contexts: string[]
+  })
+  {
     const serializedContexts = this.getSerializedArrayOfStrings({
       inputs: contexts,
     })
@@ -112,7 +132,10 @@ export class ChallengeParser {
     return result
   }
 
-  extractContexts({ text }: { text: string }) {
+  extractContexts({text}: {
+    text: string
+  })
+  {
     const regexGroup = "challengeResultContexts"
     const match = text.match(
       new RegExp(
@@ -138,22 +161,21 @@ export class ChallengeParser {
         text,
       },
     }
-    if (!decodedContexts) {
-      const err = "Failed to parse challenge context"
-      this.logger.error({
-        ...sharedLoggerArgs,
-        message: err,
-      })
-      throw new Error(err)
-    }
     this.logger.logInnerFinishedExecution({
       ...sharedLoggerArgs,
     })
+    if (!decodedContexts) {
+      // Contexts are usually embedded in rawFailedChallenge.err.message.  However, certain errors (i.e., Contract Revert) will overwrite this property.  When this edge case occurs, we just return null
+      return null
+    }
     return decodedContexts
   }
 
-  getFailedChallenges({ json }: { json: Mochawesome.Output }) {
-    const rawFailedChallenges = this.extractRawFailedChallenges({ json })
+  getFailedChallenges({json}: {
+    json: Mochawesome.Output
+  })
+  {
+    const rawFailedChallenges = this.extractRawFailedChallenges({json})
     const normalizedChallenges = this.normalizeChallengeResults({
       rawFailedChallenges,
     })

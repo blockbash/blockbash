@@ -129,7 +129,7 @@ class Challenge {
         isErrorCondition: false,
         name: SpinnerNames.CHALLENGE_INIT,
         primarySpinnerText:
-          "ChallengeParser verification failed because the initialization process created an error (below).  Please fix the error to procede.",
+          "ChallengeParser verification failed because the initialization process created an error (below).  Please fix the error to proceed.",
         secondarySpinnerText: shellOutput.stderr,
       })
       this.shell.stopProcess()

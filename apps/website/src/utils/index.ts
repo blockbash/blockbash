@@ -25,7 +25,7 @@ import Fuse from "fuse.js"
 import lowdash from "lodash"
 import { Logger as LoggerLib } from "tslog"
 
-const createLogger: CreateLogger = () =>
+const createLogger: CreateLogger = (): Logger =>
   new Logger({
     injectedDependencies: {LoggerLib},
   })

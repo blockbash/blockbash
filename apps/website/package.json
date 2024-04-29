@@ -18,10 +18,7 @@
     }
   },
   "dependencies": {
-    "rehype-expressive-code": "^0.35.3",
-    "remark-code-snippets": "^1.1.0",
     "@blockbash/common": "workspace:*",
-    "raw-loader": "^4.0.2",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.1",
     "@docusaurus/core": "3.0.0",
@@ -37,19 +34,24 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rehype-expressive-code": "^0.35.3",
+    "remark-code-snippets": "^1.1.0",
     "swc-loader": "0.2.3",
-    "tslog": "4.9.1"
+    "tslog": "4.9.1",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "@blockbash/eslint-config-ts": "workspace:*",
     "@docusaurus/module-type-aliases": "3.0.0",
     "@docusaurus/types": "3.0.0",
     "@types/lodash": "4.17.0",
+    "@types/mdast": "^4.0.3",
     "@types/react": "18.2.0",
     "stylelint": "15.10.3",
     "stylelint-config-rational-order": "0.1.2",
     "stylelint-config-standard": "34.0.0",
-    "typescript-plugin-css-modules": "5.0.1"
+    "typescript-plugin-css-modules": "5.0.1",
+    "unified": "^11.0.4"
   },
   "devDependenciesComments": {
     "meta": [

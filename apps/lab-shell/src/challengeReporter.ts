@@ -19,6 +19,7 @@ export function createChallengeReporter({
     },
   })
 }
+
 /**
  * Renders challenge results (to the user) via the CLI.
  */
@@ -33,7 +34,8 @@ class ChallengeReporter {
   }: {
     failedChallenges: challengeParserTypes.ChallengeResults
     injectedDependencies: ChallengeReporterDependencies
-  }) {
+  })
+  {
     this.failedChallenges = failedChallenges
     this.chalkLib = injectedDependencies.chalk
   }
@@ -47,10 +49,12 @@ class ChallengeReporter {
           failedChallenge.title
         }`,
       )
-      stringifiedChallenges.push(`  Context:`)
-      failedChallenge.contexts.forEach((context) => {
-        stringifiedChallenges.push(`    ${context}`)
-      })
+      if (failedChallenge?.contexts?.length) {
+        stringifiedChallenges.push(`  Context:`)
+        failedChallenge.contexts.forEach((context) => {
+          stringifiedChallenges.push(`    ${context}`)
+        })
+      }
     })
     return stringifiedChallenges.join("\n")
   }

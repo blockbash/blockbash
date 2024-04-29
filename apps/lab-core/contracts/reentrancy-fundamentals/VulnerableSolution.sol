@@ -2,8 +2,8 @@
 
 pragma solidity 0.8.19;
 
-import "../shared/VulnerableBase.sol";
-import "../shared/EventsBase.sol";
+import "./shared/VulnerableBase.sol";
+import "./shared/EventsBase.sol";
 
 contract VulnerableSolution is VulnerableBase, EventsBase {
   constructor() payable VulnerableBase() {}

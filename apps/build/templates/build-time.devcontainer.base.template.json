@@ -59,7 +59,7 @@
           ".solhint/": true,
           ".vscode/": true,
           "README.md": true,
-          "solutions/": true
+          "*Solution.sol": true
         },
         "solidity.compileUsingLocalVersion": "\($container_lab_core_compiler_file_path)",
         "solidity.defaultCompiler": "localFile",

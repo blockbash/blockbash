@@ -23,16 +23,16 @@ class QueryString {
 
   private static deleteParams({keys}: {
     keys: QueryStringKey[]
-  })
+  }): URLSearchParams
   {
     const urlParams = QueryString.getRawParams()
-    keys.forEach((key) => {
+    keys.forEach((key): void => {
       urlParams.delete(key)
     })
     return urlParams
   }
 
-  private static getParam(key: QueryStringKey) {
+  private static getParam(key: QueryStringKey): string | null {
     const param = QueryString.getRawParams().get(key)
     if (param) {
       return param.toLowerCase()
@@ -40,24 +40,24 @@ class QueryString {
     return param
   }
 
-  private static getParams(key: QueryStringKey) {
+  private static getParams(key: QueryStringKey): string[] {
     const param = QueryString.getRawParams().getAll(key)
-    return param.map((value) => value.toLowerCase())
+    return param.map((value): string => value.toLowerCase())
   }
 
-  private static getRawParams() {
+  private static getRawParams(): URLSearchParams {
     if (typeof window !== "undefined") {
       return new URLSearchParams(window.location.search)
     }
     return new URLSearchParams()
   }
 
-  getActiveFilters() {
+  getActiveFilters(): any[] {
     return [
       this.getTutorialSearchInput(),
       ...this.getTutorialTypeGUIDs(),
       ...this.getTutorialCategoryGUIDs(),
-    ].filter((value) => value)
+    ].filter((value): any => value)
   }
 
   getTutorialCategoryGUIDs(): tutorialConfigTypes.TutorialCategoryGUIDs {
@@ -106,7 +106,7 @@ class QueryString {
   replaceParam({key, value}: {
     key: QueryStringKey;
     value: string
-  })
+  }): URLSearchParams
   {
     const urlParams = QueryString.deleteParams({keys: [key]})
     urlParams.set(key, value)
@@ -119,18 +119,18 @@ class QueryString {
   }: {
     key: QueryStringFilterGroupKey;
     value: tutorialConfigTypes.TutorialSelectableFilterGUIDs;
-  })
+  }): URLSearchParams
   {
     const urlParams = QueryString.deleteParams({keys: [key]})
-    value.forEach((guid) => {
+    value.forEach((guid): void => {
       urlParams.append(key, guid)
     })
     return urlParams
   }
 
-  resetFilters() {
+  resetFilters(): URLSearchParams {
     const filters = Object.values(QueryStringKey).filter(
-      (value) => value !== QueryStringKey.tutorialFilterMode,
+      (value): boolean => value !== QueryStringKey.tutorialFilterMode,
     )
     return QueryString.deleteParams({keys: filters})
   }

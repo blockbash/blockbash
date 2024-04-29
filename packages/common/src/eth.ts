@@ -17,7 +17,7 @@ export class Eth {
     this.ethLib = injectedDependencies.ethLib
   }
 
-  ethToWei({ eth }: { eth: number }) {
+  ethToWei({ eth }: { eth: number }): bigint {
     const wei = this.ethLib.parseEther(eth.toString())
     this.logger.debug({
       functionName: this.ethToWei.name,

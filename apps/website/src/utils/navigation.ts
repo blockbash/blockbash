@@ -45,7 +45,7 @@ class Navigation {
     navigationState,
   }: {
     navigationState: navigationTypes.NavigationPositionState;
-  })
+  }): void
   {
     const {focusedElementId, scrollTopPosition} = navigationState ?? {
       focusedElementId: undefined,
@@ -70,7 +70,7 @@ class Navigation {
     history: History;
     location: Location;
     searchParams: URLSearchParams;
-  })
+  }): void
   {
     // Override parts of Location object with updated .search/.state
     const newLocation = {

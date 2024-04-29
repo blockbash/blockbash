@@ -6,7 +6,7 @@ import {
 } from "@blockbash/common-be";
 import { type Attacker } from "@typechain";
 import hre from "hardhat";
-import { challengeEnv, reentrancyFundamentals } from "lib/challenge";
+import { challengeEnv, errorTest, ethTest, testConst } from "lib/challenge";
 import "mocha";
 
 const challengeGroupName =
@@ -14,11 +14,11 @@ const challengeGroupName =
 
 // The user will update ContractNames.Attack
 // ContractNames.Attacker will try to exploit ContractNames.Vulnerable
-describe(challengeGroupName, function () {
+describe(challengeGroupName, function (): void {
   let blockchainDeploy: blockchainTypes.BlockchainDeploy;
   let attackerContract: Attacker;
 
-  beforeEach(async function () {
+  beforeEach(async function (): Promise<void> {
     blockchainDeploy = createBlockchainDeploy({ hre });
     await blockchainDeploy.deployContractsByTags({
       tags: [
@@ -38,10 +38,18 @@ describe(challengeGroupName, function () {
     challengeGroupName,
     fn() {
       it(
-        reentrancyFundamentals.SharedDescriptions
-          .useAttackToSuccessfullyDrainFunds,
-        async function () {
-          await reentrancyFundamentals.useAttackToDrainAllFunds({
+        testConst.AttackDescriptions.useAttackWithoutRevert,
+        async function (): Promise<void> {
+          await errorTest.useAttackWithoutRevert({
+            attacker: attackerContract,
+            shouldWork: true,
+          });
+        },
+      );
+      it(
+        testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+        async function (): Promise<void> {
+          await ethTest.useAttackToDrainAllFunds({
             attacker: attackerContract,
             attackerContractName: tutorialConfigConst.ContractName.Attacker,
             challengeParser,
@@ -54,8 +62,7 @@ describe(challengeGroupName, function () {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      reentrancyFundamentals.SharedDescriptions
-        .useAttackToSuccessfullyDrainFunds,
+      testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
   });
 
   // eslint-disable-next-line mocha/no-setup-in-describe
@@ -63,10 +70,18 @@ describe(challengeGroupName, function () {
     challengeGroupName,
     fn() {
       it(
-        reentrancyFundamentals.SharedDescriptions
-          .useAttackToUnsuccessfullyDrainFunds,
-        async function () {
-          await reentrancyFundamentals.useAttackToDrainAllFunds({
+        testConst.AttackDescriptions.useAttackWithRevert,
+        async function (): Promise<void> {
+          await errorTest.useAttackWithoutRevert({
+            attacker: attackerContract,
+            shouldWork: false,
+          });
+        },
+      );
+      it(
+        testConst.AttackDescriptions.useAttackToUnsuccessfullyDrainFunds,
+        async function (): Promise<void> {
+          await ethTest.useAttackToDrainAllFunds({
             attacker: attackerContract,
             attackerContractName: tutorialConfigConst.ContractName.Attacker,
             challengeParser,
@@ -79,7 +94,6 @@ describe(challengeGroupName, function () {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      reentrancyFundamentals.SharedDescriptions
-        .useAttackToSuccessfullyDrainFunds,
+      testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
   });
 });

@@ -8,12 +8,12 @@ interface LabStepsProps {
   steps: ReactNode[];
 }
 
-export function LabSteps({steps}: LabStepsProps) {
+export function LabSteps({steps}: LabStepsProps): JSX.Element {
   return (
     <>
       <Heading fontWeight="semibold" size="lg">Steps</Heading>
       <OrderedList>
-        {steps.map(steps =>
+        {steps.map((steps): JSX.Element =>
           <ListItem>
             {steps}
           </ListItem>

@@ -58,8 +58,8 @@ class Data {
     return {fuzzyRanking, isFuzzyMatch}
   }
 
-  toLowerCase<T extends string>(data: T[]) {
-    return data.map((value) => value.toLowerCase())
+  toLowerCase<T extends string>(data: T[]): string[] {
+    return data.map((value): string => value.toLowerCase())
   }
 
   toggleListItem<T>(list: T[], item: T): T[] {

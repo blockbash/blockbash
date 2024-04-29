@@ -31,7 +31,7 @@ class ChallengeEnv {
     challengeGroupName,
     env,
     testSummary,
-  }: GetDescribeOrSkip) {
+  }: GetDescribeOrSkip): Mocha.PendingSuiteFunction | Mocha.SuiteFunction {
     const { currentLabExecEnv } = this.env
     const loggerArgs = {
       functionName: this.getDescribeOrSkip.name,
@@ -68,7 +68,7 @@ class ChallengeEnv {
     challengeGroupName,
     fn,
     testSummary,
-  }: EnvDescribe) {
+  }: EnvDescribe): Mocha.Suite | void {
     const env = envConst.LabExecEnvGUID.automation
     const envDescribe = this.getDescribeOrSkip({
       challengeGroupName,
@@ -83,7 +83,7 @@ class ChallengeEnv {
     challengeGroupName,
     fn,
     testSummary,
-  }: EnvDescribe) {
+  }: EnvDescribe): Mocha.Suite | void {
     const env = envConst.LabExecEnvGUID.user
     const envDescribe = this.getDescribeOrSkip({
       challengeGroupName,

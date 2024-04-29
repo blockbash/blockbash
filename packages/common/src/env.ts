@@ -25,14 +25,14 @@ export class Env {
     isInternalTestSuite,
   }: {
     isInternalTestSuite: boolean | undefined;
-  }) {
+  }): string {
     const execEnvGUID = isInternalTestSuite
       ? LabExecEnvGUID.automation
       : LabExecEnvGUID.user;
     return `${envConst.EnvVarName.labExecEnv}=${execEnvGUID}`;
   }
 
-  get currentLabExecEnv() {
+  get currentLabExecEnv(): LabExecEnvGUID | undefined {
     return this.envVars[EnvVarName.labExecEnv] as LabExecEnvGUID | undefined;
   }
 
@@ -40,7 +40,7 @@ export class Env {
     return this.envVars[EnvVarName.nodeEnv] === "development";
   }
 
-  get isValidLabExecEnv() {
+  get isValidLabExecEnv(): boolean {
     const envValue = this.currentLabExecEnv;
     if (typeof envValue === "undefined") {
       return false;

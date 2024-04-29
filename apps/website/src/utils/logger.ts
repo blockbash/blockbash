@@ -52,7 +52,7 @@ class Logger implements loggerTypes.ILoggerBase {
     functionName,
     message,
     metadata,
-  }: loggerTypes.ILoggerExtendableParams)
+  }: loggerTypes.ILoggerExtendableParams): this
   {
     this.logger.debug(...this.createLog({functionName, message, metadata}))
     return this
@@ -63,7 +63,7 @@ class Logger implements loggerTypes.ILoggerBase {
     functionName,
     message,
     metadata,
-  }: loggerTypes.ILoggerExtendableParams)
+  }: loggerTypes.ILoggerExtendableParams): this
   {
     this.logger.error(...this.createLog({functionName, message, metadata}))
     return this
@@ -74,7 +74,7 @@ class Logger implements loggerTypes.ILoggerBase {
     functionName,
     message,
     metadata,
-  }: loggerTypes.ILoggerExtendableParams)
+  }: loggerTypes.ILoggerExtendableParams): this
   {
     this.logger.info(...this.createLog({functionName, message, metadata}))
     return this
@@ -84,7 +84,7 @@ class Logger implements loggerTypes.ILoggerBase {
   logInnerFinishedExecution({
     functionName,
     metadata,
-  }: loggerTypes.ILoggerBaseParams)
+  }: loggerTypes.ILoggerBaseParams): this
   {
     this.logger.debug(
       ...this.createLog({
@@ -101,7 +101,7 @@ class Logger implements loggerTypes.ILoggerBase {
   logInnerStartExecution({
     functionName,
     metadata,
-  }: loggerTypes.ILoggerBaseParams)
+  }: loggerTypes.ILoggerBaseParams): this
   {
     this.logger.debug(
       ...this.createLog({
@@ -117,7 +117,7 @@ class Logger implements loggerTypes.ILoggerBase {
   logOuterFinishedExecution({
     functionName,
     metadata,
-  }: loggerTypes.ILoggerBaseParams)
+  }: loggerTypes.ILoggerBaseParams): this
   {
     this.logger.debug(
       ...this.createLog({
@@ -133,7 +133,7 @@ class Logger implements loggerTypes.ILoggerBase {
   logOuterStartExecution({
     functionName,
     metadata,
-  }: loggerTypes.ILoggerBaseParams)
+  }: loggerTypes.ILoggerBaseParams): this
   {
     this.logger.debug(
       ...this.createLog({
@@ -152,7 +152,7 @@ class Logger implements loggerTypes.ILoggerBase {
   }: {
     className?: string
     logicPath: string
-  })
+  }): this
   {
     let loggerName = ""
     if (typeof className === "undefined") {
@@ -172,7 +172,7 @@ class Logger implements loggerTypes.ILoggerBase {
     functionName,
     message,
     metadata,
-  }: loggerTypes.ILoggerExtendableParams)
+  }: loggerTypes.ILoggerExtendableParams): this
   {
     this.logger.warn(...this.createLog({functionName, message, metadata}))
     return this
