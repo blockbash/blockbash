@@ -1,5 +1,11 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import {OrderedList} from "@src/components/OrderedList"
+import {Lab} from "@src/components/Lab"
+import {processAdmonitionProps} from "@docusaurus/theme-common"
+import {
+  tutorialConfigConst
+} from "@blockbash/common"
 
 # Introduction
 + It's time for some hands-on experience!
@@ -19,7 +25,12 @@ import TabItem from '@theme/TabItem';
       + Prerequisites
         + Sign up for a [Github Account](https://github.com/signup)
         + **OPTIONAL**: Github will charge for Codespace usage once the free tier is exhausted. To ensure that you will never be charged, navigate to [this link](https://github.com/settings/billing/spending_limit) and ensure the `Codespace` spending limit is set to `0`.
-      {props.GithubCodespaceLabSteps}
+:::warning
+
+You must complete the Prerequisites (mentioned above) before starting the lab.
+
+:::
+      <OrderedList steps={[<Lab tutorialGUID={props.tutorialGUID} executionEnvironmentName={tutorialConfigConst.ExecutionEnvironmentName.githubCodespace}/>, props.additionalLabInstructions]}/>
   </TabItem>
   <TabItem value="visual-studio-code" label="Visual Studio Code">
       + PROS
@@ -33,12 +44,7 @@ import TabItem from '@theme/TabItem';
         + Install the [Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
         + Install [Docker](https://www.docker.com/get-started/)
           + Other container runtimes are not supported at this time.
-      {props.VisualStudioCodeLabSteps}
+    <OrderedList steps={[<Lab tutorialGUID={props.tutorialGUID} executionEnvironmentName={tutorialConfigConst.ExecutionEnvironmentName.visualStudioCode}/>, props.additionalLabInstructions]}/>
   </TabItem>
 </Tabs>
 
-:::warning
-
-You must complete the Prerequisites (mentioned above) before starting the lab.
-
-:::
