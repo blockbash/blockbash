@@ -4,7 +4,7 @@ import {
   OrderedList,
   Span,
   Tabs,
-  UnorderedList
+  UnorderedList, Warning
 } from "@src/components"
 import React, { ReactNode } from "react"
 import {
@@ -52,6 +52,9 @@ export function LabPrompt(props: LabPromptProps) {
           to <Code>0</Code>.
         </Span>
       ]} heading="Prerequisites"/>
+
+      {/*CURRENTLY AT: WARNING STYLING*/}
+      <Warning text={"lala"}/>
 
       <OrderedList steps={[
         <Lab tutorialGUID={props.tutorialGUID}

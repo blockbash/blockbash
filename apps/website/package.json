@@ -18,6 +18,8 @@
     }
   },
   "dependencies": {
+    "rehype-expressive-code": "^0.35.3",
+    "remark-code-snippets": "^1.1.0",
     "@blockbash/common": "workspace:*",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.1",
@@ -38,7 +40,8 @@
     "remark-code-snippets": "^1.1.0",
     "swc-loader": "0.2.3",
     "tslog": "4.9.1",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "react-icons": "^5.2.0"
   },
   "devDependencies": {
     "@blockbash/eslint-config-ts": "workspace:*",
