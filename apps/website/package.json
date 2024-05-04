@@ -18,6 +18,8 @@
     }
   },
   "dependencies": {
+    "rehype-expressive-code": "^0.35.3",
+    "remark-code-snippets": "^1.1.0",
     "@blockbash/common": "workspace:*",
     "raw-loader": "^4.0.2",
     "@chakra-ui/icons": "2.1.1",

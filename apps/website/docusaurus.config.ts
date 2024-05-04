@@ -1,8 +1,23 @@
 import path from "path"
 import type { Config } from "@docusaurus/types"
 import type * as Preset from "@docusaurus/preset-classic"
+import rehypeExpressiveCode, {
+  type RehypeExpressiveCodeOptions
+} from "rehype-expressive-code"
+import remarkCodeSnippets from "remark-code-snippets"
+
+// rehypeExpressiveCodeOptions: For whatever reason, I can't use one of the
+// default (bundled) themes.  If you ever need to use another theme, you must
+// manually install it.
+const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
+  frames: {
+    // showCopyToClipboardButton: As of 5/2024 this doesn't work
+    showCopyToClipboardButton: false,
+  }
+}
 
 // TODO: Add in missing properties within config
+
 const config: Config = {
   baseUrl: "/",
   i18n: {
@@ -25,7 +40,7 @@ const config: Config = {
             resolve: {
               // Keep in line with tsconfig.json, jsconfig.json
               // @site is already added by docusaurus
-              // TODO: Integrate this with file.ts
+              // TODO: Integrate all file paths (in this file) with file.ts
               alias: {
                 "@components": path.resolve(__dirname, "src/components"),
                 "@features": path.resolve(__dirname, "src/features"),
@@ -59,6 +74,12 @@ const config: Config = {
       ({
         blog: false,
         docs: {
+          beforeDefaultRehypePlugins: [[rehypeExpressiveCode,
+            rehypeExpressiveCodeOptions]],
+          beforeDefaultRemarkPlugins: [[remarkCodeSnippets, {
+            baseDir: path.resolve(__dirname,
+              "../lab-core/contracts")
+          }]],
           editUrl:
             "https://github.com/blockbash/blockbash/tree/main/apps/website/",
           path: "tutorials",
@@ -103,9 +124,6 @@ const config: Config = {
         ],
         style: "dark",
       },
-      prism: {
-        additionalLanguages: ["solidity"]
-      },
       navbar: {
         hideOnScroll: true,
         items: [
@@ -124,15 +142,6 @@ const config: Config = {
   title: "Blockbash",
   // favicon: 'img/favicon.ico',
   url: "https://blockbash.xyz",
-  // webpack: {
-  // TODO: swc-loader replaces babel to decrease build times.
-  // https://github.com/rancher/rancher-docs/pull/667
-  // docusaurus website:
-  // https://github.com/facebook/docusaurus/blob/e17784effa2c370d81c7806c22ad19c6dce4a1cc/website/docusaurus.config.js#L140C15-L140C15
-  // jsLoader: (isServer) => ({ loader: require.resolve("swc-loader"), options:
-  // { jsc: { parser: { syntax: "typescript", tsx: true, }, target: "es2017",
-  // transform: { react: { runtime: "automatic", }, }, }, module: { type:
-  // isServer ? "commonjs" : "es6", }, }, }), },
 }
 
 module.exports = config
