@@ -12,7 +12,6 @@ import {Text, Code} from "@chakra-ui/react"
 import {tutorialConfigConst} from "@blockbash/common";
 import {Lab} from "@components";
 // noinspection NpmUsedModulesInstalled
-import Preamble from "@partials/lab/_preamble.mdx";
 import {LabPrompt} from "@features";
 
 <LabPrompt
@@ -23,14 +22,3 @@ import {LabPrompt} from "@features";
     <>In the terminal, execute <Code>cv</Code> to check your solution</>
   ]}
 />
-
-
-<Preamble
-  goal={<Text as="span">In this lab, you'll leverage your Reentrancy knowledge to steal funds from a <Code>VulnerableContract</Code></Text>}
-  tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}
-  additionalLabInstructions={[
-    <>Add your exploit code to the <Code>attack()</Code> and <Code>receive()</Code> methods within <Code>AttackerContract</Code></>,
-    <>In the terminal, execute <Code>cv</Code> to check your solution</>
-  ]}
-/>
-

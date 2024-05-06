@@ -1,37 +1,50 @@
 import {
-  Tab, TabList, TabPanel, TabPanels, Tabs as _Tabs,
-} from "@chakra-ui/react"
-import React, { ReactNode } from "react"
+  Tabs as _Tabs,
+  Tab,
+  TabIndicator,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from "@chakra-ui/react";
+import { Styles } from "@src/css";
+import React, { type ReactNode } from "react";
 
 interface Tab {
-  title: string
-  content: ReactNode
+  content: ReactNode;
+  title: string;
 }
 
 interface TabsProps {
-  tabs: Tab[]
+  tabs: Tab[];
 }
 
 export function Tabs(props: TabsProps) {
   return (
-    <_Tabs colorScheme="red" variant="enclosed-colored">
+    <_Tabs colorScheme="red" variant={"soft-rounded"}>
       <TabList>
-        {props.tabs.map(tab =>
-          <Tab>
+        {props.tabs.map((tab) => (
+          <Tab
+            backgroundColor={"unset"}
+            borderLeftStyle={"none"}
+            borderRightStyle={"none"}
+            borderStyle={"none"}
+          >
             {tab.title}
           </Tab>
-        )}
+        ))}
       </TabList>
 
-      {/*TODO: Update to be inline with Styles.borderColor**/}
-      <TabPanels border="1px"
-                 borderColor="rgb(226, 232, 240)">
-        {props.tabs.map(tab =>
-          <TabPanel>
-            {tab.content}
-          </TabPanel>
-        )}
+      {/* TODO: Update to be inline with Styles.borderColor**/}
+      <TabPanels
+        mt={.5}
+        backgroundColor={"gray.50"}
+        boxShadow={Styles.boxShadowMed}
+        rounded={"2xl"}
+      >
+        {props.tabs.map((tab) => (
+          <TabPanel>{tab.content}</TabPanel>
+        ))}
       </TabPanels>
     </_Tabs>
-  )
+  );
 }

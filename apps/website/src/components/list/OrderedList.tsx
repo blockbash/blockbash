@@ -1,25 +1,28 @@
 import {
-  Heading, ListItem,
   OrderedList as _OrderedList,
-} from "@chakra-ui/react"
-import React, { ReactNode } from "react"
+  Heading,
+  ListItem,
+} from "@chakra-ui/react";
+import React, { type ReactNode } from "react";
 
 export interface LabStepsProps {
+  heading?: string;
   steps: ReactNode[];
-  heading: string
 }
 
-export function OrderedList({steps, heading}: LabStepsProps) {
+export function OrderedList({ heading, steps }: LabStepsProps) {
   return (
     <>
-      <Heading fontWeight="semibold" size="lg">{heading}</Heading>
+      {heading != null && (
+        <Heading fontWeight="semibold" size="lg">
+          {heading}
+        </Heading>
+      )}
       <_OrderedList>
-        {steps.map(steps =>
-          <ListItem>
-            {steps}
-          </ListItem>
-        )}
+        {steps.map((steps) => (
+          <ListItem>{steps}</ListItem>
+        ))}
       </_OrderedList>
     </>
-  )
+  );
 }
