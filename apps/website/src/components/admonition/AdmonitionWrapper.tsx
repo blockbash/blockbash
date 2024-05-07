@@ -3,21 +3,21 @@ import {
   Box,
   Icon as ChakraIcon,
   Flex,
+  Text,
   chakra,
 } from "@chakra-ui/react";
-import { Span } from "@components";
 import { Styles } from "@src/css";
 import React, { type ReactNode } from "react";
 import { type IconType } from "react-icons";
 
-export interface AdmonitionProps {
+export interface AdmonitionWrapperProps {
   admonitionLabel: string;
   content: ReactNode;
   icon: IconType;
-  iconBackgroundColor: BackgroundProps["bg"];
+  iconBackgroundColor: NonNullable<BackgroundProps["bg"]>;
 }
 
-export function Admonition(props: AdmonitionProps): JSX.Element {
+export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
   const Content = props.content;
   const Icon = props.icon;
   return (
@@ -27,11 +27,9 @@ export function Admonition(props: AdmonitionProps): JSX.Element {
         border="1px"
         borderColor={Styles.borderColorMin}
         maxW="2xl"
-        mx="auto"
         overflow="hidden"
         rounded="lg"
         shadow="lg"
-        w="full"
       >
         <Flex
           alignItems="center"
@@ -39,23 +37,20 @@ export function Admonition(props: AdmonitionProps): JSX.Element {
           justifyContent="center"
           w={7}
         >
-          <ChakraIcon
-            as={Icon}
-            border={"10px"}
-            borderColor={"black"}
-            boxSize={6}
-            color="white"
-          />
+          <ChakraIcon as={Icon} boxSize={6} color="white" />
         </Flex>
 
         <Box py={2}>
           <Box mx={3}>
-            <chakra.span fontSize={"xl"} fontWeight="bold">
-              <Span>{props.admonitionLabel}</Span>
+            {/* Currently at: */}
+            {/* remove Span and replace with chakra.span */}
+            {/* keep going through changelist */}
+            <chakra.span fontSize={["xl"]} fontWeight="bold">
+              {props.admonitionLabel}
             </chakra.span>
-            <chakra.p color="gray.600" fontSize="md" mt={1}>
+            <Text color="gray.600" fontSize="md" mt={1}>
               {Content}
-            </chakra.p>
+            </Text>
           </Box>
         </Box>
       </Flex>

@@ -1,4 +1,4 @@
-import { Admonition } from "@src/components/admonition/Admonition"
+import { AdmonitionWrapper } from "@src/components/admonition/AdmonitionWrapper"
 import React, { ReactNode } from "react"
 import { IoMdAlert } from "react-icons/io"
 
@@ -8,8 +8,8 @@ export interface WarningProps {
 
 export function Warning(props: WarningProps) {
   return (
-    <Admonition content={props.content} iconBackgroundColor={"yellow.400"}
-                admonitionLabel={"Warning"}
-                icon={IoMdAlert}/>
+    <AdmonitionWrapper content={props.content} iconBackgroundColor={"yellow.400"}
+                       admonitionLabel={"Warning"}
+                       icon={IoMdAlert}/>
   )
 }

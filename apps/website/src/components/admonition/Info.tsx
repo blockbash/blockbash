@@ -1,4 +1,4 @@
-import { Admonition } from "@src/components/admonition/Admonition";
+import { AdmonitionWrapper } from "@src/components/admonition/AdmonitionWrapper";
 import React, { type ReactNode } from "react";
 import { IoMdAlert } from "react-icons/io";
 
@@ -8,7 +8,7 @@ export interface InfoProps {
 
 export function Info(props: InfoProps): JSX.Element {
   return (
-    <Admonition
+    <AdmonitionWrapper
       admonitionLabel={"Info"}
       content={props.content}
       icon={IoMdAlert}
