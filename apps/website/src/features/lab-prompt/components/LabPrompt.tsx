@@ -1,14 +1,13 @@
 import { tutorialConfigConst } from "@blockbash/common";
-import { Code, Heading } from "@chakra-ui/react";
+import { Code, Heading, chakra } from "@chakra-ui/react";
 import {
   Bold,
   Error,
   Info,
   Lab,
   Link,
+  LinkWrapper,
   OrderedList,
-  Span,
-  Success,
   Tabs,
   UnorderedList,
   Warning,
@@ -27,70 +26,70 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
       <UnorderedList
         heading="Pros"
         steps={[
-          <Span>
+          <chakra.span>
             If you're already a Visual Studio Code user, your existing
             extensions should work automatically (e.g., Vim).
-          </Span>,
-          <Span>
+          </chakra.span>,
+          <chakra.span>
             As the lab isn't being executed within the browser, you'll have a
             more "native" experience.
-          </Span>,
-          <Span>
+          </chakra.span>,
+          <chakra.span>
             Depending on your computer, it might be faster than the Codespace
             environment.
-          </Span>,
+          </chakra.span>,
         ]}
       />
 
       <UnorderedList
         heading="Cons"
         steps={[
-          <Span>Requires dependencies to be installed (see below).</Span>,
+          <chakra.span>Requires dependencies to be installed (see below).</chakra.span>,
         ]}
       />
 
       <UnorderedList
         heading="Prerequisites"
         steps={[
-          <Span>
+          <chakra.span>
             Install{" "}
-            <Link
+            <LinkWrapper
               href="https://code.visualstudio.com/docs/setup/setup-overview"
               shouldOpenTab={true}
             >
               Visual Studio Code
-            </Link>
-          </Span>,
-          <Span>
+            </LinkWrapper>
+          </chakra.span>,
+          <chakra.span>
             Install the{" "}
-            <Link
+            <LinkWrapper
               href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers"
               shouldOpenTab={true}
             >
               Dev Containers Extension
-            </Link>
-          </Span>,
-          <Span>
+            </LinkWrapper>
+          </chakra.span>,
+          <chakra.span>
             Install{" "}
-            <Link
+            <LinkWrapper
               href="https://www.docker.com/get-started/"
               shouldOpenTab={true}
             >
               Docker
-            </Link>
-            <Span>
+            </LinkWrapper>
+            <chakra.span>
               (Other container runtimes are not supported at this time.)
-            </Span>
-          </Span>,
+            </chakra.span>
+          </chakra.span>,
         ]}
       />
 
       <Warning
         content={
-          <Span>
+          <chakra.span>
             You must complete the Prerequisites (mentioned above) before
             starting the lab
-          </Span>
+          </chakra.span>
         }
       />
 
@@ -113,33 +112,33 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
       <UnorderedList
         heading="Pros"
         steps={[
-          <Span>The simplest option as it runs the lab in your browser.</Span>,
-          <Span>No dependencies to install.</Span>,
+          <chakra.span>The simplest option as it runs the lab in your browser.</chakra.span>,
+          <chakra.span>No dependencies to install.</chakra.span>,
         ]}
       />
 
       <UnorderedList
         heading="Cons"
         steps={[
-          <Span>
+          <chakra.span>
             Executes on Github's servers which can incur a cost after the free
             tier is exhausted. Luckily, it's easy to set a spending limit of{" "}
             <Code>0</Code> so you won't be charged once the free tier is
             exhausted (instructions below).
-          </Span>,
+          </chakra.span>,
         ]}
       />
 
       <UnorderedList
         heading="Prerequisites"
         steps={[
-          <Span>
+          <chakra.span>
             Sign up for a{" "}
             <Link href="https://github.com/signup" shouldOpenTab={true}>
-              Github Account
+              <chakra.span>Github Account</chakra.span>
             </Link>
-          </Span>,
-          <Span>
+          </chakra.span>,
+          <chakra.span>
             <Bold>OPTIONAL</Bold>: Github will charge for Codespace usage once
             the free tier is exhausted. To ensure that you will never be
             charged, navigate to{" "}
@@ -151,16 +150,16 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
             </Link>{" "}
             and ensure the <Code>Codespace</Code> spending limit is set to{" "}
             <Code>0</Code>.
-          </Span>,
+          </chakra.span>,
         ]}
       />
 
       <Warning
         content={
-          <Span>
+          <chakra.span>
             You must complete the Prerequisites (mentioned above) before
             starting the lab
-          </Span>
+          </chakra.span>
         }
       />
 
@@ -183,16 +182,16 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
       <UnorderedList
         heading="Introduction"
         steps={[
-          <Span>It's time for some hands-on experience! </Span>,
+          <chakra.span>It's time for some hands-on experience! </chakra.span>,
           props.Goal,
-          <Span>
+          <chakra.span>
             There are two ways to launch the lab environment: i) Github
             Codespaces ii) Visual Studio Code."
-          </Span>,
-          <Span>
+          </chakra.span>,
+          <chakra.span>
             While each option has its pros/cons, Github Codespaces option is the
             quickest way to get "up and running".
-          </Span>,
+          </chakra.span>,
         ]}
       />
 

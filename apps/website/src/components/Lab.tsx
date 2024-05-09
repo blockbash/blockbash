@@ -5,9 +5,9 @@ import {
 import {
   Button,
   Stack,
-  Text,
+  chakra
 } from "@chakra-ui/react"
-import { Link } from "@components"
+import { LinkWrapper } from "@components"
 import { useDependencies } from "@hooks"
 import React from "react"
 
@@ -32,8 +32,8 @@ export function Lab(props: LabProps) {
   return (
     <>
       <Stack align="center" direction="row" justify="flex-start">
-        <Text as="span">Click</Text>
-        <Link href={url} shouldOpenTab>
+        <chakra.span>Click</chakra.span>
+        <LinkWrapper href={url} shouldOpenTab>
           <Button
             border="none"
             colorScheme="red"
@@ -42,7 +42,7 @@ export function Lab(props: LabProps) {
           >
             Initialize {props.executionEnvironmentName} Lab
           </Button>
-        </Link>
+        </LinkWrapper>
       </Stack>
     </>
   )

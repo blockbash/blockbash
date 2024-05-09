@@ -7,15 +7,12 @@ slug: "/tutorials/reentrancy-fundamentals-attack-lab"
 hide_title: true
 ---
 
-import {OrderedList} from "@src/components/list/OrderedList"
-import {Text, Code} from "@chakra-ui/react"
+import {chakra, Code} from "@chakra-ui/react"
 import {tutorialConfigConst} from "@blockbash/common";
-import {Lab} from "@components";
-// noinspection NpmUsedModulesInstalled
 import {LabPrompt} from "@features";
 
 <LabPrompt
-  Goal={<Text as="span">In this lab, you'll leverage your Reentrancy knowledge to steal funds from a <Code>VulnerableContract</Code></Text>}
+  Goal={<chakra.span>In this lab, you'll leverage your Reentrancy knowledge to steal funds from a <Code>VulnerableContract</Code></chakra.span>}
   tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}
   additionalNextSteps={[
     <>Add your exploit code to the <Code>attack()</Code> and <Code>receive()</Code> methods within <Code>AttackerContract</Code></>,

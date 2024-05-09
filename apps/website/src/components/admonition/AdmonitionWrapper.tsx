@@ -4,8 +4,8 @@ import {
   Icon as ChakraIcon,
   Flex,
   Text,
-  chakra,
-} from "@chakra-ui/react";
+  chakra, ColorProps,
+} from "@chakra-ui/react"
 import { Styles } from "@src/css";
 import React, { type ReactNode } from "react";
 import { type IconType } from "react-icons";
@@ -15,6 +15,7 @@ export interface AdmonitionWrapperProps {
   content: ReactNode;
   icon: IconType;
   iconBackgroundColor: NonNullable<BackgroundProps["bg"]>;
+  admonitionLabelColor: NonNullable<ColorProps["color"]>;
 }
 
 export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
@@ -42,13 +43,10 @@ export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
 
         <Box py={2}>
           <Box mx={3}>
-            {/* Currently at: */}
-            {/* remove Span and replace with chakra.span */}
-            {/* keep going through changelist */}
-            <chakra.span fontSize={["xl"]} fontWeight="bold">
+            <chakra.span color={props.admonitionLabelColor} fontSize={["xl"]} fontWeight="bold">
               {props.admonitionLabel}
             </chakra.span>
-            <Text color="gray.600" fontSize="md" mt={1}>
+            <Text my={0} color="gray.600" fontSize="md" mt={1}>
               {Content}
             </Text>
           </Box>

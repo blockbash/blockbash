@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  Center,
+  Center, Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,7 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 import React from "react";
 
 interface SVGModalProps {
@@ -21,7 +21,7 @@ interface SVGModalProps {
 export function SVGModal({ SVG, title }: SVGModalProps): JSX.Element {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
-    <Box marginTop={"10"}>
+    <Flex marginTop={"10"}>
       <SVG
         onClick={() => {
           onOpen();
@@ -29,6 +29,7 @@ export function SVGModal({ SVG, title }: SVGModalProps): JSX.Element {
       />
       <Modal
         isOpen={isOpen}
+        scrollBehavior={"inside"}
         motionPreset={"scale"}
         onClose={onClose}
         size="6xl"
@@ -38,13 +39,15 @@ export function SVGModal({ SVG, title }: SVGModalProps): JSX.Element {
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <SVG />
+            <Flex minWidth={"fit-content"}>
+              <SVG />
+            </Flex>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Flex>
   );
 }

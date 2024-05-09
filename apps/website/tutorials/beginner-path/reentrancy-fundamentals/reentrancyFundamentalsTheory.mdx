@@ -10,11 +10,10 @@ hide_title: true
 hide_table_of_contents: true
 ---
 
-import {Box, Flex} from "@chakra-ui/react"
-import {Info, Span, SVGModal, Tip, UnorderedList} from "@components"
+import {chakra} from "@chakra-ui/react"
+import {SVGModal, Tip, UnorderedList} from "@components"
 import SVG
   from "./diagrams/theory.svg"
-// noinspection NpmUsedModulesInstalled
 
 ## Prerequisites {#prerequisites}
 
@@ -26,7 +25,7 @@ import SVG
 - In this lesson, you'll learn the theory behind Reentrancy attacks. After you've learned the theory, you'll create your own `AttackerContract` and exploit this vulnerability within the lab environment!
 
 ## Code {#code}
-<Tip content={<Span>Don't worry if the code (below) doesn't make complete sense. You'll learn about it in more detail within the process diagram (seen later in this page).</Span>}></Tip>
+<Tip content={<chakra.span>Don't worry if the code (below) doesn't make complete sense. You'll learn about it in more detail within the process diagram (seen later in this page).</chakra.span>}></Tip>
 
 ```solidity title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol
 ```
@@ -36,10 +35,10 @@ import SVG
 <Tip content={
   <UnorderedList
     steps={[
-      <Span>
+      <chakra.span>
         Each number (in the diagram), corresponds to a number in the Explanation section
-      </Span>,
-      <Span>Click on the diagram to zoom in</Span>,
+      </chakra.span>,
+      <chakra.span>Click on the diagram to zoom in</chakra.span>,
     ]}></UnorderedList>
 }></Tip>
 

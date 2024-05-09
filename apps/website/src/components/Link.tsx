@@ -1,34 +1,43 @@
-import { LinkBox, LinkOverlay, type LinkOverlayProps } from "@chakra-ui/react"
-import DocusaurusLink from "@docusaurus/Link"
-import { useDependencies } from "@hooks"
-import React from "react"
+import {
+  Link as ChakraLink,
+  type LinkProps as ChakraLinkProps,
+} from "@chakra-ui/react";
+import DocusaurusLink from "@docusaurus/Link";
+import { useDependencies } from "@hooks";
+import React from "react";
 
-interface LinkProps extends LinkOverlayProps {
-  href: string
-  shouldOpenTab: boolean
+interface LinkProps extends ChakraLinkProps {
+  href: string;
+  shouldOpenTab: boolean;
 }
 
-export function Link(props: LinkProps) {
-  const { children, href, shouldOpenTab } = props
-  const deps = useDependencies()
-  const logger = deps.createLogger().setGlobalContext({ logicPath: __filename })
-  const onLinkOverlayClick = () => {
+/**
+ * Allows in-line components (e.g., text) to be linkable.
+ * If you need to link a full component, see LinkWrapper component.
+ */
+export function Link(props: LinkProps): JSX.Element {
+  const { children, href, shouldOpenTab } = props;
+  const deps = useDependencies();
+  const logger = deps
+    .createLogger()
+    .setGlobalContext({ logicPath: __filename });
+  const onLinkClick = (): void => {
     logger.logInnerStartExecution({
-      functionName: `${onLinkOverlayClick.name}`,
+      functionName: `${onLinkClick.name}`,
       metadata: { href, shouldOpenTab },
-    })
-  }
+    });
+  };
 
   return (
-    <LinkBox>
-      <LinkOverlay
-        as={DocusaurusLink}
-        href={href}
-        isExternal={shouldOpenTab}
-        onClick={onLinkOverlayClick}
-      >
-        {children}
-      </LinkOverlay>
-    </LinkBox>
-  )
+    <ChakraLink
+      as={DocusaurusLink}
+      // Color should match other docusaurus links
+      color={"var(--ifm-link-color)"}
+      href={href}
+      isExternal={shouldOpenTab}
+      onClick={onLinkClick}
+    >
+      {children}
+    </ChakraLink>
+  );
 }
