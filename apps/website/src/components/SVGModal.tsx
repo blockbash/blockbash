@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Center, Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,12 +20,14 @@ interface SVGModalProps {
 export function SVGModal({ SVG, title }: SVGModalProps): JSX.Element {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
-    <Flex marginTop={"10"}>
-      <SVG
-        onClick={() => {
-          onOpen();
-        }}
-      />
+    <Box maxWidth={'4xl'} maxH={'4xl'} marginTop={"5"}>
+        <SVG
+          width={'100%'}
+          height={'100%'}
+          onClick={() => {
+            onOpen();
+          }}
+        />
       <Modal
         isOpen={isOpen}
         scrollBehavior={"inside"}
@@ -39,15 +40,13 @@ export function SVGModal({ SVG, title }: SVGModalProps): JSX.Element {
           <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Flex minWidth={"fit-content"}>
               <SVG />
-            </Flex>
           </ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Flex>
+    </Box>
   );
 }
