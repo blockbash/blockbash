@@ -26,7 +26,7 @@ importers:
         version: 9.0.0(eslint@8.51.0)
       eslint-config-standard:
         specifier: 17.1.0
-        version: 17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
+        version: 17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
       eslint-mdx:
         specifier: 2.2.0
         version: 2.2.0(eslint@8.51.0)
@@ -255,9 +255,6 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
-      raw-loader:
-        specifier: ^4.0.2
-        version: 4.0.2(webpack@5.88.2(@swc/core@1.3.99))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -298,9 +295,6 @@ importers:
       '@types/react':
         specifier: 18.2.0
         version: 18.2.0
-      mdast:
-        specifier: ^3.0.0
-        version: 3.0.0
       stylelint:
         specifier: 15.10.3
         version: 15.10.3(typescript@5.4.5)
@@ -6898,10 +6892,6 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
-  mdast@3.0.0:
-    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
-    deprecated: '`mdast` was renamed to `remark`'
-
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
 
@@ -8319,12 +8309,6 @@ packages:
   raw-body@2.5.2:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
-
-  raw-loader@4.0.2:
-    resolution: {integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
 
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
@@ -16224,7 +16208,7 @@ snapshots:
       '@typescript-eslint/eslint-plugin': 6.7.3(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)(typescript@5.4.5)
       '@typescript-eslint/parser': 6.7.5(eslint@8.51.0)(typescript@5.4.5)
       eslint: 8.51.0
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0)
       eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)
       eslint-plugin-n: 16.1.0(eslint@8.51.0)
       eslint-plugin-promise: 6.1.1(eslint@8.51.0)
@@ -16232,7 +16216,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.28.1(eslint@8.51.0))(eslint-plugin-n@16.1.0(eslint@8.51.0))(eslint-plugin-promise@6.1.1(eslint@8.51.0))(eslint@8.51.0):
     dependencies:
       eslint: 8.51.0
       eslint-plugin-import: 2.28.1(@typescript-eslint/parser@6.7.5(eslint@8.51.0)(typescript@5.4.5))(eslint@8.51.0)
@@ -18941,8 +18925,6 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.3
 
-  mdast@3.0.0: {}
-
   mdn-data@2.0.14: {}
 
   mdn-data@2.0.30: {}
@@ -20262,13 +20244,13 @@ snapshots:
     dependencies:
       htmlparser2: 3.10.1
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss@8.4.31)
+      postcss-syntax: 0.36.2(postcss@8.4.38)
 
   postcss-jsx@0.36.4(postcss-syntax@0.36.2)(postcss@7.0.39):
     dependencies:
       '@babel/core': 7.23.0
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss@8.4.31)
+      postcss-syntax: 0.36.2(postcss@8.4.38)
     transitivePeerDependencies:
       - supports-color
 
@@ -20297,7 +20279,7 @@ snapshots:
   postcss-markdown@0.36.0(postcss-syntax@0.36.2)(postcss@7.0.39):
     dependencies:
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss@8.4.31)
+      postcss-syntax: 0.36.2(postcss@8.4.38)
       remark: 10.0.1
       unist-util-find-all-after: 1.0.5
 
@@ -20494,9 +20476,9 @@ snapshots:
       postcss-value-parser: 4.2.0
       svgo: 2.8.0
 
-  postcss-syntax@0.36.2(postcss@8.4.31):
+  postcss-syntax@0.36.2(postcss@8.4.38):
     dependencies:
-      postcss: 8.4.31
+      postcss: 8.4.38
 
   postcss-unique-selectors@5.1.1(postcss@8.4.31):
     dependencies:
@@ -20675,12 +20657,6 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
-
-  raw-loader@4.0.2(webpack@5.88.2(@swc/core@1.3.99)):
-    dependencies:
-      loader-utils: 2.0.4
-      schema-utils: 3.3.0
-      webpack: 5.88.2(@swc/core@1.3.99)
 
   rc@1.2.8:
     dependencies:
@@ -22139,7 +22115,7 @@ snapshots:
       postcss-sass: 0.3.5
       postcss-scss: 2.1.1
       postcss-selector-parser: 3.1.2
-      postcss-syntax: 0.36.2(postcss@8.4.31)
+      postcss-syntax: 0.36.2(postcss@8.4.38)
       postcss-value-parser: 3.3.1
       resolve-from: 4.0.0
       signal-exit: 3.0.7
