@@ -1,3 +1,6 @@
+// Can't use path aliases as they haven't been loaded
+// noinspection ES6PreferShortImport
+
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 
@@ -6,7 +9,8 @@ import rehypeExpressiveCode, {
   type RehypeExpressiveCodeOptions,
 } from "rehype-expressive-code";
 import remarkCodeSnippets from "remark-code-snippets";
-import {remarkTextReplacePlugin} from "@src/remark-plugins/text-replace";
+
+import {remarkTextReplacePlugin} from "./src/remark-plugins/text-replace";
 
 // rehypeExpressiveCodeOptions: For whatever reason, I can't use one of the
 // default (bundled) themes.  If you ever need to use another theme, you must
