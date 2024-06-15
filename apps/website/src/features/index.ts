@@ -1,4 +1,6 @@
-import { TutorialSelection } from "@src/features/tutorial-selection/components/TutorialSelection"
-import { LabPrompt } from "@src/features/lab-prompt/components/LabPrompt"
-
-export { TutorialSelection, LabPrompt }
+import { AttackLabWorkflow } from "./lab-prompt/components/AttackLabWorkflow";
+import { Help } from "./lab-prompt/components/Help";
+import { LabPrompt } from "./lab-prompt/components/LabPrompt";
+import { LabSample } from "./lab-prompt/components/LabSample";
+import { TutorialSelection } from "./tutorial-selection/components/TutorialSelection";
+export { AttackLabWorkflow, Help, LabPrompt, LabSample, TutorialSelection };

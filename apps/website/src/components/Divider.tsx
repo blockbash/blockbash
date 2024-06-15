@@ -3,26 +3,26 @@ import {
   type DividerProps as ChakraDividerProps,
   Flex,
   Heading,
-} from "@chakra-ui/react"
-import { Styles } from "@src/css"
-import React from "react"
+} from "@chakra-ui/react";
+import { Styles } from "@src/css";
+import React from "react";
 
 interface DividerProps extends ChakraDividerProps {
-  title?: string
+  title?: string;
 }
 
-function Divider(props: DividerProps) {
-  const {title} = props
-  if (title) {
+function Divider(props: DividerProps): JSX.Element {
+  const { title } = props;
+  if (typeof title !== "undefined") {
     return (
       <Flex>
-        <ChakraDivider borderColor={Styles.borderColorMin}/>
+        <ChakraDivider borderColor={Styles.borderColorMin} />
         <Heading as="h3" minW="fit-content" mt={3} px={3} size="sm">
           {title}
         </Heading>
-        <ChakraDivider borderColor={Styles.borderColorMin}/>
+        <ChakraDivider borderColor={Styles.borderColorMin} />
       </Flex>
-    )
+    );
   }
   return (
     <ChakraDivider
@@ -30,7 +30,7 @@ function Divider(props: DividerProps) {
       my={0}
       variant="dashed"
     />
-  )
+  );
 }
 
-export { Divider }
+export { Divider };

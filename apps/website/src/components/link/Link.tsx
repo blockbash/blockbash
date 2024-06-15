@@ -1,15 +1,9 @@
-import {
-  Link as ChakraLink,
-  type LinkProps as ChakraLinkProps,
-} from "@chakra-ui/react";
+import { Link as ChakraLink, chakra } from "@chakra-ui/react";
 import DocusaurusLink from "@docusaurus/Link";
 import { useDependencies } from "@hooks";
 import React from "react";
 
-interface LinkProps extends ChakraLinkProps {
-  href: string;
-  shouldOpenTab: boolean;
-}
+import { type LinkProps } from "./link.types";
 
 /**
  * Allows in-line components (e.g., text) to be linkable.
@@ -37,7 +31,7 @@ export function Link(props: LinkProps): JSX.Element {
       isExternal={shouldOpenTab}
       onClick={onLinkClick}
     >
-      {children}
+      <chakra.span>{children}</chakra.span>
     </ChakraLink>
   );
 }

@@ -1,18 +1,20 @@
-import { ColorProps } from "@chakra-ui/react"
-import { AdmonitionWrapper } from "@src/components/admonition/AdmonitionWrapper"
-import React, { ReactNode } from "react"
-import { BsLightningFill } from "react-icons/bs"
+import { type ColorProps } from "@chakra-ui/react";
+import React from "react";
+import { BsLightningFill } from "react-icons/bs";
 
-export interface ErrorProps {
-  content: ReactNode
-}
+import { AdmonitionWrapper } from "./AdmonitionWrapper";
+import { type AdmonitionProps } from "./admonition.types";
 
-export function Error(props: ErrorProps) {
-  const color: NonNullable<ColorProps["color"]> = "red.500"
+export function Error(props: AdmonitionProps): JSX.Element {
+  const color: NonNullable<ColorProps["color"]> = "red.500";
   return (
-    <AdmonitionWrapper content={props.content} iconBackgroundColor={color}
-                       admonitionLabelColor={color}
-                       admonitionLabel={"Error"}
-                       icon={BsLightningFill}/>
-  )
+    <AdmonitionWrapper
+      icon={BsLightningFill}
+      iconBackgroundColor={color}
+      label={"Error"}
+      labelColor={color}
+    >
+      {props.children}
+    </AdmonitionWrapper>
+  );
 }

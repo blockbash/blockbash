@@ -1,28 +1,13 @@
-import {
-  UnorderedList as _UnorderedList,
-  Heading,
-  ListItem,
-} from "@chakra-ui/react";
-import React, { type ReactNode } from "react";
+import { UnorderedList as ChakraUnorderedList } from "@chakra-ui/react";
+import React from "react";
 
-export interface LabStepsProps {
-  heading?: string;
-  steps: ReactNode[];
-}
+import { type ListProps, baseListProps } from "./list.const";
 
-export function UnorderedList({ heading, steps }: LabStepsProps): JSX.Element {
+/* See commentary in Root.tsx for why this exists */
+export function UnorderedList(props: ListProps): JSX.Element {
   return (
-    <>
-      {heading != null && (
-        <Heading fontWeight="semibold" size="lg">
-          {heading}
-        </Heading>
-      )}
-      <_UnorderedList>
-        {steps.map((steps) => (
-          <ListItem>{steps}</ListItem>
-        ))}
-      </_UnorderedList>
-    </>
+    <ChakraUnorderedList {...baseListProps} {...props}>
+      {props.children}
+    </ChakraUnorderedList>
   );
 }

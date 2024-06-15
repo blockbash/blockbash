@@ -6,9 +6,8 @@ import {
 } from "@blockbash/common-be";
 import { type AttackerSolution } from "@typechain";
 import hre from "hardhat";
-import { challengeEnv, ethTest, testConst } from "lib/challenge";
+import { challengeEnv, ethTest } from "lib/challenge";
 import "mocha";
-
 const challengeGroupName =
   tutorialConfigConst.TutorialName.reentrancyFundamentalsDefendPrompt;
 // TODO: What occurs if leaner adds revert statement to solution?
@@ -37,7 +36,8 @@ describe(challengeGroupName, function (): void {
     challengeGroupName,
     fn() {
       it(
-        testConst.AttackDescriptions.useAttackToUnsuccessfullyDrainFunds,
+        tutorialConfigConst.AttackDescriptions
+          .useAttackToUnsuccessfullyDrainFunds,
         async function (): Promise<void> {
           await ethTest.useAttackToDrainAllFunds({
             attacker: attackerSolutionContract,
@@ -53,6 +53,7 @@ describe(challengeGroupName, function (): void {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      testConst.AttackDescriptions.useAttackToUnsuccessfullyDrainFunds,
+      tutorialConfigConst.AttackDescriptions
+        .useAttackToUnsuccessfullyDrainFunds,
   });
 });

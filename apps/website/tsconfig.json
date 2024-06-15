@@ -1,9 +1,9 @@
 {
   // Inspired from https://github.com/facebook/docusaurus/blob/main/packages/docusaurus-tsconfig/tsconfig.json
   "compilerOptions": {
-    "checkJs": true,
     "allowJs": true,
     "baseUrl": ".",
+    "checkJs": true,
     "esModuleInterop": true,
     "jsx": "preserve",
     "lib": [
@@ -16,13 +16,12 @@
     // Keep 'paths' in sync with jsconfig.json, docusaurus.config.ts
     "paths": {
       "@components": ["./src/components"],
+      "@contracts": ["./../lab-core/contracts"],
       "@features": ["./src/features"],
       "@hooks": ["./src/hooks"],
       "@site/*": ["./*"],
       "@src/*": ["./src/*"],
-      "@utils": ["./src/utils"],
-      "@contracts": ["./../lab-core/contracts"],
-      "@partials": ["./tutorials/partials"]
+      "@utils": ["./src/utils"]
     },
     "plugins": [{"name": "typescript-plugin-css-modules"}],
     "skipLibCheck": true,

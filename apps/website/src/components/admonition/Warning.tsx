@@ -1,15 +1,20 @@
-import { AdmonitionWrapper } from "@src/components/admonition/AdmonitionWrapper"
-import React, { ReactNode } from "react"
-import { IoMdAlert } from "react-icons/io"
+import { Styles } from "@src/css";
+import React from "react";
+import { IoMdAlert } from "react-icons/io";
 
-export interface WarningProps {
-  content: ReactNode
-}
+import { AdmonitionWrapper } from "./AdmonitionWrapper";
+import { type AdmonitionProps } from "./admonition.types";
 
-export function Warning(props: WarningProps) {
+export function Warning(props: AdmonitionProps): JSX.Element {
   return (
-    <AdmonitionWrapper content={props.content} iconBackgroundColor={"yellow.400"}
-                       admonitionLabel={"Warning"}
-                       icon={IoMdAlert}/>
-  )
+    /* admonitionLabelColor: Using yellow is visually jarring */
+    <AdmonitionWrapper
+      icon={IoMdAlert}
+      iconBackgroundColor={Styles.yellowPrimaryColor}
+      label={"Warning"}
+      labelColor={"black"}
+    >
+      {props.children}
+    </AdmonitionWrapper>
+  );
 }

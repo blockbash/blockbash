@@ -24,9 +24,9 @@ contract Vulnerable is VulnerableBase, EventsBase {
     if (balances[msg.sender] <= 0) {
       revert("Customer has insufficient balance");
     }
+
     msg.sender.call{value: balances[msg.sender]}("");
     balances[msg.sender] = 0;
-
     emit VulnerableContractBalance(address(this).balance / 1 ether);
   }
 }

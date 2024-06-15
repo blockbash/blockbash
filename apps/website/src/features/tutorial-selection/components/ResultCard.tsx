@@ -7,28 +7,26 @@ import {
   TagLabel,
   Text,
   Wrap,
-} from "@chakra-ui/react"
-import { Card, ContentGroupTag, Divider, LinkWrapper } from "@components"
-import {
-  type TutorialWithFuzzyResult
-} from "@src/features/tutorial-selection/components/TutorialSelection.types"
-import React from "react"
+} from "@chakra-ui/react";
+import { Card, ContentGroupTag, Divider, LinkWrapper } from "@components";
+import { type TutorialWithFuzzyResult } from "@src/features/tutorial-selection/components/TutorialSelection.types";
+import React from "react";
 
 export interface ResultCardProps {
-  tutorial: TutorialWithFuzzyResult
+  tutorial: TutorialWithFuzzyResult;
 }
 
-export function ResultCard(props: ResultCardProps) {
-  const {tutorial} = props
+export function ResultCard(props: ResultCardProps): JSX.Element {
+  const { tutorial } = props;
   return (
     <LinkWrapper href={tutorial.url} shouldOpenTab={false}>
-      <Card _hover={{boxShadow: "outline"}}>
+      <Card _hover={{ boxShadow: "outline" }}>
         <CardHeader>
           <Flex gap="1" mb={[2, 1]}>
             <Text fontSize={["md", "2xl"]} fontWeight="semibold" mb={1}>
               {tutorial.name}
             </Text>
-            <Spacer/>
+            <Spacer />
             <ContentGroupTag colorScheme="facebook" maxH={10}>
               <TagLabel>{tutorial.difficultyName}</TagLabel>
             </ContentGroupTag>
@@ -55,7 +53,7 @@ export function ResultCard(props: ResultCardProps) {
               {` ⏱️ ${tutorial.durationMinutes} minutes`}
             </Text>
           </Wrap>
-          <Divider/>
+          <Divider />
         </CardHeader>
         <CardBody>
           <Text fontSize="md">{tutorial.description}</Text>
@@ -75,5 +73,5 @@ export function ResultCard(props: ResultCardProps) {
         </CardFooter>
       </Card>
     </LinkWrapper>
-  )
+  );
 }

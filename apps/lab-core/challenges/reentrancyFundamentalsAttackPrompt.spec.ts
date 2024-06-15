@@ -6,9 +6,8 @@ import {
 } from "@blockbash/common-be";
 import { type Attacker } from "@typechain";
 import hre from "hardhat";
-import { challengeEnv, errorTest, ethTest, testConst } from "lib/challenge";
+import { challengeEnv, errorTest, ethTest } from "lib/challenge";
 import "mocha";
-
 const challengeGroupName =
   tutorialConfigConst.TutorialName.reentrancyFundamentalsAttackPrompt;
 
@@ -38,7 +37,7 @@ describe(challengeGroupName, function (): void {
     challengeGroupName,
     fn() {
       it(
-        testConst.AttackDescriptions.useAttackWithoutRevert,
+        tutorialConfigConst.AttackDescriptions.useAttackWithoutRevert,
         async function (): Promise<void> {
           await errorTest.useAttackWithoutRevert({
             attacker: attackerContract,
@@ -47,7 +46,7 @@ describe(challengeGroupName, function (): void {
         },
       );
       it(
-        testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+        tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
         async function (): Promise<void> {
           await ethTest.useAttackToDrainAllFunds({
             attacker: attackerContract,
@@ -62,7 +61,7 @@ describe(challengeGroupName, function (): void {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+      tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
   });
 
   // eslint-disable-next-line mocha/no-setup-in-describe
@@ -70,7 +69,7 @@ describe(challengeGroupName, function (): void {
     challengeGroupName,
     fn() {
       it(
-        testConst.AttackDescriptions.useAttackWithRevert,
+        tutorialConfigConst.AttackDescriptions.useAttackWithRevert,
         async function (): Promise<void> {
           await errorTest.useAttackWithoutRevert({
             attacker: attackerContract,
@@ -79,7 +78,7 @@ describe(challengeGroupName, function (): void {
         },
       );
       it(
-        testConst.AttackDescriptions.useAttackToUnsuccessfullyDrainFunds,
+        tutorialConfigConst.AttackDescriptions.useAttackToUnsuccessfullyDrainFunds,
         async function (): Promise<void> {
           await ethTest.useAttackToDrainAllFunds({
             attacker: attackerContract,
@@ -94,6 +93,6 @@ describe(challengeGroupName, function (): void {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+      tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
   });
 });

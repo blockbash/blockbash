@@ -1,28 +1,13 @@
-import {
-  OrderedList as _OrderedList,
-  Heading,
-  ListItem,
-} from "@chakra-ui/react";
-import React, { type ReactNode } from "react";
+import { OrderedList as ChakraOrderedList } from "@chakra-ui/react";
+import React from "react";
 
-export interface LabStepsProps {
-  heading?: string;
-  steps: ReactNode[];
-}
+import { type ListProps, baseListProps } from "./list.const";
 
-export function OrderedList({ heading, steps }: LabStepsProps) {
+/* See commentary in Root.tsx for why this exists */
+export function OrderedList(props: ListProps): JSX.Element {
   return (
-    <>
-      {heading != null && (
-        <Heading fontWeight="semibold" size="lg">
-          {heading}
-        </Heading>
-      )}
-      <_OrderedList>
-        {steps.map((steps) => (
-          <ListItem>{steps}</ListItem>
-        ))}
-      </_OrderedList>
-    </>
+    <ChakraOrderedList {...baseListProps} {...props}>
+      {props.children}
+    </ChakraOrderedList>
   );
 }

@@ -1,37 +1,29 @@
-import {
-  type BackgroundProps,
-  Box,
-  Icon as ChakraIcon,
-  Flex,
-  Text,
-  chakra, ColorProps,
-} from "@chakra-ui/react"
+import { Box, Icon as ChakraIcon, Flex, Text, chakra } from "@chakra-ui/react";
 import { Styles } from "@src/css";
 import React, { type ReactNode } from "react";
-import { type IconType } from "react-icons";
 
-export interface AdmonitionWrapperProps {
-  admonitionLabel: string;
-  content: ReactNode;
-  icon: IconType;
-  iconBackgroundColor: NonNullable<BackgroundProps["bg"]>;
-  admonitionLabelColor: NonNullable<ColorProps["color"]>;
+import { Divider } from "../Divider";
+import { type InlineAdmonitionWrapperProps } from "./inline/inlineAdmonition.types";
+
+export interface AdmonitionWrapperProps extends InlineAdmonitionWrapperProps {
+  children: ReactNode;
 }
 
 export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
-  const Content = props.content;
+  const children = props.children;
   const Icon = props.icon;
+
   return (
-    <Flex alignItems="center" justifyContent="center" p={25} w="full">
+    <Flex maxW={"lg"}>
       <Flex
         bg="white"
         border="1px"
-        borderColor={Styles.borderColorMin}
-        maxW="2xl"
+        borderColor={Styles.borderColorMed}
+        boxShadow="md"
         overflow="hidden"
         rounded="lg"
-        shadow="lg"
       >
+        {/* Icon */}
         <Flex
           alignItems="center"
           bg={props.iconBackgroundColor}
@@ -43,11 +35,18 @@ export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
 
         <Box py={2}>
           <Box mx={3}>
-            <chakra.span color={props.admonitionLabelColor} fontSize={["xl"]} fontWeight="bold">
-              {props.admonitionLabel}
+            <chakra.span
+              color={props.labelColor}
+              fontSize={["xl"]}
+              fontWeight="bold"
+            >
+              {props.label}
             </chakra.span>
-            <Text my={0} color="gray.600" fontSize="md" mt={1}>
-              {Content}
+            <Box my={1}>
+              <Divider />
+            </Box>
+            <Text color="gray.600" fontSize="md" my={0}>
+              {children}
             </Text>
           </Box>
         </Box>

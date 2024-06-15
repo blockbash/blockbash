@@ -1,21 +1,20 @@
-import { ColorProps } from "@chakra-ui/react"
-import { AdmonitionWrapper } from "@src/components/admonition/AdmonitionWrapper";
-import React, { type ReactNode } from "react";
+import { type ColorProps } from "@chakra-ui/react";
+import React from "react";
 import { IoMdCheckmarkCircle } from "react-icons/io";
 
-export interface SuccessProps {
-  content: ReactNode;
-}
+import { AdmonitionWrapper } from "./AdmonitionWrapper";
+import { type AdmonitionProps } from "./admonition.types";
 
-export function Success(props: SuccessProps): JSX.Element {
-  const color: NonNullable<ColorProps["color"]> = "green.500"
+export function Success(props: AdmonitionProps): JSX.Element {
+  const color: NonNullable<ColorProps["color"]> = "green.500";
   return (
     <AdmonitionWrapper
-      admonitionLabel={"Success"}
-      content={props.content}
       icon={IoMdCheckmarkCircle}
-      admonitionLabelColor={color}
       iconBackgroundColor={color}
-    />
+      label={"Success"}
+      labelColor={color}
+    >
+      {props.children}
+    </AdmonitionWrapper>
   );
 }

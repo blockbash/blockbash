@@ -1,208 +1,220 @@
 import { tutorialConfigConst } from "@blockbash/common";
-import { Code, Heading, chakra } from "@chakra-ui/react";
+import { Center, Code, ListItem, chakra } from "@chakra-ui/react";
 import {
   Bold,
-  Error,
-  Info,
+  Header,
   Lab,
   Link,
-  LinkWrapper,
+  LinkTutorial,
   OrderedList,
   Tabs,
+  Tip,
   UnorderedList,
   Warning,
 } from "@src/components";
-import React, { type ReactNode } from "react";
+import React from "react";
 
 export interface LabPromptProps {
-  Goal: ReactNode;
-  additionalNextSteps: ReactNode[];
   tutorialGUID: tutorialConfigConst.TutorialGUID;
 }
 
 export function LabPrompt(props: LabPromptProps): JSX.Element {
+  const prerequisitesWarning = (
+    <Center marginY={3}>
+      <Warning>
+        <chakra.span>
+          You must complete the Prerequisites (mentioned above) before starting
+          the lab
+        </chakra.span>
+      </Warning>
+    </Center>
+  );
+
+  const labWorkflowCTA = (
+    <chakra.span>
+      Complete the steps within the{" "}
+      <LinkTutorial
+        content={tutorialConfigConst.TutorialSectionName.labWorkflow}
+        sectionGUID={tutorialConfigConst.TutorialSectionGUID.labWorkflow}
+        tutorialGUID={props.tutorialGUID}
+      />{" "}
+      section.
+    </chakra.span>
+  );
+
+  const needHelpTip = (
+    <Center>
+      <Tip>
+        <chakra.span>
+          If you have a question (or problem), please review the{" "}
+          <LinkTutorial
+            content={tutorialConfigConst.TutorialSectionName.needHelp}
+            sectionGUID={tutorialConfigConst.TutorialSectionGUID.needHelp}
+            tutorialGUID={props.tutorialGUID}
+          />{" "}
+          section.
+        </chakra.span>
+      </Tip>
+    </Center>
+  );
+
   const vscodePanel = (
     <>
-      <UnorderedList
-        heading="Pros"
-        steps={[
-          <chakra.span>
-            If you're already a Visual Studio Code user, your existing
-            extensions should work automatically (e.g., Vim).
-          </chakra.span>,
-          <chakra.span>
-            As the lab isn't being executed within the browser, you'll have a
-            more "native" experience.
-          </chakra.span>,
-          <chakra.span>
-            Depending on your computer, it might be faster than the Codespace
-            environment.
-          </chakra.span>,
-        ]}
-      />
+      <Header level={3}>Pros</Header>
+      <UnorderedList>
+        <ListItem>
+          If you're already a Visual Studio Code user, your preexisting setup
+          should be applied. This includes keybindings, extensions, etc.
+        </ListItem>
+        <ListItem>
+          As the lab isn't being executed within the browser, you'll have a more
+          "native" experience.
+        </ListItem>
+        <ListItem>
+          Depending on your computer, the experience might be faster than the
+          Codespace environment.
+        </ListItem>
+      </UnorderedList>
 
-      <UnorderedList
-        heading="Cons"
-        steps={[
-          <chakra.span>Requires dependencies to be installed (see below).</chakra.span>,
-        ]}
-      />
+      <Header level={3}>Cons</Header>
+      <UnorderedList>
+        <ListItem>Requires dependencies to be installed (see below).</ListItem>
+      </UnorderedList>
 
-      <UnorderedList
-        heading="Prerequisites"
-        steps={[
+      <Header level={3}>Prerequisites</Header>
+      <UnorderedList>
+        <ListItem>
+          Install{" "}
+          <Link
+            href="https://code.visualstudio.com/docs/setup/setup-overview"
+            shouldOpenTab={true}
+          >
+            Visual Studio Code
+          </Link>
+          .
+        </ListItem>
+        <ListItem>
+          Install the{" "}
+          <Link
+            href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers"
+            shouldOpenTab={true}
+          >
+            Dev Containers Extension
+          </Link>
+          .
+        </ListItem>
+        <ListItem>
+          Install{" "}
+          <Link href="https://www.docker.com/get-started/" shouldOpenTab={true}>
+            Docker
+          </Link>
           <chakra.span>
-            Install{" "}
-            <LinkWrapper
-              href="https://code.visualstudio.com/docs/setup/setup-overview"
-              shouldOpenTab={true}
-            >
-              Visual Studio Code
-            </LinkWrapper>
-          </chakra.span>,
-          <chakra.span>
-            Install the{" "}
-            <LinkWrapper
-              href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers"
-              shouldOpenTab={true}
-            >
-              Dev Containers Extension
-            </LinkWrapper>
-          </chakra.span>,
-          <chakra.span>
-            Install{" "}
-            <LinkWrapper
-              href="https://www.docker.com/get-started/"
-              shouldOpenTab={true}
-            >
-              Docker
-            </LinkWrapper>
-            <chakra.span>
-              (Other container runtimes are not supported at this time.)
-            </chakra.span>
-          </chakra.span>,
-        ]}
-      />
-
-      <Warning
-        content={
-          <chakra.span>
-            You must complete the Prerequisites (mentioned above) before
-            starting the lab
+            {" "}
+            (other container runtimes are not officially supported).
           </chakra.span>
-        }
-      />
+        </ListItem>
+      </UnorderedList>
 
-      <OrderedList
-        heading="Next Steps"
-        steps={[
+      {prerequisitesWarning}
+
+      <Header level={3}>Next Steps</Header>
+      <OrderedList>
+        <ListItem>
           <Lab
             executionEnvironmentName={
               tutorialConfigConst.ExecutionEnvironmentName.visualStudioCode
             }
             tutorialGUID={props.tutorialGUID}
-          />,
-          props.additionalNextSteps,
-        ]}
-      />
+          />
+          <ListItem>{labWorkflowCTA}</ListItem>
+        </ListItem>
+      </OrderedList>
+
+      {needHelpTip}
     </>
   );
   const codespacePanel = (
     <>
-      <UnorderedList
-        heading="Pros"
-        steps={[
-          <chakra.span>The simplest option as it runs the lab in your browser.</chakra.span>,
-          <chakra.span>No dependencies to install.</chakra.span>,
-        ]}
-      />
+      <Header level={3}>Pros</Header>
+      <UnorderedList>
+        <ListItem>The lab is available within your web browser.</ListItem>
+        <ListItem>No dependencies to install.</ListItem>
+      </UnorderedList>
 
-      <UnorderedList
-        heading="Cons"
-        steps={[
-          <chakra.span>
-            Executes on Github's servers which can incur a cost after the free
-            tier is exhausted. Luckily, it's easy to set a spending limit of{" "}
-            <Code>0</Code> so you won't be charged once the free tier is
-            exhausted (instructions below).
-          </chakra.span>,
-        ]}
-      />
+      <Header level={3}>Cons</Header>
+      <UnorderedList>
+        <ListItem>
+          Executes on Github's servers. This has a financial cost if the{" "}
+          <Link
+            href={
+              "https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts"
+            }
+            shouldOpenTab={true}
+          >
+            free tier
+          </Link>{" "}
+          is exhausted. Luckily, it's easy to set a spending limit of{" "}
+          <Code>0</Code> so you won't be charged once the free tier is consumed
+          (instructions below).
+        </ListItem>
+      </UnorderedList>
 
-      <UnorderedList
-        heading="Prerequisites"
-        steps={[
-          <chakra.span>
-            Sign up for a{" "}
-            <Link href="https://github.com/signup" shouldOpenTab={true}>
-              <chakra.span>Github Account</chakra.span>
-            </Link>
-          </chakra.span>,
-          <chakra.span>
-            <Bold>OPTIONAL</Bold>: Github will charge for Codespace usage once
-            the free tier is exhausted. To ensure that you will never be
-            charged, navigate to{" "}
-            <Link
-              href="https://github.com/settings/billing/spending_limit"
-              shouldOpenTab={true}
-            >
-              this link
-            </Link>{" "}
-            and ensure the <Code>Codespace</Code> spending limit is set to{" "}
-            <Code>0</Code>.
-          </chakra.span>,
-        ]}
-      />
+      <Header level={3}>Prerequisites</Header>
+      <UnorderedList>
+        <ListItem>
+          Sign up for a{" "}
+          <Link href="https://github.com/signup" shouldOpenTab={true}>
+            Github account
+          </Link>
+        </ListItem>
+        <ListItem>
+          <Bold>IMPORTANT</Bold>: Github will charge for Codespace usage once
+          the{" "}
+          <Link
+            href={
+              "https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts"
+            }
+            shouldOpenTab={true}
+          >
+            free tier
+          </Link>{" "}
+          is exhausted. If you don't want to be charged, navigate to{" "}
+          <Link
+            href="https://github.com/settings/billing/spending_limit"
+            shouldOpenTab={true}
+          >
+            this link
+          </Link>{" "}
+          and ensure the Codespaces spending limit is set to <Code>0</Code>.
+          Blockbash (and its contributors) are not responsible for any
+          unexpected charges.
+        </ListItem>
+      </UnorderedList>
 
-      <Warning
-        content={
-          <chakra.span>
-            You must complete the Prerequisites (mentioned above) before
-            starting the lab
-          </chakra.span>
-        }
-      />
+      {prerequisitesWarning}
 
-      <OrderedList
-        heading="Next Steps"
-        steps={[
+      <Header level={3}>Next Steps</Header>
+      <OrderedList>
+        <ListItem>
           <Lab
             executionEnvironmentName={
               tutorialConfigConst.ExecutionEnvironmentName.githubCodespace
             }
             tutorialGUID={props.tutorialGUID}
-          />,
-          props.additionalNextSteps,
-        ]}
-      />
+          />
+        </ListItem>
+        <ListItem>{labWorkflowCTA}</ListItem>
+      </OrderedList>
+
+      {needHelpTip}
     </>
   );
   return (
     <>
-      <UnorderedList
-        heading="Introduction"
-        steps={[
-          <chakra.span>It's time for some hands-on experience! </chakra.span>,
-          props.Goal,
-          <chakra.span>
-            There are two ways to launch the lab environment: i) Github
-            Codespaces ii) Visual Studio Code."
-          </chakra.span>,
-          <chakra.span>
-            While each option has its pros/cons, Github Codespaces option is the
-            quickest way to get "up and running".
-          </chakra.span>,
-        ]}
-      />
-
-      <Heading fontWeight="semibold" size="lg">
-        Lab Options
-      </Heading>
-
       <Tabs
         tabs={[
           { content: codespacePanel, title: "Github Codespace" },
-          { content: vscodePanel, title: "VSCode" },
+          { content: vscodePanel, title: "Visual Studio Code" },
         ]}
       />
     </>

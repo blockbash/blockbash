@@ -1,66 +1,90 @@
 ---
-title: Theory
+title: Reentrancy Fundamentals Theory
 pagination_label: Reentrancy Fundamentals Theory
 sidebar_label: Theory
-description: "null"
-keywords: ["reentrancy"]
+description: "Learn how to secure your Solidity smart contracts against Reentrancy attacks. This step-by-step tutorial breaks down examples of Reentrancy vulnerabilities in a graphical way. This is ideal for Solidity devs looking to master smart contract security. Get started now and level up your Solidity skills!"
+keywords:
+  - smart contract security
+  - solidity security
+  - ethereum security
+  - blockchain security
+  - smart contract vulnerabilities
+  - reentrancy attacks
+  - smart contract best practices
+  - secure smart contract development
+  - smart contract auditing
+  - smart contract hacking
+  - solidity vulnerabilities
+  - ethereum vulnerabilities
+  - blockchain vulnerabilities
+  - smart contract exploitation
+  - smart contract testing
+  - smart contract debugging
+  - solidity best practices
+  - ethereum best practices
+  - blockchain best practices
+  - decentralized application security
+  - DApp security
 sidebar_position: 1
 slug: "/tutorials/reentrancy-fundamentals-theory"
 hide_title: true
 hide_table_of_contents: true
 ---
 
-import {chakra} from "@chakra-ui/react"
-import {SVGModal, Tip, UnorderedList} from "@components"
-import SVG
-  from "./diagrams/theory.svg"
+import {tutorialConfigConst} from "@blockbash/common"
+import {CodeFootnote, DiagramFootnote, InlineError, InlineTip, LinkTutorial, SVGModal, TheoryCodePanel} from "@components"
+import SVG from "./diagrams/theory.svg"
 
-## Prerequisites {#prerequisites}
+## Introduction
 
-- Basic Ethereum knowledge
+- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `Attacker` Contract) the ability to invoke the vulnerable contract (i.e., `Vulnerable` Contract) in an unexpected state.  As you'll see in the [Process Diagram](#diagram), `Attacker` Contract will unexpectedly call (or "re-enter") the `Vulnerable` Contract before the `Vulnerable` Contract has updated its state.
+- In this lesson, you'll learn the theory behind Reentrancy attacks. After you've learned the theory, you'll create your own `Attacker` Contract and exploit this vulnerability within the lab environment!
+- <InlineTip label={"Tip"}/> Do you already have a grasp on how Reentrancy works?  Feel free to move to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/> and put your knowledge to the test!
 
-## Vulnerability Summary {#vuln-summary}
+## Prerequisites
 
-- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `AttackerContract`) the ability to invoke the vulnerable contract (i.e., `VulnerableContract`) in an unexpected state. As you'll see in the process diagram (below), `AttackerContract` will unexpectedly call (or "re-enter") the `VulnerableContract`.
-- In this lesson, you'll learn the theory behind Reentrancy attacks. After you've learned the theory, you'll create your own `AttackerContract` and exploit this vulnerability within the lab environment!
+- Basic Solidity knowledge
 
 ## Code {#code}
-<Tip content={<chakra.span>Don't worry if the code (below) doesn't make complete sense. You'll learn about it in more detail within the process diagram (seen later in this page).</chakra.span>}></Tip>
+<TheoryCodePanel tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory}>
+  <>
+    ```solidity {"1":12} {"2":28} {"3":29} title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol
+    ```
+  </>
+</TheoryCodePanel>
 
-```solidity title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol
-```
+### Explanation {#code-explanation}
+- <CodeFootnote type={'reg'}>1</CodeFootnote> : `deposit()` is leveraged to deposit eth
+- <CodeFootnote type={'reg'}>2</CodeFootnote> :
+  - `msg.sender` refers to the address that called `withdrawAll()`. Going forward, we'll refer to this as `attacker_address`.
+  - `balances[msg.sender]` retrieves the internal balance associated with `attacker_address`. When `attacker_address` initially calls `withdrawAll()`, the balance is equal to the amount of eth that `attacker_address` initially deposited into the contract.
+  - `call()` is a low-level Solidity function that can send eth to another address.  When this `call()` occurs, the `Attacker` contract can call `withdrawAll()` again before <CodeFootnote type={'reg'}>3</CodeFootnote> is evaluated.  This "re-entering" mechanism is the hallmark an Reentrancy attack.
 
-## Process Diagram {#process-diagram}
+## Process Diagram {#diagram}
+<SVGModal SVG={SVG} SVGTitle={tutorialConfigConst.TutorialImageName.attackDiagram}/>
 
-<Tip content={
-  <UnorderedList
-    steps={[
-      <chakra.span>
-        Each number (in the diagram), corresponds to a number in the Explanation section
-      </chakra.span>,
-      <chakra.span>Click on the diagram to zoom in</chakra.span>,
-    ]}></UnorderedList>
-}></Tip>
 
-<SVGModal title="Process Diagram" SVG={SVG}/>
+### Explanation {#diagram_explanation}
 
-## Explanation
-- **Seeding Phase - 1:** In this example, the attack starts when `AttackerContract` creates a balance within `VulnerableContract`.
-- **Transfer Phase - 2:** Note the `AttackerContract` balance (on the blockchain), is now 0 eth.
-- **Transfer Phase - 3a/3b:** When `AttackerContract` attempts to withdraw 1 eth, the `VulnerableContract` checks to see if `AttackerContract` has 1 eth available
-- **Transfer Phase - 4a/4b**: Given that `AttackerContract` has 1 eth available (in `VulnerableContract`'s state), the transfer is successful.
-- **Transfer Phase - 5**: When the developer created `VulnerableContract`, they assumed that after `AttackerContract` received 1 eth, the execution would immediately go into the **Deduction Phase**. However, the calling entity can be a smart contract. As `AttackerContract` is a smart contract, it can immediately execute code when receiving eth. This is the crux of Reentrancy.
-- **Transfer Phase - 3a:** After receiving the eth, `AttackerContract` can immediately attempt another withdrawal. In other words, `AttackerContract` is "re-entering" the `VulnerableContract`. As the **Deduction Phase** hasn't occurred, **Transfer Phase - 3b** will evaluate to `True` and the `VulnerableContract` will transfer unintended eth to `AttackerContract`. Unfortunately, this transfer can start the "attack loop" again (see red lines).
-- The "attack loop" can keep going until all eth (that's attached to underlying `VulnerableContract`) has been drained.
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>: In this example, the attack starts when `Attacker` Contract creates a balance within `Vulnerable` Contract.
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>2</DiagramFootnote>: Note the `Attacker` Contract balance (on the blockchain), is now 0 eth.
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>3a</DiagramFootnote> <DiagramFootnote>3b</DiagramFootnote>: When `Attacker` Contract attempts to withdraw 1 eth, the `Vulnerable` Contract checks to see if `Attacker` Contract has 1 eth available
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>4a</DiagramFootnote> <DiagramFootnote>4b</DiagramFootnote>: The transfer moves forward because `Attacker` Contract has 1 eth available (in `Vulnerable` Contract's state).
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>5</DiagramFootnote>
+  - <InlineError label={"Incorrect Assumption"}/> When the developer created `Vulnerable` Contract, they assumed the contract would interact with Externally Owned Accounts (i.e., accounts that don't execute code).  In this mental model, the **Deduction Phase** would occur immediately after <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>4b</DiagramFootnote>.  However, the third party (`Attacker` Contract) is a smart contract.  This allows `Attacker` Contract to immediately execute code when receiving eth.
+- <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>3a</DiagramFootnote>
+  - <InlineError label={"Exploit"}/> After receiving the 1 eth, `Attacker` Contract can immediately attempt another withdrawal. In other words, `Attacker` Contract is "re-entering" the `Vulnerable` Contract. As the **Deduction Phase** hasn't occurred, <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>3b</DiagramFootnote> will evaluate to `True` and the `Vulnerable` Contract will transfer unintended eth to `Attacker` Contract. Unfortunately, this transfer can start the "attack loop" again (see red arrows).
+- The "attack loop" (see red arrows) can continue until all eth has been transferred.
 
-# Next Steps
-- In the Attack Lab, you'll create the `AttackerContract` and get some "hands on" experience with this vulnerability!
-
-## Inspiration
-
-- https://solidity-by-example.org/hacks/re-entrancy/
+## Next Steps
+- In the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>, you'll create the `Attacker` Contract and get some "hands on" experience with this vulnerability!
 
 ## Real World Examples
 
-- https://blog.openzeppelin.com/exploiting-uniswap-from-reentrancy-to-actual-profit
-- https://blog.chain.link/reentrancy-attacks-and-the-dao-hack
+- [A Historical Collection of Reentrancy Attacks
+](https://github.com/pcaversaccio/reentrancy-attacks)
+
+## Inspiration
+We wanted to thank the content creators who published the content below. Without people like you, BlockBash tutorials couldn't exist :)
+- [Solidity By Example: Reentrancy](https://solidity-by-example.org/hacks/re-entrancy/)
+
