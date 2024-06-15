@@ -1,49 +1,49 @@
-import { type tutorialConfigTypes } from "@blockbash/common"
 import {
-  Button,
-  Stack,
-  Text,
-} from "@chakra-ui/react"
-import { Link } from "@components"
-import { useDependencies } from "@hooks"
-import React from "react"
+  tutorialConfigConst,
+  type tutorialConfigTypes,
+} from "@blockbash/common";
+import { Button, Stack, chakra } from "@chakra-ui/react";
+import { LinkWrapper } from "@components";
+import { useDependencies } from "@hooks";
+import React from "react";
 
 interface LabProps {
+  executionEnvironmentName: tutorialConfigConst.ExecutionEnvironmentName;
   tutorialGUID: tutorialConfigTypes.TutorialGUID;
 }
 
-export function Lab(props: LabProps) {
-  const deps = useDependencies()
-  const {tutorialGUID} = props
-  const tutorial = deps.tutorialConfig.getTutorial(tutorialGUID)
-  const vscodeURL = tutorial.lab?.vscodeURL as string
-  const codespaceURL = tutorial.lab?.codespaceURL as string
+export function Lab(props: LabProps): JSX.Element {
+  const deps = useDependencies();
+  const { executionEnvironmentName, tutorialGUID } = props;
+  const tutorial = deps.tutorialConfig.getTutorial(tutorialGUID);
+  let url: string;
+  if (
+    executionEnvironmentName ===
+    tutorialConfigConst.ExecutionEnvironmentName.githubCodespace
+  ) {
+    url = tutorial.lab?.codespaceURL as string;
+  } else if (
+    executionEnvironmentName ===
+    tutorialConfigConst.ExecutionEnvironmentName.visualStudioCode
+  ) {
+    url = tutorial.lab?.vscodeURL as string;
+  } else {
+    throw new Error(`Unexpected executionEnvironmentName`);
+  }
   return (
     <>
-      <Stack align="center" direction="row" justify="flex-start">
-        <Text as="span">Click</Text>
-        <Link href={vscodeURL} shouldOpenTab>
-          <Button
-            border="none"
-            colorScheme="red"
-            size="sm"
-            textTransform="capitalize"
-          >
-            Initialize Visual Studio Code Lab
+      <Stack
+        align="center"
+        direction={["column", "row", "row"]}
+        justify="flex-start"
+      >
+        <chakra.span>Click</chakra.span>
+        <LinkWrapper href={url} shouldOpenTab>
+          <Button size="sm">
+            Initialize {props.executionEnvironmentName} Lab
           </Button>
-        </Link>
-        <Text as="span">or</Text>
-        <Link href={codespaceURL} shouldOpenTab>
-          <Button
-            border="none"
-            colorScheme="red"
-            size="sm"
-            textTransform="capitalize"
-          >
-            Initialize Github Codespace Lab
-          </Button>
-        </Link>
+        </LinkWrapper>
       </Stack>
     </>
-  )
+  );
 }

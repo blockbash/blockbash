@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - about: You can ask for help here!
-    name: Start a discussion
-    url: https://github.com/orgs/blockbash/discussions/new?category=help
-  - about: You can ask for help here!
-    name: Ask on Gitter
+  - about: Have questions about a tutorial? Ask here! (For bugs, please use the "Bug Report" option.)
+    name: Tutorial Content Help (Github Discussion)
+    url: https://github.com/blockbash/blockbash/discussions/new?category=tutorial-content-help
+  - about: Have questions about a tutorial? Ask here! (For bugs, please use the "Bug Report" option.)
+    name: Tutorial Content Help (Chat)
     url: https://matrix.to/#/#blockbash:gitter.im

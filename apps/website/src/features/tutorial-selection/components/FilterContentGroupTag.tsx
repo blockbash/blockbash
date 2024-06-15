@@ -1,39 +1,41 @@
-import { AddIcon } from "@chakra-ui/icons"
-import { TagLabel, TagLeftIcon, type TagProps } from "@chakra-ui/react"
-import { ContentGroupTag, Link } from "@components"
-import React from "react"
+import { AddIcon } from "@chakra-ui/icons";
+import { TagLabel, TagLeftIcon, type TagProps } from "@chakra-ui/react";
+import { ContentGroupTag, LinkWrapper } from "@components";
+import React from "react";
 
 interface ContentGroupTagProps extends TagProps {
-  internalLink?: string
-  isActive?: boolean
-  name: string
+  internalLink?: string;
+  isActive?: boolean;
+  name: string;
 }
 
-export function FilterContentGroupTag(props: ContentGroupTagProps) {
-  const {isActive, name, ...rest} = props
+export function FilterContentGroupTag(
+  props: ContentGroupTagProps,
+): JSX.Element {
+  const { isActive, name, ...rest } = props;
   const tag = (
     <ContentGroupTag
       colorScheme="red"
       layerStyle="hover"
-      outline={isActive ? "3px solid" : "none"}
+      outline={isActive === true ? "3px solid" : "none"}
       variant="subtle"
       {...rest}
     >
-      <TagLeftIcon as={AddIcon} boxSize="12px"/>
+      <TagLeftIcon as={AddIcon} boxSize="12px" />
       <TagLabel textTransform="capitalize">{name}</TagLabel>
     </ContentGroupTag>
-  )
+  );
 
-  let content
-  if (props.internalLink) {
+  let content;
+  if (props.internalLink !== undefined) {
     content = (
-      <Link href={props.internalLink} shouldOpenTab={false}>
+      <LinkWrapper href={props.internalLink} shouldOpenTab={false}>
         {tag}
-      </Link>
-    )
+      </LinkWrapper>
+    );
   } else {
-    content = tag
+    content = tag;
   }
 
-  return content
+  return content;
 }

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# (C)hallenge (V)erify (S)olution: Submits the lab's solution to the verification engine.  This is helpful for testing the solution and for observing trace events.
+
+# shellcheck source=./../../../../packages/common/scripts/source-all.sh
+. /blockbash/packages/common/scripts/source-all.sh --absolute_paths="true" --die_on_error="false"
+
+main() {
+  log_info "Invoking cvs"
+  local challenge_guid_bash
+  challenge_guid_bash="$(get_container_challenge_guid_bash)"
+
+  local challenge_solution_guid_typescript
+  challenge_solution_guid_typescript="$(get_challenge_metadata_value "${key_challenge_solution_guid_typescript}" "${challenge_guid_bash}")"
+
+  # Use workaround to disable command echoing.  Once the issue (below) is
+  # fixed, we can leverage the command (above)
+  # https://github.com/pnpm/pnpm/issues/4802
+  cd "${container_repo_dir_path}" && pnpm --filter @blockbash/lab-shell exec -- pnpm --silent challenge:verify_solution "${challenge_solution_guid_typescript}" && cd -
+}
+
+# https://unix.stackexchange.com/a/333204
+# Pipes stderr to terminal (and log file)
+exec 3>&1
+main 2>&1 >&3 | tee -a "${bash_log_file_path}"

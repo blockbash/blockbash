@@ -1,49 +1,31 @@
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from "@chakra-ui/react"
-import React from "react"
+import { Modal } from "@components";
+import React, { type ComponentType, type SVGProps } from "react";
 
+import { type ModalProps } from "./Modal";
+
+/* SVG Type:
+Docusaurus inlines imported SVGs: https://docusaurus.io/docs/markdown-features/assets#inline-svgs 
+The corresponding type is:
+https://github.com/facebook/docusaurus/blob/32d5ab08caab5e525ee5553807409768dfff711d/packages/docusaurus-module-type-aliases/src/index.d.ts#L375C25-L377C4
+*/
 interface SVGModalProps {
-  SVG: React.FC<React.SVGProps<SVGSVGElement>>,
-  title: string,
+  SVG: ComponentType<SVGProps<SVGSVGElement> & { title?: string }>;
+  SVGTitle: ModalProps["title"];
+  hasBorder?: ModalProps["hasBorder"];
+  maxW?: ModalProps["maxW"];
 }
 
-export function SVGModal({SVG, title}: SVGModalProps) {
-  const {isOpen, onClose, onOpen} = useDisclosure()
+export function SVGModal({
+  SVG,
+  SVGTitle,
+  hasBorder = false,
+  maxW,
+}: SVGModalProps): JSX.Element {
   return (
-    <Box marginTop={"10"}>
-      <SVG
-        onClick={() => {
-          onOpen()
-        }}
-      />
-      <Modal
-        isOpen={isOpen}
-        motionPreset={"scale"}
-        onClose={onClose}
-        size="6xl"
-      >
-        <ModalOverlay/>
-        <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
-          <ModalCloseButton/>
-          <ModalBody>
-            <SVG/>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
+    <>
+      <Modal hasBorder={hasBorder} maxW={maxW} title={SVGTitle}>
+        <SVG height={"auto"} />
       </Modal>
-    </Box>
-  )
+    </>
+  );
 }

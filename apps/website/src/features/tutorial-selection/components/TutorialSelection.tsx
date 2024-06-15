@@ -1,23 +1,21 @@
-import { type loggerTypes } from "@blockbash/common"
-import { Flex, Stack } from "@chakra-ui/react"
-import { useLocation } from "@docusaurus/router"
-import { type Dependencies, useDependencies } from "@hooks"
-import {
-  type TutorialsWithFuzzyResult
-} from "@src/features/tutorial-selection/components/TutorialSelection.types"
+import { type loggerTypes } from "@blockbash/common";
+import { Flex, Stack } from "@chakra-ui/react";
+import { useLocation } from "@docusaurus/router";
+import { type Dependencies, useDependencies } from "@hooks";
+import { type TutorialsWithFuzzyResult } from "@src/features/tutorial-selection/components/TutorialSelection.types";
 import {
   type dataTypes,
   type navigationTypes,
   queryStringConst,
   type queryStringTypes,
   type tutorialConfigTypes,
-} from "@utils"
-import React, { useEffect, useState } from "react"
+} from "@utils";
+import React, { useEffect, useState } from "react";
 
-import { FilterCard } from "./FilterCard"
-import { Header } from "./Header"
-import { Playlists } from "./Playlists"
-import { ResultCards } from "./ResultCards"
+import { FilterCard } from "./FilterCard";
+import { Header } from "./Header";
+import { Playlists } from "./Playlists";
+import { ResultCards } from "./ResultCards";
 
 function isSelectableFilterMatch({
   selectedFilterOperator,
@@ -26,30 +24,28 @@ function isSelectableFilterMatch({
   tutorialCategories,
   tutorialType,
 }: {
-  selectedFilterOperator: queryStringConst.FilterOptions
-  selectedTutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs
-  selectedTutorialTypes: tutorialConfigTypes.TutorialTypeGUIDs
-  tutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs
-  tutorialType: tutorialConfigTypes.TutorialTypeGUID
-})
-{
+  selectedFilterOperator: queryStringConst.FilterOptions;
+  selectedTutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs;
+  selectedTutorialTypes: tutorialConfigTypes.TutorialTypeGUIDs;
+  tutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs;
+  tutorialType: tutorialConfigTypes.TutorialTypeGUID;
+}): boolean {
   if (
     selectedFilterOperator.toLowerCase() ===
     queryStringConst.FilterOptions.AND.toLowerCase()
-  )
-  {
+  ) {
     const containsCorrectCategories = selectedTutorialCategories.every(
       (selectedTutorialCategoryGUID) =>
         tutorialCategories.includes(
           selectedTutorialCategoryGUID.toLowerCase() as tutorialConfigTypes.TutorialCategoryGUID,
         ),
-    )
+    );
     const containsCorrectTypes = selectedTutorialTypes.every(
       (selectedTutorialTypeGUID) =>
         tutorialType.toLowerCase() === selectedTutorialTypeGUID.toLowerCase(),
-    )
+    );
 
-    return containsCorrectTypes && containsCorrectCategories
+    return containsCorrectTypes && containsCorrectCategories;
   }
   // Leverage an OR-based search
   const containsCorrectCategories = selectedTutorialCategories.some(
@@ -57,15 +53,15 @@ function isSelectableFilterMatch({
       tutorialCategories.includes(
         selectedTutorialCategoryGUID.toLowerCase() as tutorialConfigTypes.TutorialCategoryGUID,
       ),
-  )
+  );
   const containsCorrectContentTypes = selectedTutorialTypes.some(
     (type) => tutorialType.toLowerCase() === type.toLowerCase(),
-  )
-  return containsCorrectCategories || containsCorrectContentTypes
+  );
+  return containsCorrectCategories || containsCorrectContentTypes;
 }
 
 function sortTutorials(tutorials: TutorialsWithFuzzyResult) {
-  return tutorials.sort((a, b) => a.fuzzyRanking - b.fuzzyRanking)
+  return tutorials.sort((a, b) => a.fuzzyRanking - b.fuzzyRanking);
 }
 
 function filterTutorials({
@@ -77,25 +73,25 @@ function filterTutorials({
   selectedTutorialCategories,
   selectedTutorialTypes,
 }: {
-  allTutorials: tutorialConfigTypes.Tutorials
-  deps: Dependencies
-  logger: loggerTypes.ILoggerMin
-  searchedTutorialName: queryStringTypes.TutorialSearchText
-  selectedFilterOperator: queryStringConst.FilterOptions
-  selectedTutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs
-  selectedTutorialTypes: tutorialConfigTypes.TutorialTypeGUIDs
+  allTutorials: tutorialConfigTypes.Tutorials;
+  deps: Dependencies;
+  logger: loggerTypes.ILoggerMin;
+  searchedTutorialName: queryStringTypes.TutorialSearchText;
+  selectedFilterOperator: queryStringConst.FilterOptions;
+  selectedTutorialCategories: tutorialConfigTypes.TutorialCategoryGUIDs;
+  selectedTutorialTypes: tutorialConfigTypes.TutorialTypeGUIDs;
 }): TutorialsWithFuzzyResult {
   const selectableFilterGUIDs = [
     ...selectedTutorialTypes,
     ...selectedTutorialCategories,
-  ]
+  ];
 
   // If nothing is selected (i.e., filtered) we show all tutorials
-  if (selectableFilterGUIDs.length === 0 && !searchedTutorialName) {
+  if (selectableFilterGUIDs.length === 0 && searchedTutorialName.length === 0) {
     return allTutorials.map((tutorial) => ({
       ...tutorial,
       ...deps.data.getFalseyFuzzyMatch(),
-    }))
+    }));
   }
 
   return allTutorials.flatMap((tutorial) => {
@@ -107,92 +103,92 @@ function filterTutorials({
         tutorial.guid,
       ),
       tutorialType: deps.tutorialConfig.getTutorialTypeGUID(tutorial.guid),
-    })
+    });
 
-    let isTutorialNameMatch: boolean
-    let fuzzyResult: dataTypes.FuzzyResult
-    if (searchedTutorialName) {
+    let isTutorialNameMatch: boolean;
+    let fuzzyResult: dataTypes.FuzzyResult;
+    if (searchedTutorialName.length > 0) {
       fuzzyResult = deps.data.getFuzzyMatch({
         searchText: searchedTutorialName,
         sourceText: tutorial.name,
-      })
-      isTutorialNameMatch = fuzzyResult.isFuzzyMatch
+      });
+      isTutorialNameMatch = fuzzyResult.isFuzzyMatch;
     } else {
-      isTutorialNameMatch = false
-      fuzzyResult = deps.data.getFalseyFuzzyMatch()
+      isTutorialNameMatch = false;
+      fuzzyResult = deps.data.getFalseyFuzzyMatch();
     }
 
-    let isMatch: boolean
+    let isMatch: boolean;
     if (
       selectedFilterOperator.toLowerCase() ===
       queryStringConst.FilterOptions.AND.toLowerCase()
-    )
-    {
-      if (searchedTutorialName) {
-        isMatch = selectableFilterMatch && isTutorialNameMatch
+    ) {
+      if (searchedTutorialName.length > 0) {
+        isMatch = selectableFilterMatch && isTutorialNameMatch;
       } else {
-        isMatch = selectableFilterMatch
+        isMatch = selectableFilterMatch;
       }
     } else if (
       selectedFilterOperator.toLowerCase() ===
       queryStringConst.FilterOptions.OR.toLowerCase()
-    )
-    {
-      if (searchedTutorialName) {
-        isMatch = selectableFilterMatch || isTutorialNameMatch
+    ) {
+      if (searchedTutorialName.length > 0) {
+        isMatch = selectableFilterMatch || isTutorialNameMatch;
       } else {
-        isMatch = selectableFilterMatch
+        isMatch = selectableFilterMatch;
       }
     } else {
       logger.warn({
         functionName: filterTutorials.name,
         message:
           "selectedFilterOperator has unexpected value.  Defaulting isMatch === true",
-        metadata: {selectedFilterOperator},
-      })
-      isMatch = true
+        metadata: { selectedFilterOperator },
+      });
+      isMatch = true;
     }
     if (isMatch) {
-      return [{...tutorial, ...fuzzyResult}]
+      return [{ ...tutorial, ...fuzzyResult }];
     }
     // #FlatMap ignores [] entries
-    return []
-  })
+    return [];
+  });
 }
 
-function TutorialSelection() {
-  const deps = useDependencies()
-  const logger = deps.createLogger().setGlobalContext({logicPath: __filename})
-  const location = useLocation<navigationTypes.NavigationPositionState>()
+function TutorialSelection(): JSX.Element {
+  const deps = useDependencies();
+  const logger = deps
+    .createLogger()
+    .setGlobalContext({ logicPath: __filename });
+  const location = useLocation<navigationTypes.NavigationPositionState>();
   const [selectedFilterOperator, setSelectedFilterOperator] =
-    useState<queryStringConst.FilterOptions>(queryStringConst.FilterOptions.OR)
+    useState<queryStringConst.FilterOptions>(queryStringConst.FilterOptions.OR);
   const [selectedTutorialCategories, setSelectedTutorialCategories] =
-    useState<tutorialConfigTypes.TutorialCategoryGUIDs>([])
+    useState<tutorialConfigTypes.TutorialCategoryGUIDs>([]);
   const [selectedTutorialTypes, setSelectedTutorialTypes] =
-    useState<tutorialConfigTypes.TutorialTypeGUIDs>([])
+    useState<tutorialConfigTypes.TutorialTypeGUIDs>([]);
   const [searchedTutorialName, setSearchedTutorialName] =
-    useState<queryStringTypes.TutorialSearchText>("")
+    useState<queryStringTypes.TutorialSearchText>("");
 
   useEffect(() => {
     logger.logInnerStartExecution({
       functionName: `${TutorialSelection.name}.${useEffect.name}`,
-    })
+    });
     const queryStringResults = {
       tutorialCategories: deps.queryString.getTutorialCategoryGUIDs(),
       tutorialFilterOperator: deps.queryString.getTutorialFilterOperator(),
       tutorialName: deps.queryString.getTutorialSearchInput(),
       tutorialTypes: deps.queryString.getTutorialTypeGUIDs(),
-    }
-    setSelectedTutorialCategories(queryStringResults.tutorialCategories)
-    setSelectedTutorialTypes(queryStringResults.tutorialTypes)
-    setSelectedFilterOperator(queryStringResults.tutorialFilterOperator)
-    setSearchedTutorialName(queryStringResults.tutorialName)
-  }, [location.search])
+    };
+    setSelectedTutorialCategories(queryStringResults.tutorialCategories);
+    setSelectedTutorialTypes(queryStringResults.tutorialTypes);
+    setSelectedFilterOperator(queryStringResults.tutorialFilterOperator);
+    setSearchedTutorialName(queryStringResults.tutorialName);
+  }, [location.search]);
 
   logger.logOuterStartExecution({
     functionName: `${TutorialSelection.name}.${filterTutorials.name}`,
-    metadata: {locationSearch: location.search},
-  })
+    metadata: { locationSearch: location.search },
+  });
 
   const tutorials = sortTutorials(
     filterTutorials({
@@ -204,17 +200,25 @@ function TutorialSelection() {
       selectedTutorialCategories,
       selectedTutorialTypes,
     }),
-  )
+  );
   logger.logOuterFinishedExecution({
     functionName: `${TutorialSelection.name}.${filterTutorials.name}`,
-    metadata: {tutorials},
-  })
+    metadata: { tutorials },
+  });
 
   return (
     <>
-      <Flex alignItems="center" flexDirection="column" mt={16} wrap="wrap">
-        <Header/>
-        <Playlists/>
+      <Flex
+        alignItems="center"
+        backgroundColor={"gray.50"}
+        flexDirection="column"
+        pb={5}
+        wrap="wrap"
+      >
+        <Header />
+      </Flex>
+      <Flex alignItems="center" flexDirection="column" wrap="wrap">
+        <Playlists />
       </Flex>
 
       <Flex flexDirection="column" maxW="3xl" mt={16} mx="auto">
@@ -225,11 +229,11 @@ function TutorialSelection() {
             selectedTutorialCategories={selectedTutorialCategories}
             selectedTutorialTypes={selectedTutorialTypes}
           />
-          <ResultCards tutorials={tutorials}/>
+          <ResultCards tutorials={tutorials} />
         </Stack>
       </Flex>
     </>
-  )
+  );
 }
 
-export { TutorialSelection }
+export { TutorialSelection };
