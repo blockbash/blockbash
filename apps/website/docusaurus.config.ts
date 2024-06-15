@@ -114,17 +114,6 @@ const config = {
       },
       name: "update-webpack-config",
     }),
-    [
-      "@docusaurus/plugin-ideal-image",
-      {
-        // Use false to debug, but it incurs huge perf costs
-        disableInDev: true,
-        max: 1030,
-        min: 640,
-        quality: 70,
-        steps: 2,
-      },
-    ],
   ],
   presets: [
     [
