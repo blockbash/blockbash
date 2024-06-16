@@ -237,6 +237,9 @@ create_challenge_metadata_file() {
   local challenge_guid_typescript
   challenge_guid_typescript="$(get_json_value "${key_build_args}.${key_challenge_guid_typescript}" "${devcontainer_build_time_artifact_file_path}")"
 
+  local challenge_solution_guid_typescript
+  challenge_solution_guid_typescript="$(get_json_value "${key_build_args}.${key_challenge_solution_guid_typescript}" "${devcontainer_build_time_artifact_file_path}")"
+
   local challenge_contracts_dir_name
   challenge_contracts_dir_name="$(get_json_value "${key_build_args}.${key_challenge_contracts_dir_name}" "${devcontainer_build_time_artifact_file_path}")"
 
@@ -268,6 +271,7 @@ create_challenge_metadata_file() {
   set_json_value "${key_image_name_short}" "${image_name_short}" "${metadata_file_path}"
   set_json_value "${key_image_name_with_branch_full}" "${image_name_with_branch_full}" "${metadata_file_path}"
   set_json_value "${key_challenge_guid_typescript}" "${challenge_guid_typescript}" "${metadata_file_path}"
+  set_json_value "${key_challenge_solution_guid_typescript}" "${challenge_solution_guid_typescript}" "${metadata_file_path}"
   set_json_value "${key_challenge_release}" "${challenge_release}" "${metadata_file_path}"
   set_json_value "${key_challenge_repo_name_full}" "${challenge_repo_name_full}" "${metadata_file_path}"
   set_json_value "${key_codespace_url}" "${challenge_codespace_url}" "${metadata_file_path}"

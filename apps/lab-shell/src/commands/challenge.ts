@@ -1,4 +1,4 @@
-import type Mochawesome from "mochawesome"
+import type Mochawesome from "mochawesome";
 
 import {
   challengeParser,
@@ -10,16 +10,20 @@ import {
   spinner,
   tutorialConfig,
   type tutorialConfigTypes,
-} from "@blockbash/common-be"
+} from "@blockbash/common-be";
 
-import { createChallengeReporter } from "../challengeReporter"
-import { type CommanderOption } from "../main.types"
-import { type ChallengeDependencies } from "./challenge.types"
+import { createChallengeReporter } from "../challengeReporter";
+import { type CommanderOption } from "../main.types";
+import { type ChallengeDependencies } from "./challenge.types";
 
 enum SpinnerNames {
   CHALLENGE_INIT = "CHALLENGE_INIT",
   CHALLENGE_OUTPUT = "CHALLENGE_OUTPUT",
   TRACE_OUTPUT = "TRACE_OUTPUT",
+}
+
+enum Github {
+  createIssueURL = "https://github.com/blockbash/blockbash/issues/new/choose",
 }
 
 export function createChallenge(): Challenge {
@@ -35,50 +39,49 @@ export function createChallenge(): Challenge {
       spinner,
       tutorialConfig,
     },
-  })
+  });
 }
 
 /**
  * Main orchestrator for challenge-related logic
  */
 class Challenge {
-  private readonly challengeParser: ChallengeDependencies["challengeParser"]
+  private readonly challengeParser: ChallengeDependencies["challengeParser"];
 
-  private readonly createChallengeReporter: ChallengeDependencies["createChallengeReporter"]
+  private readonly createChallengeReporter: ChallengeDependencies["createChallengeReporter"];
 
-  private readonly env: ChallengeDependencies["env"]
+  private readonly env: ChallengeDependencies["env"];
 
-  private readonly file: ChallengeDependencies["file"]
+  private readonly file: ChallengeDependencies["file"];
 
-  private readonly filePath: ChallengeDependencies["filePath"]
+  private readonly filePath: ChallengeDependencies["filePath"];
 
-  private readonly logger: ChallengeDependencies["logger"]
+  private readonly logger: ChallengeDependencies["logger"];
 
-  private readonly shell: ChallengeDependencies["shell"]
+  private readonly shell: ChallengeDependencies["shell"];
 
-  private readonly spinner: ChallengeDependencies["spinner"]
+  private readonly spinner: ChallengeDependencies["spinner"];
 
-  private readonly tutorialConfig: ChallengeDependencies["tutorialConfig"]
+  private readonly tutorialConfig: ChallengeDependencies["tutorialConfig"];
 
   constructor({
     injectedDependencies,
   }: {
-    injectedDependencies: ChallengeDependencies
-  })
-  {
-    this.filePath = injectedDependencies.filePath
-    this.logger = injectedDependencies.logger
-    this.shell = injectedDependencies.shell
-    this.tutorialConfig = injectedDependencies.tutorialConfig
-    this.spinner = injectedDependencies.spinner
-    this.env = injectedDependencies.env
-    this.file = injectedDependencies.file
-    this.challengeParser = injectedDependencies.challengeParser
-    this.createChallengeReporter = injectedDependencies.createChallengeReporter
+    injectedDependencies: ChallengeDependencies;
+  }) {
+    this.filePath = injectedDependencies.filePath;
+    this.logger = injectedDependencies.logger;
+    this.shell = injectedDependencies.shell;
+    this.tutorialConfig = injectedDependencies.tutorialConfig;
+    this.spinner = injectedDependencies.spinner;
+    this.env = injectedDependencies.env;
+    this.file = injectedDependencies.file;
+    this.challengeParser = injectedDependencies.challengeParser;
+    this.createChallengeReporter = injectedDependencies.createChallengeReporter;
     this.logger.setGlobalContext({
       className: Challenge.name,
       logicPath: __filename,
-    })
+    });
   }
 
   public execute(
@@ -89,16 +92,16 @@ class Challenge {
     // is easier.
     this.logger.logInnerStartExecution({
       functionName: this.execute.name,
-    })
+    });
     const challengeTextReplacements =
       this.tutorialConfig.getChallengeTextReplacements({
         tutorialGUID,
-      })
+      });
 
     this.spinner.start({
       name: SpinnerNames.CHALLENGE_INIT,
       spinnerText: "Initializing challenge engine...",
-    })
+    });
 
     const shellOutput = this.shell.execBashCommand({
       // 1) Chain all commands together with && so evaluation will stop if
@@ -114,10 +117,10 @@ class Challenge {
       cd ${this.filePath.challengesDirPath} &&\
       ${this.env.labExecEnvShellFormat({
         isInternalTestSuite,
-      })} FORCE_COLOR=2 pnpm exec hardhat test ${
+      })} FORCE_COLOR=1 pnpm exec hardhat test ${
         this.filePath.challengesDirPath
       }/${tutorialGUID}.spec.ts --trace`,
-    })
+    });
     // Handle hardhat cli related errors/warnings
     // When debugging in IntelliJ, stderr somehow gets a
     // debugger message that isn't an error
@@ -131,51 +134,50 @@ class Challenge {
         primarySpinnerText:
           "ChallengeParser verification failed because the initialization process created an error (below).  Please fix the error to proceed.",
         secondarySpinnerText: shellOutput.stderr,
-      })
-      this.shell.stopProcess()
+      });
+      this.shell.stopProcess();
     } else {
       this.spinner.success({
         name: SpinnerNames.CHALLENGE_INIT,
-      })
+      });
     }
 
     this.spinner.start({
       name: SpinnerNames.TRACE_OUTPUT,
       spinnerText: "Generating Call Trace...",
-    })
+    });
 
     const mochaOutputJSON = this.file.parseJSON({
       path: this.filePath.challengeResultsFilePath,
-    }) as Mochawesome.Output
+    }) as Mochawesome.Output;
     const failedChallenges = this.challengeParser.getFailedChallenges({
       json: mochaOutputJSON,
-    })
+    });
     const reporter = this.createChallengeReporter({
       failedChallenges,
-    })
+    });
     const traceOutput = this.challengeParser.applyTextReplacements({
       testRunnerStdout: shellOutput.stdout,
       textReplacements: challengeTextReplacements,
-    })
+    });
 
     // The trace should always contain a contract call
     if (traceOutput.toLowerCase().includes("call")) {
       this.spinner.success({
         appendConsoleText: traceOutput,
         name: SpinnerNames.TRACE_OUTPUT,
-      })
+      });
     } else {
       this.spinner.failure({
         isErrorCondition: true,
         name: SpinnerNames.TRACE_OUTPUT,
-        primarySpinnerText:
-          "Contract call trace failed to load.  Please file a Github Issue.",
-      })
+        primarySpinnerText: `Contract call trace failed to load.  Please file a Github Issue at ${Github.createIssueURL}}`,
+      });
     }
     this.spinner.start({
       name: SpinnerNames.CHALLENGE_OUTPUT,
       spinnerText: "Verifying solution...",
-    })
+    });
 
     // Handle challenge-related output
     if (failedChallenges.length === 0) {
@@ -183,22 +185,21 @@ class Challenge {
         name: SpinnerNames.CHALLENGE_OUTPUT,
         spinnerText:
           "You passed the lab! Great job! Feel free to move onto the next lesson",
-      })
+      });
     } else if (failedChallenges.length > 0) {
       this.spinner.failure({
         isErrorCondition: false,
         name: SpinnerNames.CHALLENGE_OUTPUT,
         primarySpinnerText:
-          "You didn't pass the lab.  Please use the 'Challenge Failures' (below) to improve your solution. You can also leverage the 'Contract Calls' (above) to understand the execution flow of your submission.",
+          "You didn't pass the lab.  Please use the 'Challenge Failures' (below) to improve your solution. You can also leverage the 'Contract Calls' (above) to understand the execution flow of your submission.  For further help, please review the lab's 'Need Help?' section.",
         secondarySpinnerText: reporter.stringifyFailedChallenges(),
-      })
+      });
     } else {
       this.logger.error({
         functionName: this.execute.name,
-        message:
-          "failedChallenges in an abnormal state.  Please file a Github Issue",
-        metadata: {failedChallenges, mochaOutputJSON, traceOutput},
-      })
+        message: `failedChallenges in an abnormal state.  Please file a Github Issue at ${Github.createIssueURL}}`,
+        metadata: { failedChallenges, mochaOutputJSON, traceOutput },
+      });
     }
   }
 }

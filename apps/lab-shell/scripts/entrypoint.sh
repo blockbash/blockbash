@@ -54,6 +54,9 @@ symlink_workspace() {
     ln -fs "${build_artifacts_challenge_tasks_file_path}" "${container_workspace_vscode_file_path}" &&
     ln -fs "${lab_shell_solhint_file_path}" "${container_workspace_dir_path}/${solhint_file_name}" &&
     ln -fs "${container_repo_prettier_config_file_path}" "${container_workspace_dir_path}/${prettier_config_file_name}"
+
+    # Remove unneeded files from learner environment
+    rm -rf "${container_workspace_dir_path}/output"
 }
 
 main() {

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# (C)hallenge (V)erify: Submits the learner's solution to the verification engine.
+
 # shellcheck source=./../../../../packages/common/scripts/source-all.sh
 . /blockbash/packages/common/scripts/source-all.sh --absolute_paths="true" --die_on_error="false"
 

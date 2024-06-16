@@ -6,7 +6,7 @@ import {
 } from "@blockbash/common-be";
 import { type AttackerSolution } from "@typechain";
 import hre from "hardhat";
-import { challengeEnv, errorTest, ethTest, testConst } from "lib/challenge";
+import { challengeEnv, errorTest, ethTest } from "lib/challenge";
 import "mocha";
 
 const challengeGroupName =
@@ -36,7 +36,7 @@ describe(challengeGroupName, function (): void {
     challengeGroupName,
     fn() {
       it(
-        testConst.AttackDescriptions.useAttackWithoutRevert,
+        tutorialConfigConst.AttackDescriptions.useAttackWithoutRevert,
         async function (): Promise<void> {
           await errorTest.useAttackWithoutRevert({
             attacker: attackerSolutionContract,
@@ -45,7 +45,7 @@ describe(challengeGroupName, function (): void {
         },
       );
       it(
-        testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+        tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
         async function (): Promise<void> {
           await ethTest.useAttackToDrainAllFunds({
             attacker: attackerSolutionContract,
@@ -61,6 +61,6 @@ describe(challengeGroupName, function (): void {
     },
     testSummary:
       // eslint-disable-next-line mocha/no-setup-in-describe
-      testConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
+      tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds,
   });
 });

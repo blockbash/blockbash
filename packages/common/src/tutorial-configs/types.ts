@@ -9,6 +9,7 @@ import type BuildChallengesConfig from "../../../../apps/build/artifacts/challen
 import { type Eth } from "../eth";
 import { type ILoggerMin } from "../logger.types";
 import { TutorialsConfigOrchestrator, type getChallengeURL } from "./configs";
+import { type AttackDescriptions } from "./constants.external";
 import { TutorialsConfigSchemas, type schema } from "./schemas";
 
 interface TutorialsConfigDependencies {
@@ -101,8 +102,12 @@ interface GetContract {
   tutorialGUID: TutorialGUID;
 }
 
+// Challenges
+type ChallengeDescriptions = AttackDescriptions;
+
 export {
   type BuildChallengesConfig,
+  type ChallengeDescriptions,
   type ChallengeTextReplacements,
   type Contract,
   type ContractDeployAccountGUID,

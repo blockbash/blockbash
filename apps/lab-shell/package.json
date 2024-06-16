@@ -5,6 +5,7 @@
   "scripts": {
     "challenge:smoke_test": "pnpm run challenge:verify reentrancyFundamentalsAttackPrompt",
     "challenge:verify": "tsx src/main.ts challenge verify",
+    "challenge:verify_solution": "tsx src/main.ts challenge verify --test-suite",
     "depcheck": "depcheck --skip-missing=true"
   },
   "dependencies": {
@@ -23,9 +24,7 @@
     "@blockbash/eslint-config-ts": "workspace:*"
   },
   "devDependenciesComments": {
-    "meta": [
-      "In 'production', we execute the cli with ts-node.  This is why we keep devDependencies to a minimum"
-    ]
+    "meta": ["In 'production', we execute the cli with ts-node.  This is why we keep devDependencies to a minimum"]
   },
   "volta": {
     "extends": "../../package.json"

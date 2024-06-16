@@ -4,10 +4,11 @@
       "challenge_contracts_dir_name": "reentrancy-fundamentals",
       "challenge_guid_bash": "reentrancy-fundamentals-attack-prompt",
       "challenge_guid_typescript": "reentrancyFundamentalsAttackPrompt",
+      "challenge_release": "1",
+      "challenge_solution_guid_typescript": "reentrancyFundamentalsAttackSolution",
       "container_challenge_open_file_paths": "Attacker.sol",
       "full_lab_base_image_tag": "${localEnv:full_lab_base_image_tag}",
       "lab_shell_scripts_dir_path": "${localEnv:lab_shell_scripts_dir_path}",
-      "challenge_release": "1",
       "target": "challenge_1"
     }
   },

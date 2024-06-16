@@ -1,16 +1,84 @@
 ---
 title: "Attack Lab: Solution"
-description: "null"
-keywords: ["reentrancy"]
+description: "Discover the solution to our Reentrancy Attack Lab and learn how to exploit and prevent reentrancy vulnerabilities in Solidity smart contracts. Dive into the code and terminal output to understand the attack flow and secure your contracts. Master smart contract security with our hands-on tutorial. Start learning now!"
+keywords:
+  - smart contract security
+  - solidity security
+  - ethereum security
+  - blockchain security
+  - smart contract vulnerabilities
+  - reentrancy attacks
+  - reentrancy vulnerabilities
+  - reentrancy attack solution
+  - reentrancy attack prevention
+  - smart contract exploitation
+  - smart contract hacking
+  - hands-on smart contract security
+  - solidity vulnerabilities
+  - ethereum vulnerabilities
+  - blockchain vulnerabilities
+  - smart contract attack vectors
+  - smart contract testing
+  - smart contract auditing
+  - solidity best practices
+  - ethereum best practices
+  - blockchain development
+  - smart contract development
+  - decentralized application security
+  - smart contract security tutorial
+  - reentrancy attack tutorial
+  - solidity smart contract tutorial
+  - ethereum smart contract tutorial
 sidebar_position: 3
 slug: "/tutorials/reentrancy-fundamentals-attack-lab-solution"
 hide_title: true
-draft: true
+draft: false
+hide_table_of_contents: true
 ---
 
-## Code
+import {chakra} from "@chakra-ui/react"
+import {tutorialConfigConst} from "@blockbash/common"
+import {CodeFootnote, DiagramFootnote, InlineTip, SolutionCodePanel, TerminalCodePanel, LinkTutorial} from "@components"
 
-```solidity title=Attacker.sol file=./reentrancy-fundamentals/AttackerSolution.sol {"1": 34-35} {"2": 23-25}
+## Introduction
+
+- Welcome to the next stage of your Reentrancy journey!
+- In this lesson, you'll dive into the solution of the
+  <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>.
+
+## Prerequisites
+
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory}/>
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>
+
+## Code Solution {#code_solution}
+
+<SolutionCodePanel>
+  ```solidity title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol collapse={1-10} {"4": 24}
+  ```
+
+```solidity title=Attacker.sol file=./reentrancy-fundamentals/AttackerSolution.sol collapse={1-16} ins={"1": 22} ins={"2": 23} ins={"3": 37}
+
 ```
+</SolutionCodePanel>
 
-## Explanation
+
+### Explanation
++ **Challenge**: You <chakra.span>{tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds}</chakra.span>
+  + <CodeFootnote type={'ins'}>1</CodeFootnote>: Corresponds to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content={tutorialConfigConst.TutorialSectionName.processDiagram} sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>'s <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>
+  + <CodeFootnote type={"ins"}>2</CodeFootnote>: Initiates the first cycle of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.
+  + <CodeFootnote type={"ins"}>3</CodeFootnote>: Initiates all subsequent cycles of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.  This process continues until all `eth` has been transferred to the `Attacker` Contract.
+    - <InlineTip label={"Tip"}/> To help visualize this process, review the [Terminal Solution](#terminal_solution) section.
++ **Challenge**: You <chakra.span>{tutorialConfigConst.AttackDescriptions.useAttackWithoutRevert}</chakra.span>
+  + <CodeFootnote type={"ins"}>1</CodeFootnote>: Deposits `_ATTACK_AMOUNT` (i.e., 1 `eth`) into the Attacker's account within `Vulnerable` Contract.
+  + <CodeFootnote type={"reg"}>4</CodeFootnote>: Will continually evaluate as `false` because of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.
+
+## Terminal Solution {#terminal-solution}
+
+<TerminalCodePanel>
+  ```ansi title="Terminal" file=./reentrancy-fundamentals/output/attackSolution.ansi
+  ```
+</TerminalCodePanel>
+
+### Summary
++ <InlineTip label={"Self Quiz"}/> Does the terminal output correspond to your understanding of Reentrancy?
