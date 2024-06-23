@@ -29,7 +29,7 @@ export enum LearningPathGUID {
 }
 
 export enum LearningPathName {
-  beginner = "beginner path",
+  beginner = "Beginner Path",
 }
 
 export enum LearningPathURL {
@@ -54,17 +54,17 @@ export enum TutorialDifficultyName {
 export enum TutorialGUID {
   reentrancyFundamentalsAttackPrompt = "reentrancyFundamentalsAttackPrompt",
   reentrancyFundamentalsAttackSolution = "reentrancyFundamentalsAttackSolution",
+  reentrancyFundamentalsAttackTheory = "reentrancyFundamentalsAttackTheory",
   reentrancyFundamentalsDefendPrompt = "reentrancyFundamentalsDefendPrompt",
   reentrancyFundamentalsDefendSolution = "reentrancyFundamentalsDefendSolution",
-  reentrancyFundamentalsTheory = "reentrancyFundamentalsTheory",
 }
 
 export enum TutorialName {
   reentrancyFundamentalsAttackPrompt = "Reentrancy Fundamentals: Attack Lab",
   reentrancyFundamentalsAttackSolution = "Reentrancy Fundamentals: Attack Lab (Solution)",
+  reentrancyFundamentalsAttackTheory = "Reentrancy Fundamentals: Attack Theory",
   reentrancyFundamentalsDefendPrompt = "Reentrancy Fundamentals: Defend Lab",
   reentrancyFundamentalsDefendSolution = "Reentrancy Fundamentals: Defend Lab (Solution)",
-  reentrancyFundamentalsTheory = "Reentrancy Fundamentals: Theory",
 }
 
 export enum DiagramConstructNames {
@@ -79,33 +79,45 @@ export enum TutorialTypeGUID {
   theory = "theory",
 }
 
-// TutorialSectionGUID: Corresponds to a section header's anchor tag
-export enum TutorialSectionGUID {
-  code = "#code",
-  diagram = "#diagram",
-  labChallenges = "#challenges",
-  labWorkflow = "#workflow",
-  needHelp = "#need-help",
-  terminalSolution = "#terminal-solution",
+/* AnchorGUID:
+ * - A '#' is prepended via getAnchor
+ * - Should correspond to docusaurus MDX headers
+ * (e.g., # Hello {#INSERT_ANCHOR_GUID_HERE})
+ * */
+export enum AnchorGUID {
+  code = "code",
+  labChallenges = "labChallenges",
+  labWorkflow = "labWorkflow",
+  needHelp = "needHelp",
+  processDiagram = "processDiagram",
+  terminalSolution = "terminalSolution",
+  tutorialSearch = "tutorialSearch",
 }
-export enum TutorialSectionName {
+
+// AnchorName: guid to name mapping
+export enum AnchorName {
   code = "Code",
   labChallenges = "Lab Challenges",
   labWorkflow = "Lab Workflow",
-  needHelp = "Need Help?",
+  needHelp = "Need Help",
   processDiagram = "Process Diagram",
   terminalSolution = "Terminal Solution",
+  tutorialSearch = "Tutorial Search",
 }
 
 export enum TutorialImageName {
   attackDiagram = "Attack Diagram",
+  diagramExample = "Diagram Example",
+  labEditorExample = "Editor Example",
   labSample = "Lab Sample",
+  labTerminalExample = "Terminal Example",
 }
 
 export enum TutorialTypeName {
-  attackLab = "attack lab",
-  defendLab = "defend lab",
-  theory = "theory",
+  attackLab = "Attack Lab",
+  attackTheory = "Attack Theory",
+  defendLab = "Defend Lab",
+  defendTheory = "Defend Theory",
 }
 
 export enum ExecutionEnvironmentName {

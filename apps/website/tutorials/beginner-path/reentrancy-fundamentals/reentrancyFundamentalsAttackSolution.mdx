@@ -38,7 +38,7 @@ hide_table_of_contents: true
 
 import {chakra} from "@chakra-ui/react"
 import {tutorialConfigConst} from "@blockbash/common"
-import {CodeFootnote, DiagramFootnote, InlineTip, SolutionCodePanel, TerminalCodePanel, LinkTutorial} from "@components"
+import {CodeFootnote, DiagramFootnote, InlineTip, SolutionCodePanel, TerminalCodePanel, LinkTutorial, LinkAnchor} from "@components"
 
 ## Introduction
 
@@ -48,10 +48,10 @@ import {CodeFootnote, DiagramFootnote, InlineTip, SolutionCodePanel, TerminalCod
 
 ## Prerequisites
 
-- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory}/>
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
 - <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>
 
-## Code Solution {#code_solution}
+## Code Solution
 
 <SolutionCodePanel>
   ```solidity title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol collapse={1-10} {"4": 24}
@@ -65,15 +65,17 @@ import {CodeFootnote, DiagramFootnote, InlineTip, SolutionCodePanel, TerminalCod
 
 ### Explanation
 + **Challenge**: You <chakra.span>{tutorialConfigConst.AttackDescriptions.useAttackToSuccessfullyDrainFunds}</chakra.span>
-  + <CodeFootnote type={'ins'}>1</CodeFootnote>: Corresponds to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content={tutorialConfigConst.TutorialSectionName.processDiagram} sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>'s <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>
-  + <CodeFootnote type={"ins"}>2</CodeFootnote>: Initiates the first cycle of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.
-  + <CodeFootnote type={"ins"}>3</CodeFootnote>: Initiates all subsequent cycles of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.  This process continues until all `eth` has been transferred to the `Attacker` Contract.
-    - <InlineTip label={"Tip"}/> To help visualize this process, review the [Terminal Solution](#terminal_solution) section.
+  + <CodeFootnote type={'ins'}>1</CodeFootnote>: Corresponds to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>'s <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>
+  + <CodeFootnote type={"ins"}>2</CodeFootnote>: Initiates the first cycle of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} content="'attack loop'" anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.
+  + <CodeFootnote type={"ins"}>3</CodeFootnote>: Initiates all subsequent cycles of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} content="'attack loop'" anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.  This process continues until all `eth` has been transferred to the `Attacker` Contract.
+    - <InlineTip label={"Tip"}/> To help visualize this process, review the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.terminalSolution}/> section.
+    
+    
 + **Challenge**: You <chakra.span>{tutorialConfigConst.AttackDescriptions.useAttackWithoutRevert}</chakra.span>
   + <CodeFootnote type={"ins"}>1</CodeFootnote>: Deposits `_ATTACK_AMOUNT` (i.e., 1 `eth`) into the Attacker's account within `Vulnerable` Contract.
-  + <CodeFootnote type={"reg"}>4</CodeFootnote>: Will continually evaluate as `false` because of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="'attack loop'" sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.
+  + <CodeFootnote type={"reg"}>4</CodeFootnote>: Will continually evaluate as `false` because of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} content="'attack loop'" anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.
 
-## Terminal Solution {#terminal-solution}
+## Terminal Solution {#terminalSolution}
 
 <TerminalCodePanel>
   ```ansi title="Terminal" file=./reentrancy-fundamentals/output/attackSolution.ansi

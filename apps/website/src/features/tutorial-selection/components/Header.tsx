@@ -1,5 +1,5 @@
 import { Box, Heading, Image } from "@chakra-ui/react";
-import BlockbashImageUrl from "@site/static/blockbash.png";
+import BlockbashImageUrl from "@site/static/img/blockbash.png";
 import React from "react";
 
 export function Header(): JSX.Element {

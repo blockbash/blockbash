@@ -29,7 +29,7 @@ type BorderProps = Pick<BoxProps, "border" | "borderColor" | "borderRadius">;
 export function Modal({
   children,
   hasBorder = false,
-  maxW = "4xl",
+  maxW = ["xs", "xs", "md"],
   title,
 }: ModalProps): JSX.Element {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -40,20 +40,27 @@ export function Modal({
   };
   return (
     <>
-      <Box boxShadow={Styles.boxShadowMin} maxW={maxW} p={5} rounded={"xl"}>
-        <Bold fontSize={"lg"}>{title}</Bold>
+      <Box
+        background={"white"}
+        boxShadow={Styles.boxShadowMin}
+        maxW={maxW}
+        p={5}
+        rounded={"xl"}
+      >
+        <Box mb={2}>
+          <Bold fontSize={"lg"}>{title}</Bold>
+        </Box>
         <Center>
           <InlineTip
             appendText={"Click on the image to zoom in"}
             label={"Tip"}
           />
         </Center>
-        <Box marginTop={3}>
+        <Box my={3}>
           <Divider />
         </Box>
         <Center>
           <Flex
-            mt={5}
             onClick={() => {
               onOpen();
             }}
@@ -64,12 +71,13 @@ export function Modal({
           </Flex>
         </Center>
         <ChakraModal
+          allowPinchZoom={true}
           isOpen={isOpen}
           // motionPreset: If you leverage a preset, it will distort the SVG text
           motionPreset={"none"}
           onClose={onClose}
           scrollBehavior={"inside"}
-          size="6xl"
+          size="full"
         >
           <ModalOverlay />
           <ModalContent>

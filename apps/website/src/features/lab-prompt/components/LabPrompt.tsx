@@ -34,8 +34,7 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
     <chakra.span>
       Complete the steps within the{" "}
       <LinkTutorial
-        content={tutorialConfigConst.TutorialSectionName.labWorkflow}
-        sectionGUID={tutorialConfigConst.TutorialSectionGUID.labWorkflow}
+        anchorGUID={tutorialConfigConst.AnchorGUID.labWorkflow}
         tutorialGUID={props.tutorialGUID}
       />{" "}
       section.
@@ -48,8 +47,7 @@ export function LabPrompt(props: LabPromptProps): JSX.Element {
         <chakra.span>
           If you have a question (or problem), please review the{" "}
           <LinkTutorial
-            content={tutorialConfigConst.TutorialSectionName.needHelp}
-            sectionGUID={tutorialConfigConst.TutorialSectionGUID.needHelp}
+            anchorGUID={tutorialConfigConst.AnchorGUID.needHelp}
             tutorialGUID={props.tutorialGUID}
           />{" "}
           section.

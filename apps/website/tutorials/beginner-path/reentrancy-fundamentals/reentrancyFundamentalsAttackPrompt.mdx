@@ -31,27 +31,27 @@ hide_title: true
 import {AttackLabWorkflow, Help, LabPrompt, LabSample} from "@features"
 import {chakra, Code, ListItem} from "@chakra-ui/react"
 import {tutorialConfigConst} from "@blockbash/common"
-import {ChallengePromptSection, DiagramFootnote, HintOrderedList, LinkTutorial} from "@components"
+import {ChallengePromptSection, DiagramFootnote, HintOrderedList,LinkAnchor, LinkTutorial} from "@components"
 
 ## Introduction
 
 - It's time for some hands-on experience!
 - In this lab, you'll leverage your Reentrancy knowledge to steal funds from the
-  <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} content="Vulnerable Contract" sectionGUID={tutorialConfigConst.TutorialSectionGUID.code}/>. Within the lab environment, you'll update the `Attacker` Contract (i.e., `Attacker.sol`) to exploit a Reentrancy vulnerability within the `Vulnerable` Contract (i.e., `Vulnerable.sol`).
-- As discussed in the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt} content={tutorialConfigConst.TutorialSectionName.labProcess} sectionGUID={tutorialConfigConst.TutorialSectionGUID.labProcess}/> section, your solution will be verified by the Challenge Verification Engine.
-- For you to pass the lab, you must complete the [Lab Challenges](#challenges).
+  <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} content="Vulnerable Contract" anchorGUID={tutorialConfigConst.AnchorGUID.code}/>. Within the lab environment, you'll update the `Attacker` Contract (i.e., `Attacker.sol`) to exploit a Reentrancy vulnerability within the `Vulnerable` Contract (i.e., `Vulnerable.sol`).
+- As discussed in the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt} anchorGUID={tutorialConfigConst.AnchorGUID.labWorkflow}/> section, your solution will be verified by the Challenge Verification Engine.
+- For you to pass the lab, you must complete the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.labChallenges}/>.
 
 ## Prerequisites
 
-- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory}/>
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
 
 
 ## Lab Sample
 <LabSample/>
 
 
-
-## Lab Challenges {#challenges}
+## Lab Challenges {#labChallenges}
 
 <ChallengePromptSection challenges={[
   {
@@ -64,7 +64,7 @@ import {ChallengePromptSection, DiagramFootnote, HintOrderedList, LinkTutorial} 
               Within the lab environment, go to the terminal and execute <Code>cvs</Code>.
             </ListItem>
             <ListItem>
-              You are now viewing the solution's call stack. Use this information to reverse engineer the solution.  When reviewing the output, you'll notice that <Code>Attacker.attack()</Code> is invoked. As discussed in the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt} content={tutorialConfigConst.TutorialSectionName.labWorkflow} sectionGUID={tutorialConfigConst.TutorialSectionGUID.labWorkflow}/> section, <Code>Attacker.attack()</Code> is automatically invoked during the challenge verification process. In other words, you don't need to call <Code>Attacker.attack()</Code> within your solution.
+              You are now viewing the solution's call stack. Use this information to reverse engineer the solution.  When reviewing the output, you'll notice that <Code>Attacker.attack()</Code> is invoked. As discussed in the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt} anchorGUID={tutorialConfigConst.AnchorGUID.labWorkflow}/> section, <Code>Attacker.attack()</Code> is automatically invoked during the challenge verification process. In other words, you don't need to call <Code>Attacker.attack()</Code> within your solution.
             </ListItem>
           </HintOrderedList>
         </chakra.span>,
@@ -88,7 +88,7 @@ import {ChallengePromptSection, DiagramFootnote, HintOrderedList, LinkTutorial} 
           <chakra.span>
           Review{' '}
           <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote> within the{' '}
-          <LinkTutorial content={tutorialConfigConst.TutorialSectionName.processDiagram} tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory} sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}/>.</chakra.span>),
+          <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.</chakra.span>),
         id: 2
       }],
     id: 2,
@@ -96,7 +96,7 @@ import {ChallengePromptSection, DiagramFootnote, HintOrderedList, LinkTutorial} 
   }
 ]}/>
 
-## Lab Workflow {#workflow}
+## Lab Workflow {#labWorkflow}
 <AttackLabWorkflow updateAttackerContractCTA={(
   <chakra.span>
     Within the <Code>Attacker</Code> contract, add your exploit code to the <Code>attack()</Code> and <Code>receive()</Code> methods.

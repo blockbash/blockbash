@@ -3,12 +3,14 @@ import DocusaurusLink from "@docusaurus/Link";
 import { useDependencies } from "@hooks";
 import React from "react";
 
-import { type LinkProps } from "./link.types";
-
-/**
- * Allows in-line components (e.g., text) to be linkable.
- * If you need to link a full component, see LinkWrapper component.
- */
+export interface LinkProps {
+  children: React.ReactNode;
+  href: string;
+  shouldOpenTab: boolean;
+}
+/* Base link component
+ * If possible, use AnchorLink, TutorialLink
+ * */
 export function Link(props: LinkProps): JSX.Element {
   const { children, href, shouldOpenTab } = props;
   const deps = useDependencies();

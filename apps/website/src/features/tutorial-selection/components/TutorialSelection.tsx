@@ -1,7 +1,9 @@
 import { type loggerTypes } from "@blockbash/common";
-import { Flex, Stack } from "@chakra-ui/react";
+import { type BoxProps, Flex, Stack } from "@chakra-ui/react";
 import { useLocation } from "@docusaurus/router";
+import { FeaturesOverview } from "@features";
 import { type Dependencies, useDependencies } from "@hooks";
+import { Styles } from "@src/css";
 import { type TutorialsWithFuzzyResult } from "@src/features/tutorial-selection/components/TutorialSelection.types";
 import {
   type dataTypes,
@@ -205,18 +207,39 @@ function TutorialSelection(): JSX.Element {
     functionName: `${TutorialSelection.name}.${filterTutorials.name}`,
     metadata: { tutorials },
   });
+  const commonFeaturesProps: BoxProps = {
+    borderRadius: "2xl",
+    px: [1, 4, 8],
+  };
 
   return (
     <>
       <Flex
         alignItems="center"
-        backgroundColor={"gray.50"}
+        backgroundColor={Styles.whiteBackgroundEmphasisColor}
         flexDirection="column"
         pb={5}
         wrap="wrap"
       >
         <Header />
       </Flex>
+
+      <Flex
+        bg={"white"}
+        borderRadius={"2xl"}
+        boxShadow={"sm"}
+        flexDirection="column"
+        maxW="3xl"
+        mt={16}
+        mx="auto"
+        overflow="auto"
+        pb={0}
+        pt={[4, 4, 8]}
+        {...commonFeaturesProps}
+      >
+        <FeaturesOverview stepBoxProps={commonFeaturesProps} />
+      </Flex>
+
       <Flex alignItems="center" flexDirection="column" wrap="wrap">
         <Playlists />
       </Flex>

@@ -6,6 +6,8 @@ import {
 import { Styles } from "@src/css";
 import { dependencyProviderDependencies } from "@src/providers/dependency";
 import { DependencyProvider, createLogger } from "@utils";
+// @ts-expect-error: chakra-ui-steps: It looks like this package needs to update its
+import { StepsTheme as Steps } from "chakra-ui-steps";
 import React from "react";
 const commonButtonBaseStyle: ButtonProps = {
   border: "none",
@@ -35,6 +37,7 @@ const customTheme = extendTheme({
         margin: 0.5,
       },
     },
+    Steps,
   },
   layerStyles: {
     hover: {

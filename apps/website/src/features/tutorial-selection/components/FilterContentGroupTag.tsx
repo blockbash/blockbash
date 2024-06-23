@@ -1,6 +1,6 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { TagLabel, TagLeftIcon, type TagProps } from "@chakra-ui/react";
-import { ContentGroupTag, LinkWrapper } from "@components";
+import { ContentGroupTag, LinkComponent } from "@components";
 import React from "react";
 
 interface ContentGroupTagProps extends TagProps {
@@ -29,9 +29,9 @@ export function FilterContentGroupTag(
   let content;
   if (props.internalLink !== undefined) {
     content = (
-      <LinkWrapper href={props.internalLink} shouldOpenTab={false}>
+      <LinkComponent href={props.internalLink} shouldOpenTab={false}>
         {tag}
-      </LinkWrapper>
+      </LinkComponent>
     );
   } else {
     content = tag;

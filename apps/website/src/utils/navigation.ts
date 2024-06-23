@@ -1,6 +1,6 @@
-import { type useHistory, type useLocation } from "@docusaurus/router"
-import { type navigationTypes } from "@utils"
-
+import { type tutorialConfigTypes } from "@blockbash/common";
+import { type useHistory, type useLocation } from "@docusaurus/router";
+import { type navigationTypes } from "@utils";
 type History = ReturnType<
   typeof useHistory<navigationTypes.NavigationPositionState>
 >;
@@ -9,32 +9,35 @@ type Location = ReturnType<
 >;
 
 class Navigation {
-  private readonly logger: navigationTypes.NavigationDependencies["logger"]
+  private readonly logger: navigationTypes.NavigationDependencies["logger"];
 
   constructor({
     injectedDependencies,
   }: {
     injectedDependencies: navigationTypes.NavigationDependencies;
-  })
-  {
+  }) {
     this.logger = injectedDependencies.logger.setGlobalContext({
       className: Navigation.name,
       logicPath: __filename,
-    })
+    });
   }
 
   private getPositionState(): navigationTypes.NavigationPositionState {
-    let state: navigationTypes.NavigationPositionState
+    let state: navigationTypes.NavigationPositionState;
 
     if (typeof window !== "undefined" && typeof document !== "undefined") {
       state = {
         focusedElementId: document.activeElement?.id,
         scrollTopPosition: window.scrollY,
-      }
+      };
     } else {
-      state = undefined
+      state = undefined;
     }
-    return state
+    return state;
+  }
+
+  getAnchor(guid: tutorialConfigTypes.AnchorGUID): string {
+    return `#${guid}`;
   }
 
   // Docs suggest passing location object and not leveraging history.location
@@ -45,20 +48,19 @@ class Navigation {
     navigationState,
   }: {
     navigationState: navigationTypes.NavigationPositionState;
-  }): void
-  {
-    const {focusedElementId, scrollTopPosition} = navigationState ?? {
+  }): void {
+    const { focusedElementId, scrollTopPosition } = navigationState ?? {
       focusedElementId: undefined,
       scrollTopPosition: 0,
-    }
+    };
     this.logger.logInnerStartExecution({
       functionName: this.restoreNavigationState.name,
-      metadata: {focusedElementId, scrollTopPosition},
-    })
+      metadata: { focusedElementId, scrollTopPosition },
+    });
     if (focusedElementId) {
-      document.getElementById(focusedElementId)?.focus()
+      document.getElementById(focusedElementId)?.focus();
     }
-    window.scrollTo({top: scrollTopPosition})
+    window.scrollTo({ top: scrollTopPosition });
   }
 
   // Leveraged for updating the URL and/or general navigation
@@ -70,17 +72,16 @@ class Navigation {
     history: History;
     location: Location;
     searchParams: URLSearchParams;
-  }): void
-  {
+  }): void {
     // Override parts of Location object with updated .search/.state
     const newLocation = {
       ...location,
       search: searchParams.toString(),
       state: this.getPositionState(),
-    }
+    };
 
-    history.push(newLocation)
+    history.push(newLocation);
   }
 }
 
-export { Navigation }
+export { Navigation };

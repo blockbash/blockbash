@@ -13,8 +13,7 @@ export function Help(props: HelpProps): JSX.Element {
       <ListItem>
         Review the hints within the{" "}
         <LinkTutorial
-          content={tutorialConfigConst.TutorialSectionName.labChallenges}
-          sectionGUID={tutorialConfigConst.TutorialSectionGUID.labChallenges}
+          anchorGUID={tutorialConfigConst.AnchorGUID.labChallenges}
           tutorialGUID={props.tutorialGUID}
         />{" "}
         section.

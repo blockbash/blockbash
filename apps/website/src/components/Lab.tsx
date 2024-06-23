@@ -3,7 +3,7 @@ import {
   type tutorialConfigTypes,
 } from "@blockbash/common";
 import { Button, Stack, chakra } from "@chakra-ui/react";
-import { LinkWrapper } from "@components";
+import { LinkComponent } from "@components";
 import { useDependencies } from "@hooks";
 import React from "react";
 
@@ -38,11 +38,11 @@ export function Lab(props: LabProps): JSX.Element {
         justify="flex-start"
       >
         <chakra.span>Click</chakra.span>
-        <LinkWrapper href={url} shouldOpenTab>
+        <LinkComponent href={url} shouldOpenTab>
           <Button size="sm">
             Initialize {props.executionEnvironmentName} Lab
           </Button>
-        </LinkWrapper>
+        </LinkComponent>
       </Stack>
     </>
   );
