@@ -66,7 +66,6 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
     <LinkAnchor
       anchorGUID={tutorialConfigConst.AnchorGUID.tutorialSearch}
       content={"Theory"}
-      shouldOpenTab
     />
   );
   const defendTheory = (
@@ -139,7 +138,6 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
             <LinkAnchor
               anchorGUID={tutorialConfigConst.AnchorGUID.tutorialSearch}
               content={tutorialConfigConst.TutorialTypeName.attackTheory}
-              shouldOpenTab
             />{" "}
             tutorial. {dontKnowWhereToStart}
           </Text>
