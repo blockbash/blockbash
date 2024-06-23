@@ -10,6 +10,7 @@ enum Styles {
    */
   docusaurusDesktopThresholdWidth = "997px",
   listLeftPadding = "var(--ifm-list-left-padding)",
+  mobileThresholdWidth = "425px",
   warningMaximum = "red.200",
   warningMedium = "red.100",
   warningMinimum = "red.50",

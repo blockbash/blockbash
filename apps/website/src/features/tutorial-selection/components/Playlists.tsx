@@ -5,7 +5,7 @@ import {
   CardHeader,
   Heading,
 } from "@chakra-ui/react";
-import { Card, Divider, LinkWrapper } from "@components";
+import { Card, Divider, LinkComponent } from "@components";
 import { useDependencies } from "@hooks";
 import { Styles } from "@site/src/css";
 import React from "react";
@@ -28,13 +28,13 @@ export function Playlists(): JSX.Element {
       <CardBody>
         <ButtonGroup size="sm" variant="solid">
           {deps.tutorialConfig.getActiveLearningPaths().map((path) => (
-            <LinkWrapper
+            <LinkComponent
               href={`${path.url}`}
               key={path.guid}
               shouldOpenTab={false}
             >
               <Button size="sm">{`${path.name} (${path.count})`}</Button>
-            </LinkWrapper>
+            </LinkComponent>
           ))}
         </ButtonGroup>
       </CardBody>

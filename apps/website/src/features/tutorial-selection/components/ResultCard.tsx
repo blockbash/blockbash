@@ -8,7 +8,7 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/react";
-import { Card, ContentGroupTag, Divider, LinkWrapper } from "@components";
+import { Card, ContentGroupTag, Divider, LinkComponent } from "@components";
 import { type TutorialWithFuzzyResult } from "@src/features/tutorial-selection/components/TutorialSelection.types";
 import React from "react";
 
@@ -19,7 +19,7 @@ export interface ResultCardProps {
 export function ResultCard(props: ResultCardProps): JSX.Element {
   const { tutorial } = props;
   return (
-    <LinkWrapper href={tutorial.url} shouldOpenTab={false}>
+    <LinkComponent href={tutorial.url} shouldOpenTab={false}>
       <Card _hover={{ boxShadow: "outline" }}>
         <CardHeader>
           <Flex gap="1" mb={[2, 1]}>
@@ -72,6 +72,6 @@ export function ResultCard(props: ResultCardProps): JSX.Element {
           </Wrap>
         </CardFooter>
       </Card>
-    </LinkWrapper>
+    </LinkComponent>
   );
 }

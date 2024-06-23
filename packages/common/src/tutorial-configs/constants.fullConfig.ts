@@ -70,7 +70,7 @@ const contentTypeConfigs = {
   },
   theory: {
     guid: TutorialTypeGUID.theory,
-    name: TutorialTypeName.theory,
+    name: TutorialTypeName.attackTheory,
   },
 };
 
@@ -103,15 +103,15 @@ const createTutorialsConfig = ({
       authorName: AuthorName.ZachRoof,
       categories: [contentCategoryConfigs.reentrancy],
       description:
-        "In this lesson, you'll learn the theory behind Reentrancy attacks.  In particular, you'll learn how the Attacker Contract will unexpectedly call (or \"re-enter\") the Vulnerable Contract before the Vulnerable Contract has updated its state.",
+        "In this tutorial, you'll learn the theory behind Reentrancy attacks.  In particular, you'll learn how the Attacker Contract will unexpectedly call (or \"re-enter\") the Vulnerable Contract before the Vulnerable Contract has updated its state.",
       difficultyName: TutorialDifficultyName.beginner,
       durationMinutes: 30,
-      guid: TutorialGUID.reentrancyFundamentalsTheory,
+      guid: TutorialGUID.reentrancyFundamentalsAttackTheory,
       learningPath: learningPathConfig.beginner,
-      name: TutorialName.reentrancyFundamentalsTheory,
+      name: TutorialName.reentrancyFundamentalsAttackTheory,
       publishedDate: new Date(2024, 4, 21),
       type: contentTypeConfigs.theory,
-      url: "/tutorials/reentrancy-fundamentals-theory",
+      url: "/tutorials/reentrancy-fundamentals-attack-theory",
     },
     {
       authorName: AuthorName.ZachRoof,

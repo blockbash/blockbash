@@ -37,7 +37,7 @@ export function SolutionCodePanel({
     <SectionWrapper>
       <Tip>
         <UnorderedList>
-          <Hide below={Styles.docusaurusDesktopThresholdWidth}>
+          <Hide below={Styles.docusaurusDesktopThresholdWidth} ssr={true}>
             <ListItem>
               <chakra.span>
                 To maximize viewing space, click the <ArrowLeftIcon /> in the

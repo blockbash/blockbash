@@ -22,9 +22,10 @@ import { TheoryCodePanel } from "./code/TheoryCodePanel";
 import { CodeFootnote } from "./highlight/CodeFootnote";
 import { DiagramFootnote } from "./highlight/DiagramFootnote";
 import { SectionWrapper } from "./layout/SectionWrapper";
-import { Link } from "./link/Link";
-import { LinkTutorial } from "./link/LinkTutorial";
-import { LinkWrapper } from "./link/LinkWrapper";
+import { LinkComponent } from "./link/LinkComponent";
+import { Link } from "./link/inline/Link";
+import { LinkAnchor } from "./link/inline/LinkAnchor";
+import { LinkTutorial } from "./link/inline/LinkTutorial";
 import { HintOrderedList } from "./list/HintOrderedList";
 import { OrderedList } from "./list/OrderedList";
 import { UnorderedList } from "./list/UnorderedList";
@@ -47,8 +48,9 @@ export {
   InlineWarning,
   Lab,
   Link,
+  LinkAnchor,
+  LinkComponent,
   LinkTutorial,
-  LinkWrapper,
   Modal,
   OrderedList,
   SVGModal,

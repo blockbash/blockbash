@@ -21,6 +21,10 @@ module.exports = {
       },
       rules: {
         /*
+         * no-unescaped-entities: This rule will fire whenever an apostrophe is within a sentence. Yes, I could use the entity "&apos;" but that would decrease readability.  The cons outweigh the pros.
+         * */
+        "react/no-unescaped-entities": "off",
+        /*
          Right now, this rule mandates that we pass all injectedDependencies to useEffect, however this can cause unneeded renders because we leverage logger  (and other non-reactive injectedDependencies) within useEffect functions. Once useEffectEvent is released, we should be able to update our code and remove this exception
         */
         "react-hooks/exhaustive-deps": 0,

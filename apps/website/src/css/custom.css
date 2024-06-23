@@ -33,4 +33,10 @@
     margin-top: var(--ifm-paragraph-margin-bottom);
 }
 
+div.cui-steps__vertical-step-content {
+    /* Leveraged by chakra-ui-steps */
+    padding-left: 0;
+    z-index: 1;
+}
+
 

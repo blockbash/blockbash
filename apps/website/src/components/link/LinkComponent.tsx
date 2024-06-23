@@ -1,24 +1,25 @@
-import { LinkBox, LinkOverlay, type LinkOverlayProps } from "@chakra-ui/react";
+import { LinkBox, LinkOverlay } from "@chakra-ui/react";
 import DocusaurusLink from "@docusaurus/Link";
 import { useDependencies } from "@hooks";
 import React from "react";
 
-interface LinkProps extends LinkOverlayProps {
+interface LinkComponentProps {
+  children: React.ReactNode;
   href: string;
-  shouldOpenTab: boolean;
+  shouldOpenTab?: boolean;
 }
 
 /**
- * Allows other components to be linkable.
- * If you need to link text, see Link component.
+ * Allows other components (with arbitrary size) to be linkable.
+ * If you need to link text, see components in the inline/ directory.
  */
-export function LinkWrapper(props: LinkProps): JSX.Element {
-  const { children, href, shouldOpenTab } = props;
+export function LinkComponent(props: LinkComponentProps): JSX.Element {
+  const { children, href, shouldOpenTab = false } = props;
   const deps = useDependencies();
   const logger = deps
     .createLogger()
     .setGlobalContext({ logicPath: __filename });
-  const onLinkOverlayClick = () => {
+  const onLinkOverlayClick = (): void => {
     logger.logInnerStartExecution({
       functionName: `${onLinkOverlayClick.name}`,
       metadata: { href, shouldOpenTab },

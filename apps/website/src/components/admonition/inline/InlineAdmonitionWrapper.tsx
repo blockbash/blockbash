@@ -1,4 +1,5 @@
 import { Box, Icon as ChakraIcon, Flex, chakra } from "@chakra-ui/react";
+import { Styles } from "@src/css";
 import React from "react";
 
 import { type InlineAdmonitionWrapperProps } from "./inlineAdmonition.types";
@@ -19,7 +20,7 @@ export function InlineAdmonitionWrapper(
       <Flex
         bg="white"
         border="1px"
-        borderColor="blackAlpha.700"
+        borderColor={Styles.borderColorMed}
         overflow="hidden"
         rounded="lg"
       >
@@ -33,7 +34,7 @@ export function InlineAdmonitionWrapper(
           <ChakraIcon as={Icon} boxSize={4} color="white" />
         </Flex>
 
-        <Flex mx={1}>
+        <Flex mx={1} px={0.5}>
           <chakra.span
             alignContent={"center"}
             color={props.labelColor}

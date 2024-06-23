@@ -29,8 +29,7 @@ export function AttackLabWorkflow({
         within the lab environment.) While doing the review, start to think
         about how you can update the <Code>Attacker</Code> contract to solve the{" "}
         <LinkTutorial
-          content={tutorialConfigConst.TutorialSectionName.labChallenges}
-          sectionGUID={tutorialConfigConst.TutorialSectionGUID.labChallenges}
+          anchorGUID={tutorialConfigConst.AnchorGUID.labChallenges}
           tutorialGUID={tutorialGUID}
         />
         .
@@ -73,8 +72,7 @@ export function AttackLabWorkflow({
         <chakra.span>
           <Code>cv</Code> prints a call stack and verifies that the{" "}
           <LinkTutorial
-            content={tutorialConfigConst.TutorialSectionName.labChallenges}
-            sectionGUID={tutorialConfigConst.TutorialSectionGUID.labChallenges}
+            anchorGUID={tutorialConfigConst.AnchorGUID.labChallenges}
             tutorialGUID={tutorialGUID}
           />{" "}
           have been completed.

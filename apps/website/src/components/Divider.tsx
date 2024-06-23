@@ -16,7 +16,7 @@ function Divider(props: DividerProps): JSX.Element {
   if (typeof title !== "undefined") {
     return (
       <Flex>
-        <ChakraDivider borderColor={Styles.borderColorMin} />
+        <ChakraDivider borderColor={Styles.borderColorMin} {...props} />
         <Heading as="h3" minW="fit-content" mt={3} px={3} size="sm">
           {title}
         </Heading>
@@ -29,6 +29,7 @@ function Divider(props: DividerProps): JSX.Element {
       borderColor={Styles.borderColorMin}
       my={0}
       variant="dashed"
+      {...props}
     />
   );
 }

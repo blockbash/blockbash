@@ -1,8 +1,8 @@
 ---
-title: Reentrancy Fundamentals Theory
-pagination_label: Reentrancy Fundamentals Theory
-sidebar_label: Theory
-description: "Learn how to secure your Solidity smart contracts against Reentrancy attacks. This step-by-step tutorial breaks down examples of Reentrancy vulnerabilities in a graphical way. This is ideal for Solidity devs looking to master smart contract security. Get started now and level up your Solidity skills!"
+title: "Reentrancy Fundamentals: Attack Theory"
+pagination_label: "Reentrancy Fundamentals: Attack Theory"
+sidebar_label: Attack Theory
+description: "Learn how to hack Solidity smart contracts via Reentrancy attacks. This step-by-step tutorial breaks down examples of Reentrancy vulnerabilities in a graphical way. This is ideal for Solidity devs looking to master smart contract security. Get started now and level up your Solidity skills!"
 keywords:
   - smart contract security
   - solidity security
@@ -26,18 +26,19 @@ keywords:
   - decentralized application security
   - DApp security
 sidebar_position: 1
-slug: "/tutorials/reentrancy-fundamentals-theory"
+slug: "/tutorials/reentrancy-fundamentals-attack-theory"
 hide_title: true
 hide_table_of_contents: true
 ---
 
 import {tutorialConfigConst} from "@blockbash/common"
-import {CodeFootnote, DiagramFootnote, InlineError, InlineTip, LinkTutorial, SVGModal, TheoryCodePanel} from "@components"
-import SVG from "./diagrams/theory.svg"
+import {CodeFootnote, DiagramFootnote, InlineError, InlineTip, LinkTutorial, LinkAnchor, SVGModal, TheoryCodePanel} from "@components"
+import SVG from "@site/static/img/tutorials/reentrancy-fundamentals/theory.svg"
 
 ## Introduction
 
-- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `Attacker` Contract) the ability to invoke the vulnerable contract (i.e., `Vulnerable` Contract) in an unexpected state.  As you'll see in the [Process Diagram](#diagram), `Attacker` Contract will unexpectedly call (or "re-enter") the `Vulnerable` Contract before the `Vulnerable` Contract has updated its state.
+- Reentrancy is a smart contract vulnerability that allows the attacker (i.e., `Attacker` Contract) the ability to invoke the vulnerable contract (i.e., `Vulnerable` Contract) in an unexpected state.  As you'll see in the
+<LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>, `Attacker` Contract will unexpectedly call (or "re-enter") the `Vulnerable` Contract before the `Vulnerable` Contract has updated its state.
 - In this lesson, you'll learn the theory behind Reentrancy attacks. After you've learned the theory, you'll create your own `Attacker` Contract and exploit this vulnerability within the lab environment!
 - <InlineTip label={"Tip"}/> Do you already have a grasp on how Reentrancy works?  Feel free to move to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/> and put your knowledge to the test!
 
@@ -46,25 +47,25 @@ import SVG from "./diagrams/theory.svg"
 - Basic Solidity knowledge
 
 ## Code {#code}
-<TheoryCodePanel tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsTheory}>
+<TheoryCodePanel tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}>
   <>
     ```solidity {"1":12} {"2":28} {"3":29} title=Vulnerable.sol file=./reentrancy-fundamentals/Vulnerable.sol
     ```
   </>
 </TheoryCodePanel>
 
-### Explanation {#code-explanation}
+### Explanation
 - <CodeFootnote type={'reg'}>1</CodeFootnote> : `deposit()` is leveraged to deposit eth
-- <CodeFootnote type={'reg'}>2</CodeFootnote> :
+- <CodeFootnote type={'reg'}>2</CodeFootnote>
   - `msg.sender` refers to the address that called `withdrawAll()`. Going forward, we'll refer to this as `attacker_address`.
   - `balances[msg.sender]` retrieves the internal balance associated with `attacker_address`. When `attacker_address` initially calls `withdrawAll()`, the balance is equal to the amount of eth that `attacker_address` initially deposited into the contract.
   - `call()` is a low-level Solidity function that can send eth to another address.  When this `call()` occurs, the `Attacker` contract can call `withdrawAll()` again before <CodeFootnote type={'reg'}>3</CodeFootnote> is evaluated.  This "re-entering" mechanism is the hallmark an Reentrancy attack.
 
-## Process Diagram {#diagram}
-<SVGModal SVG={SVG} SVGTitle={tutorialConfigConst.TutorialImageName.attackDiagram}/>
+## Process Diagram {#processDiagram}
+<SVGModal maxW={'fit-content'} SVG={SVG} SVGTitle={tutorialConfigConst.TutorialImageName.attackDiagram}/>
 
 
-### Explanation {#diagram_explanation}
+### Explanation
 
 - <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>: In this example, the attack starts when `Attacker` Contract creates a balance within `Vulnerable` Contract.
 - <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>2</DiagramFootnote>: Note the `Attacker` Contract balance (on the blockchain), is now 0 eth.
@@ -77,12 +78,14 @@ import SVG from "./diagrams/theory.svg"
 - The "attack loop" (see red arrows) can continue until all eth has been transferred.
 
 ## Next Steps
-- In the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>, you'll create the `Attacker` Contract and get some "hands on" experience with this vulnerability!
+- In the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackPrompt}/>, you'll create the `Attacker` Contract and get some "hands on" experience with this vulnerability!
 
 ## Real World Examples
 
 - [A Historical Collection of Reentrancy Attacks
 ](https://github.com/pcaversaccio/reentrancy-attacks)
+
 
 ## Inspiration
 We wanted to thank the content creators who published the content below. Without people like you, BlockBash tutorials couldn't exist :)

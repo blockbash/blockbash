@@ -24,10 +24,9 @@ export function TheoryCodePanel(
             Don't worry if the code (below) doesn't make complete sense. You'll
             dive into the details within the{" "}
             <LinkTutorial
-              content={"Process Diagram"}
-              sectionGUID={tutorialConfigConst.TutorialSectionGUID.diagram}
+              anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}
               tutorialGUID={props.tutorialGUID}
-            />
+            />.
           </chakra.span>
         </Tip>
         <CodePanel>{props.children}</CodePanel>
