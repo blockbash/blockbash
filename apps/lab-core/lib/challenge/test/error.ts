@@ -1,4 +1,4 @@
-import { type Attacker, type AttackerSolution } from "@typechain";
+import { type Attacker, type AttackerSolutionPattern0 } from "@typechain";
 import { expect } from "chai";
 import hre from "hardhat";
 import "mocha";
@@ -7,7 +7,7 @@ async function useAttackWithoutRevert({
   attacker,
   shouldWork,
 }: {
-  attacker: Attacker | AttackerSolution;
+  attacker: Attacker | AttackerSolutionPattern0;
   shouldWork: boolean;
 }): Promise<void> {
   // Tracer should be enabled for only one test (i.e., "primary" test)

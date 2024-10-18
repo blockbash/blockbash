@@ -4,7 +4,6 @@
 # + Leverages artifacts (publish_images_matrix_outputs_post) generated within create-matrix-outputs job
 # ##############################################################################
 
-
 # yamllint disable-line rule:truthy
 on:
   workflow_call:
@@ -21,19 +20,19 @@ on:
 
 jobs:
   create_multi_arch_images:
-    runs-on: ubuntu-22.04
     # null_environment: Leveraged in workflows that don't leverage any external secrets.  In this case, the environment makes sure that the workflow file can only be leveraged on a protected branch.
-    environment: "null_environment"
+    environment: null_environment
+    runs-on: ubuntu-22.04
     steps:
-      - if: ${{ false }}
-        shell: bash
-        id: "null"
+      - id: "null"
+        if: ${{ false }}
         # language=sh
         run: |
           # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
           # echo "build_scripts_workflow_steps_dir_path=null" >> $GITHUB_ENV
           # echo "publish_images_matrix_outputs_post=null" >> $GITHUB_ENV
           # echo "build_matrix_outputs_final_dir_path=null" >> $GITHUB_ENV
+        shell: bash
       # See commentary in create-deployment.yaml as to why we are doing this if
       # statement on all job steps
       - if: inputs.is_enabled == 'true'

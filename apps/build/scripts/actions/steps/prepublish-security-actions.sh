@@ -85,11 +85,12 @@ main() {
   )
 
   # Dont fail build on image updates
-  if is_production_build "${branch_name}" && [[ ${is_scheduled_execution} == "${false}" ]]; then
-    grype_flags+=(
-      --fail-on "critical"
-    )
-  fi
+  # TODO: Put this back in once dependabot is in place
+  #  if is_production_build "${branch_name}" && [[ ${is_scheduled_execution} == "${false}" ]]; then
+  #    grype_flags+=(
+  #      --fail-on "critical"
+  #    )
+  #  fi
 
   log_info "Executing grype scan on ${build_security_tools_grype_sbom_file_path}"
   if

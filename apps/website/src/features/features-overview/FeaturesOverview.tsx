@@ -50,8 +50,8 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
   const logger = deps
     .createLogger()
     .setGlobalContext({ logicPath: __filename });
-  const beginnerPath = deps.tutorialConfig.getActiveLearningPath(
-    tutorialConfigConst.LearningPathGUID.beginner,
+  const beginnerPath = deps.tutorialConfig.getActivePlaylist(
+    tutorialConfigConst.PlaylistGUID.beginner,
   );
   if (typeof beginnerPath === "undefined") {
     const errorMessage = "Couldn't find beginner path";
@@ -103,7 +103,7 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
   const learnVisuallyStep = (
     <>
       <Heading fontSize={"2xl"} fontWeight={"light"} textAlign={"center"}>
-        Are you a blockchain developer looking to increase your security
+        Are you a Solidity developer looking to increase your security
         knowledge? You're in the right place!{" "}
       </Heading>
       <Text mb={0}>
@@ -122,18 +122,18 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
       <Text>There are two types of {theoryCategory} tutorials:</Text>
       <UnorderedList textAlign={"left"}>
         <ListItem>
-          {attackTheory}: In order to write secure code, you need to understand
+          {attackTheory}: In order to write secure Solidity code, you need to understand
           how it can be hacked. This tutorial type will teach a security topic
           from an offensive (or "hacker") viewpoint.
         </ListItem>
         <ListItem>
-          {defendTheory}: Will teach design patterns that mitigate a particular
+          {defendTheory}: Will teach design patterns that help mitigate a particular
           vulnerability class.
         </ListItem>
       </UnorderedList>
       <Center my={3}>
         <Tip>
-          <Text>
+          <Text display={"inline"}>
             Start with a{" "}
             <LinkAnchor
               anchorGUID={tutorialConfigConst.AnchorGUID.tutorialSearch}
@@ -154,9 +154,9 @@ function FeaturesOverview(props: FeaturesOverviewProps): JSX.Element {
       </Text>
       <UnorderedList textAlign={"left"}>
         <ListItem>
-          {attackLab}: In order to write secure code, you need to understand how
+          {attackLab}: In order to write secure Solidity code, you need to understand how
           it can be hacked. In these exercises, you'll write code to exploit a
-          vulnerability class.
+          vulnerability.
         </ListItem>
         <ListItem>
           {defendLab}: In these exercises, you'll implement a design pattern to

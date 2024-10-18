@@ -1,0 +1,97 @@
+---
+title: "Defend Lab: Solution"
+description: "Learn how to protect your smart contracts from reentrancy vulnerabilities. Get hands-on experience with defense patterns like Checks-Effects-Interactions (CEI). Perfect for Solidity developers seeking to enhance their smart contract security skills."
+keywords:
+  - smart contract security
+  - reentrancy vulnerability
+  - solidity security
+  - reentrancy guard
+  - checks effects interactions
+  - smart contract defense patterns
+  - blockchain security
+  - cross-function reentrancy
+  - cross contract reentrancy
+  - read only reentrancy
+  - contract invariants
+  - state variable security
+  - solidity best practices
+  - smart contract attacks
+  - ethereum security
+  - web3 security
+  - defi security
+  - blockchain vulnerabilities
+sidebar_position: 6
+slug: "/tutorials/reentrancy-fundamentals-defend-lab-solution"
+hide_title: true
+draft: false
+hide_table_of_contents: true
+---
+
+<!-- Intellij mdx plugin doesn't support ts path aliases -->
+
+import {Bold, CodeFootnote, DiffCodePanel, LinkTutorial, SectionWrapper, SolutionCodePanel, TerminalCodePanel} from "../../../src/components"
+import {chakra, Hide} from "@chakra-ui/react"
+import {tutorialConfigConst} from "@blockbash/common"
+import {CodePanelSolutionTip, Liability} from "../../../src/features"
+import {Styles} from "../../../src/css"
+
+## Introduction
+
+- Welcome to the next stage of your Reentrancy journey!
+- This lesson covers the solution to the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendLab}/>.
+
+## Prerequisites
+
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}/>
+
+## Code Solution: DIFF View {#primaryCodeDiff}
+
+In the below DIFF, you'll witness the differences between the original `Vulnerable.sol` and the updated `Vulnerable.sol` that implements the Checks-Effects-Interactions pattern.
+
+<SectionWrapper>
+    <DiffCodePanel>
+        ```diff collapse={1 - 23} lang="solidity" title="Vulnerable.sol" file=./artifacts/diffs/contracts/reentrancy-fundamentals/VulnerableSolutionPattern0.txt
+        ```
+    </DiffCodePanel>
+</SectionWrapper>
+
+
+## Code Solution {#primaryCode}
+
+<SectionWrapper>
+    <Hide below={Styles.docusaurusDesktopThresholdWidth} ssr={true}>
+        <CodePanelSolutionTip showMaximizeInstruction/>
+    </Hide>
+    <SolutionCodePanel>
+        ```solidity collapse={1 - 23} {"1":28} {"2":31} {"3":32} title=Vulnerable.sol file=./contracts/reentrancy-fundamentals/VulnerableSolutionPattern0.sol
+        ```
+
+        ```solidity title=Attacker.sol file=./contracts/reentrancy-fundamentals/AttackerSolutionPattern0.sol collapse={1 - 15}
+
+        ```
+    </SolutionCodePanel>
+
+</SectionWrapper>
+
+## Explanation
+<chakra.span><Bold>Challenge: </Bold>{tutorialConfigConst.ChallengeDescriptions.shouldNotBeAbleToStealAllEthFromVulnerableContract}</chakra.span>
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>1</CodeFootnote> : As this `if` statement is *checking* a condition, it is classified as a **Check**.
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>2</CodeFootnote> : As this statement is *affecting* the contract state, it's considered an **Effect**.
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>3</CodeFootnote> : As this statement is *interacting* with an external contract, it's considered an **Interaction**.
+- By following the Checks-Effects-Interactions pattern, the Reentrancy vulnerability was mitigated.
+
+## Slither Output: DIFF View
+<SectionWrapper>
+    <CodePanelSolutionTip showHighlightInstructions/>
+    <TerminalCodePanel>
+        ```diff title="Slither Terminal output" lang="ansi" file=./artifacts/diffs/slither/reentrancyFundamentalsVulnerableSolutionPattern0.txt
+        ```
+    </TerminalCodePanel>
+</SectionWrapper>
+
+In the `slither` output DIFF (above), you'll witness the differences between the original `Vulnerable.sol` and the updated `Vulnerable.sol` that implements the Checks-Effects-Interactions pattern.  Notice that `slither`'s reentrancy findings no longer appear.
+
+## Disclosures
+<Liability/>

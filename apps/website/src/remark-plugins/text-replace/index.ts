@@ -1,16 +1,15 @@
 import type { Code } from "mdast";
 import type { Transformer } from "unified";
 
+import { tutorialConfigConst } from "@blockbash/common";
 import { visit } from "unist-util-visit";
+
 /*
 Inspiration:
 https://github.com/cert-manager/website/pull/1433/files
 https://github.com/facebook/docusaurus/blob/29b7a4ddbbd057372d10370fc062075d79c98b46/packages/docusaurus-remark-plugin-npm2yarn/src/index.ts
 */
 
-/*
- * Replace certain markdown strings
- * */
 export function remarkTextReplacePlugin(): Transformer {
   return async (ast) => {
     const functionAnsiColor = "[32m";
@@ -20,12 +19,17 @@ export function remarkTextReplacePlugin(): Transformer {
       // If within markdown code block
       if (node.type === "code") {
         const codeNode = node as Code;
-        // Allow the learner to easily copy/paste the solution code and
-        // use it in their environment
-        codeNode.value = codeNode.value.replaceAll(
-          "AttackerSolution",
-          "Attacker",
-        );
+        // See create-website-build.sh for more context.
+        for (const {
+          matchRegex,
+          replaceWithText,
+        } of tutorialConfigConst.globalTextReplacements) {
+          codeNode.value = codeNode.value.replaceAll(
+            new RegExp(matchRegex, "gmi"),
+            replaceWithText,
+          );
+        }
+
         if (codeNode.lang === "ansi") {
           // Remove weird characters within Terminal output
           codeNode.value = codeNode.value.replaceAll(

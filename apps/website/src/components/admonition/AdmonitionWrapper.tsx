@@ -1,20 +1,27 @@
 import { Box, Icon as ChakraIcon, Flex, Text, chakra } from "@chakra-ui/react";
 import { Styles } from "@src/css";
-import React, { type ReactNode } from "react";
+import React from "react";
 
 import { Divider } from "../Divider";
 import { type InlineAdmonitionWrapperProps } from "./inline/inlineAdmonition.types";
 
 export interface AdmonitionWrapperProps extends InlineAdmonitionWrapperProps {
-  children: ReactNode;
+  children: React.ReactElement;
+  isCentered: boolean;
+  isFlattened: boolean;
 }
 
-export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
-  const children = props.children;
-  const Icon = props.icon;
-
+export function AdmonitionWrapper({
+  children,
+  icon: Icon,
+  iconBackgroundColor,
+  isCentered,
+  isFlattened,
+  label,
+  labelColor,
+}: AdmonitionWrapperProps): JSX.Element {
   return (
-    <Flex maxW={"lg"}>
+    <Flex maxW={"lg"} mx={isCentered ? "auto" : 0}>
       <Flex
         bg="white"
         border="1px"
@@ -26,26 +33,29 @@ export function AdmonitionWrapper(props: AdmonitionWrapperProps): JSX.Element {
         {/* Icon */}
         <Flex
           alignItems="center"
-          bg={props.iconBackgroundColor}
+          bg={iconBackgroundColor}
           justifyContent="center"
           w={7}
         >
-          <ChakraIcon as={Icon} boxSize={6} color="white" />
+          <ChakraIcon as={Icon} boxSize={5} color="white" />
         </Flex>
 
-        <Box py={2}>
+        <Box py={isFlattened ? 1 : 2}>
           <Box mx={3}>
             <chakra.span
-              color={props.labelColor}
-              fontSize={["xl"]}
+              color={labelColor}
+              display={isFlattened ? "inline" : "block"}
               fontWeight="bold"
             >
-              {props.label}
+              {label}
+              {isFlattened && ":"}{" "}
             </chakra.span>
-            <Box my={1}>
-              <Divider />
-            </Box>
-            <Text color="gray.600" fontSize="md" my={0}>
+            {!isFlattened && (
+              <Box my={1}>
+                <Divider />
+              </Box>
+            )}
+            <Text display={isFlattened ? "inline" : "block"} my={0}>
               {children}
             </Text>
           </Box>

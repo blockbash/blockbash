@@ -9,7 +9,7 @@ The corresponding type is:
 https://github.com/facebook/docusaurus/blob/32d5ab08caab5e525ee5553807409768dfff711d/packages/docusaurus-module-type-aliases/src/index.d.ts#L375C25-L377C4
 */
 interface SVGModalProps {
-  SVG: ComponentType<SVGProps<SVGSVGElement> & { title?: string }>;
+  SVG: ComponentType<{ title?: string } & SVGProps<SVGSVGElement>>;
   SVGTitle: ModalProps["title"];
   hasBorder?: ModalProps["hasBorder"];
   maxW?: ModalProps["maxW"];

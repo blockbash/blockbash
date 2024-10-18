@@ -9,5 +9,5 @@ export interface ChallengePromptProps {
 export function ChallengePrompt({
   description,
 }: ChallengePromptProps): JSX.Element {
-  return <chakra.span>Solution {description}</chakra.span>;
+  return <chakra.span>{description}</chakra.span>;
 }

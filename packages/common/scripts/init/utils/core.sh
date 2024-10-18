@@ -43,13 +43,14 @@ disable_trace() {
   set +x
 }
 
-is_local_build() {
-  # BLOCKBASH_IS_LOCAL: Is set to "true" in Github and false in local environment.  This value is shared across all execution environments (e.g., developer environment host, CI, challenge environment).
+is_local_dev_env() {
+  # BLOCKBASH_IS_LOCAL: Is set to true in local environment.  This value is shared across all execution environments (e.g., developer environment host, CI, lab environment).
   [[ ${BLOCKBASH_IS_LOCAL} == "${true}" ]]
 }
 
 is_github_build() {
-  ! is_local_build && ! is_in_challenge_environment
+  # Signifies build process that is NOT occurring in local environment
+  ! is_local_dev_env && ! is_in_lab_environment
 }
 
 should_kill_shell() {
@@ -192,7 +193,7 @@ is_alertable_log_level() {
   [[ ${level} == "${error_level}" ]] || [[ ${level} == "${warning_level}" ]]
 }
 
-is_in_challenge_environment() {
+is_in_lab_environment() {
   is_in_codespace || is_in_remote_development
 }
 
@@ -200,8 +201,8 @@ _send_to_terminal() {
   local message="${1}"
   local level="${2}" # trace/debug/info/warn/error
 
-  # By checking is_in_challenge_environment first, we avoid the expensive is_in_tty lookup
-  if is_in_challenge_environment && is_tty_available && is_alertable_log_level "${level}"; then
+  # By checking is_in_lab_environment first, we avoid the expensive is_in_tty lookup
+  if is_in_lab_environment && is_tty_available && is_alertable_log_level "${level}"; then
     # If there is an error from a process that is executing in the background,
     # we want to surface this to the user's terminal.
     # In this situation, logging to stdout wont do anything because the process

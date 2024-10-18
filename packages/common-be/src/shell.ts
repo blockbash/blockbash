@@ -1,26 +1,26 @@
-import type { ShellString } from "shelljs"
+import type { ShellString } from "shelljs";
 
-import type { ShellDependencies } from "./shell.types"
+import type { ShellDependencies } from "./shell.types";
 
 export class Shell {
-  private readonly isDeveloperEnv: ShellDependencies["isDeveloperEnv"]
+  private readonly isDeveloperEnv: ShellDependencies["isDeveloperEnv"];
 
-  private readonly logger: ShellDependencies["logger"]
+  private readonly logger: ShellDependencies["logger"];
 
-  private readonly shellLib: ShellDependencies["shellLib"]
+  private readonly shellLib: ShellDependencies["shellLib"];
 
   constructor({
     injectedDependencies,
   }: {
-    injectedDependencies: ShellDependencies
+    injectedDependencies: ShellDependencies;
   }) {
-    this.shellLib = injectedDependencies.shellLib
-    this.logger = injectedDependencies.logger
-    this.isDeveloperEnv = injectedDependencies.isDeveloperEnv
+    this.shellLib = injectedDependencies.shellLib;
+    this.logger = injectedDependencies.logger;
+    this.isDeveloperEnv = injectedDependencies.isDeveloperEnv;
     this.logger.setGlobalContext({
       className: Shell.name,
       logicPath: __filename,
-    })
+    });
   }
 
   containsStderr(stderr: string) {
@@ -30,17 +30,17 @@ export class Shell {
       this.isDeveloperEnv &&
       stderr.toLowerCase().startsWith("debugger")
     ) {
-      return false
+      return false;
     }
-    return stderr !== ""
+    return stderr !== "";
   }
 
   execBashCommand({
     command,
     silent = true,
   }: {
-    command: string
-    silent?: boolean
+    command: string;
+    silent?: boolean;
   }): ShellString {
     this.logger.logInnerStartExecution({
       functionName: this.execBashCommand.name,
@@ -48,19 +48,19 @@ export class Shell {
         command,
         silent,
       },
-    })
-    return this.shellLib.exec(command, { silent })
+    });
+    return this.shellLib.exec(command, { silent });
   }
 
   stopProcess() {
-    const exitCode = 1
+    const exitCode = 1;
     this.logger.info({
       functionName: this.stopProcess.name,
       message: `Stopping the current process'`,
       metadata: {
         exitCode,
       },
-    })
-    this.shellLib.exit(exitCode)
+    });
+    this.shellLib.exit(exitCode);
   }
 }

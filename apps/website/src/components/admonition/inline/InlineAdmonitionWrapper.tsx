@@ -2,6 +2,7 @@ import { Box, Icon as ChakraIcon, Flex, chakra } from "@chakra-ui/react";
 import { Styles } from "@src/css";
 import React from "react";
 
+import { sharedInlineStyles } from "../../global-styles.const";
 import { type InlineAdmonitionWrapperProps } from "./inlineAdmonition.types";
 
 export function InlineAdmonitionWrapper(
@@ -11,11 +12,10 @@ export function InlineAdmonitionWrapper(
 
   return (
     <Box
-      display={"inline-flex"}
-      m={0.5}
+      display={"inline-block"}
       maxW={"fit-content"}
       position={"relative"}
-      top={1}
+      top={0.5}
     >
       <Flex
         bg="white"
@@ -31,23 +31,13 @@ export function InlineAdmonitionWrapper(
           justifyContent="center"
           w={5}
         >
-          <ChakraIcon as={Icon} boxSize={4} color="white" />
+          <ChakraIcon as={Icon} boxSize={3.5} color="white" />
         </Flex>
 
-        <Flex mx={1} px={0.5}>
-          <chakra.span
-            alignContent={"center"}
-            color={props.labelColor}
-            fontSize={"md"}
-            fontWeight="bold"
-          >
+        <Flex {...sharedInlineStyles} mx={1} px={0.5}>
+          <chakra.span color={props.labelColor} fontWeight="bold">
             {props.label}
           </chakra.span>
-          {typeof props.appendText !== "undefined" && (
-            <chakra.span alignContent={"center"} fontSize={"md"} ml={1}>
-              {props.appendText}
-            </chakra.span>
-          )}
         </Flex>
       </Flex>
     </Box>

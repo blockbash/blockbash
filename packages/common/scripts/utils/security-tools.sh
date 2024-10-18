@@ -21,11 +21,11 @@ get_runner_security_tools_cli_debs_dir_path() {
 
 get_runner_security_tools_cli_deb_file_path() {
   local cli_name="${1}"
-  local challenge_release="${2}"
+  local lab_release="${2}"
 
   local cli_debs_dir_path
-  cli_debs_dir_path="$(get_runner_security_tools_cli_debs_dir_path ${cli_name})"
-  echo -n "${cli_debs_dir_path}/${challenge_release}.deb"
+  cli_debs_dir_path="$(get_runner_security_tools_cli_debs_dir_path "${cli_name}")"
+  echo -n "${cli_debs_dir_path}/${lab_release}.deb"
 }
 
 get_github_deb_download_cli_name() {
@@ -138,7 +138,7 @@ download_latest_github_release() {
   local return_status
 
   #https://github.com/sigstore/cosign/releases/download/latest/cosign-linux-amd64
-  if ! curl --silent --location --create-dirs --output "${local_file_path}" "https://github.com/${full_repo_name}/releases/latest/download/${remote_file_name}"; then
+  if ! download_file "https://github.com/${full_repo_name}/releases/latest/download/${remote_file_name}" "${local_file_path}" "${true}"; then
     return_status="${?}"
     die "${full_repo_name} download failed! curl status: ${return_status}"
   fi

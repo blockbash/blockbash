@@ -5,16 +5,23 @@ import { IoMdAlert } from "react-icons/io";
 import { AdmonitionWrapper } from "./AdmonitionWrapper";
 import { type AdmonitionProps } from "./admonition.types";
 
-export function Warning(props: AdmonitionProps): JSX.Element {
+export function Warning({
+  children,
+  isCentered = false,
+  isFlattened = true,
+  labelOverride,
+}: AdmonitionProps): JSX.Element {
   return (
     /* admonitionLabelColor: Using yellow is visually jarring */
     <AdmonitionWrapper
       icon={IoMdAlert}
       iconBackgroundColor={Styles.yellowPrimaryColor}
-      label={"Warning"}
+      isCentered={isCentered}
+      isFlattened={isFlattened}
+      label={typeof labelOverride === "undefined" ? "Warning" : labelOverride}
       labelColor={"black"}
     >
-      {props.children}
+      {children}
     </AdmonitionWrapper>
   );
 }

@@ -3,10 +3,10 @@
 # ##############################################################################
 : << COMMENT
 
-PURPOSE: Init script when challenge container is executed.
+PURPOSE: Init script when lab container is executed.
   - workflow argument is set via the CMD Dockerfile instruction or when executing via 'docker run'
   - Text sent to stdout (from entrypoint.sh) may not be seen by the user.  This is because the devcontainer might be open but the user doesn't have their terminal open.  If logic needs to send output to the learner, leverage a "hook" script (apps/lab-shell/scripts/hooks).
-  - When the learner opens the challenge environment, entrypoint.sh and tasks (within tasks.json) will be executed.
+  - When the learner opens the lab environment, entrypoint.sh and tasks (within tasks.json) will be executed.
 
 WORKFLOWS: Into the future, we could have different workflows for different IDE environments
   - devcontainer-vscode: Set by default in Dockerfile-primary.  Used for vscode-related devcontainers.
@@ -45,32 +45,64 @@ done
 
 symlink_workspace() {
   local container_workspace_dir_path="${1}"
-  local container_challenge_contracts_dir_path="${2}"
+  local container_lab_contracts_dir_path="${2}"
+  local lab_open_relative_file_paths="${3}"
+  local lab_additional_symlinked_relative_file_paths="${4}"
 
   local container_workspace_vscode_file_path="${container_workspace_dir_path}/${vscode_dir_name}/${vscode_tasks_file_name}"
 
-  create_parent_directories_for_file "${container_workspace_vscode_file_path}" &&
-    ln -fs "${container_challenge_contracts_dir_path}"/* "${container_workspace_dir_path}/" &&
-    ln -fs "${build_artifacts_challenge_tasks_file_path}" "${container_workspace_vscode_file_path}" &&
-    ln -fs "${lab_shell_solhint_file_path}" "${container_workspace_dir_path}/${solhint_file_name}" &&
-    ln -fs "${container_repo_prettier_config_file_path}" "${container_workspace_dir_path}/${prettier_config_file_name}"
+  create_parent_directories_for_file "${container_workspace_vscode_file_path}"
 
-    # Remove unneeded files from learner environment
-    rm -rf "${container_workspace_dir_path}/output"
+  create_symlink "${build_artifacts_lab_tasks_file_path}" "${container_workspace_vscode_file_path}"
+
+  create_symlink "${lab_shell_solhint_file_path}" "${container_workspace_dir_path}/${solhint_file_name}"
+
+  create_symlink "${container_repo_prettier_config_file_path}" "${container_workspace_dir_path}/${prettier_config_file_name}"
+
+  # Set the IFS to comma (,) to iterate through comma delimited values
+  IFS=','
+
+  local open_relative_file_path container_workspace_file_path
+  for open_relative_file_path in ${lab_open_relative_file_paths}; do
+    container_workspace_file_path="${container_workspace_dir_path}/${open_relative_file_path}"
+    create_parent_directories_for_file "${container_workspace_file_path}"
+    create_symlink "${container_lab_contracts_dir_path}/${open_relative_file_path}" "${container_workspace_file_path}"
+  done
+
+  local additional_symlinked_file_path container_workspace_file_path
+  for additional_symlinked_file_path in ${lab_additional_symlinked_relative_file_paths}; do
+    container_workspace_file_path="${container_workspace_dir_path}/${additional_symlinked_file_path}"
+    create_parent_directories_for_file "${container_workspace_file_path}"
+    create_symlink "${container_lab_contracts_dir_path}/${additional_symlinked_file_path}" "${container_workspace_file_path}"
+  done
+
+  # Reset the IFS to its default value
+  IFS=$' \t\n'
+
 }
 
 main() {
-  local challenge_guid_bash
-  challenge_guid_bash=$(get_container_challenge_guid_bash)
+  local lab_guid_bash
+  lab_guid_bash=$(get_container_lab_guid_bash)
 
-  local container_challenge_contracts_dir_path
-  container_challenge_contracts_dir_path=$(get_challenge_metadata_value "${key_container_challenge_contracts_dir_path}" "${challenge_guid_bash}")
+  local container_lab_contracts_dir_path
+  container_lab_contracts_dir_path=$(get_lab_metadata_value "${key_container_lab_contracts_dir_path}" "${lab_guid_bash}")
 
-  if [[ ${workflow} == "${challenge_workflow_devcontainer_vscode}" ]]; then
+  # Files are automatically symlinked into learner's workspace
+  # Files need to be relative to workspace root
+  local lab_open_relative_file_paths
+  lab_open_relative_file_paths=$(get_lab_metadata_value "${key_lab_open_relative_file_paths}" "${lab_guid_bash}")
+
+  # Additional files that should be symlinked into learner's workspace
+  # Files need to be relative to workspace root
+  local lab_additional_symlinked_relative_file_paths
+  lab_additional_symlinked_relative_file_paths=$(get_lab_metadata_value "${key_lab_additional_symlinked_relative_file_paths}" "${lab_guid_bash}")
+
+  if [[ ${workflow} == "${lab_workflow_devcontainer_vscode}" ]]; then
     log_info "Executing within vscode environment"
 
     # BLOCKBASH_WORKSPACE_DIR_PATH: Is declared within build-time.devcontainer.base.json
-    # When the challenge environment is initialized, the value can be different depending on how the devcontainer is launched (thus we evaluate it within entrypoint.sh).
+    # When the lab environment is initialized, the value can be different depending on how the devcontainer is launched (thus we evaluate it within entrypoint.sh).
     # https://github.com/microsoft/vscode-remote-release/issues/3034
     if [[ -z ${BLOCKBASH_WORKSPACE_DIR_PATH} ]]; then
       die "BLOCKBASH_WORKSPACE_DIR_PATH was NOT set"
@@ -78,14 +110,14 @@ main() {
 
     set_container_state_value "${key_blockbash_workspace_dir_path}" "${BLOCKBASH_WORKSPACE_DIR_PATH}"
 
-    if ! has_challenge_bootstrapped_before; then
-      log_debug "${challenge_guid_bash} has not bootstrapped before"
+    if ! has_lab_bootstrapped_before; then
+      log_debug "${lab_guid_bash} has not bootstrapped before"
       # entrypoint.sh executes every time the container is instantiated.
       # If the container has already been instantiated and the symlinks are overwritten,
       # this causes weird behavior with the vscode devcontainer extension.
-      symlink_workspace "${BLOCKBASH_WORKSPACE_DIR_PATH}" "${container_challenge_contracts_dir_path}"
+      symlink_workspace "${BLOCKBASH_WORKSPACE_DIR_PATH}" "${container_lab_contracts_dir_path}" "${lab_open_relative_file_paths}" "${lab_additional_symlinked_relative_file_paths}"
     else
-      log_debug "${challenge_guid_bash} has bootstrapped before"
+      log_debug "${lab_guid_bash} has bootstrapped before"
     fi
 
     # Always put this at the end!

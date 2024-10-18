@@ -1,6 +1,6 @@
-import { loggerConst } from "@blockbash/common"
+import { loggerConst } from "@blockbash/common";
 
-const { LogMessages } = loggerConst
+const { LogMessages } = loggerConst;
 
 enum Levels {
   DEBUG = "debug",
@@ -12,4 +12,4 @@ enum Levels {
   WARN = "warn",
 }
 
-export { Levels, LogMessages }
+export { Levels, LogMessages };

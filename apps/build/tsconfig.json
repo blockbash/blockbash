@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "."
   },
-  "extends": [
-    "@tsconfig/node20/tsconfig",
-    "@tsconfig/strictest/tsconfig"
-  ],
+  "extends": ["@tsconfig/node20/tsconfig", "@tsconfig/strictest/tsconfig"],
   "include": ["**/*"],
   "ts-node": {
     "files": true,

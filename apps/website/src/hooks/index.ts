@@ -1,3 +1,3 @@
-import { type Dependencies, useDependencies } from "@src/hooks/useDependencies"
+import { type Dependencies, useDependencies } from "@src/hooks/useDependencies";
 
-export { type Dependencies, useDependencies }
+export { type Dependencies, useDependencies };

@@ -9,7 +9,7 @@ export interface HelpProps {
 
 export function Help(props: HelpProps): JSX.Element {
   return (
-    <OrderedList>
+    <OrderedList id={tutorialConfigConst.AnchorGUID.needHelp}>
       <ListItem>
         Review the hints within the{" "}
         <LinkTutorial

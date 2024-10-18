@@ -3,12 +3,7 @@
 # - Conventions:
 #   - Don't do job-level IF statements. This makes downstream jobs (with needs statements) challenging to maintain because the needs statement won't execute (if the upstream job is skipped). Yes, you can force a job to not evaluate needs with an always(), but this can cause unexpected behavior as a downstream job will run if a needs step failed (https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idif). Thus, we do if statements for every step in the job to make the job return "success" (even if no steps executed) https://github.com/orgs/community/discussions/82744
 # ##############################################################################
-
 name: create_deployment
-# permissions: Disable default permissions (at the workflow-level), so we can set them with granularity at the job-level
-permissions: {}
-run-name: "create_deployment: ${{ github.head_ref }} by ${{ github.actor }}"
-
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -21,6 +16,10 @@ on:
   # Scheduled workflows will only run on the default branch.
   schedule: # Execute at daily at 4:30 am UTC (12:30 am EST)
     - cron: "30 4 * * *"
+# permissions: Disable default permissions (at the workflow-level), so we can set them with granularity at the job-level
+permissions: {}
+run-name: "create_deployment: ${{ github.head_ref }} by ${{ github.actor }}"
+
 defaults:
   run:
     shell: bash -Eeu -o pipefail {0}
@@ -53,10 +52,10 @@ jobs:
       primary_json_string: ${{ needs.global.outputs.primary_json_string }}
       target_arch: ${{ matrix.target_arch }}
 
-  create_challenge_environments:
+  create_lab_environments:
     needs:
-      - global
       - create_base_images
+      - global
     permissions:
       contents: read
       # packages: Need ability to push images to Github
@@ -67,19 +66,19 @@ jobs:
       _GITHUB_TOKEN: "${{ (secrets.GITHUB_TOKEN != '' && secrets.GITHUB_TOKEN) || needs.global.outputs.null_credential }}"
     strategy:
       matrix:
-        challenge_environment_dir_path: ${{ fromJSON(needs.global.outputs.challenge_environments_dir_paths_json_string) }}
+        lab_environment_dir_path: ${{ fromJSON(needs.global.outputs.lab_environments_dir_paths_json_string) }}
         target_arch: ${{ fromJSON(needs.global.outputs.target_archs_json_string) }}
-    uses: ./.github/workflows/create-challenge-environments.yaml
+    uses: ./.github/workflows/create-lab-environments.yaml
     with:
-      challenge_environment_dir_path: ${{ matrix.challenge_environment_dir_path }}
-      is_enabled: ${{ fromJSON(needs.global.outputs.primary_json_string)['activate_create_challenge_environments_job'] }}
+      is_enabled: ${{ fromJSON(needs.global.outputs.primary_json_string)['activate_create_lab_environments_job'] }}
+      lab_environment_dir_path: ${{ matrix.lab_environment_dir_path }}
       primary_json_string: ${{ needs.global.outputs.primary_json_string }}
       target_arch: ${{ matrix.target_arch }}
 
   create_matrix_outputs:
     needs:
       - create_base_images
-      - create_challenge_environments
+      - create_lab_environments
       - global
     permissions:
       contents: read
@@ -103,7 +102,7 @@ jobs:
       is_enabled: ${{ fromJSON(needs.global.outputs.primary_json_string)['activate_create_multi_arch_images_job'] }}
       primary_json_string: ${{ needs.global.outputs.primary_json_string }}
 
-  create_challenge_repos:
+  create_lab_repos:
     needs:
       - create_multi_arch_images
       - global
@@ -113,16 +112,17 @@ jobs:
       BLOCKBASH_APP_PRIVATE_KEY_BASE64: ${{ secrets.BLOCKBASH_APP_PRIVATE_KEY_BASE64 }}
     strategy:
       matrix:
-        challenge_dir_path: ${{ fromJSON(needs.global.outputs.challenge_environments_dir_paths_json_string) }}
-    uses: ./.github/workflows/create-challenge-repos.yaml
+        lab_dir_path: ${{ fromJSON(needs.global.outputs.lab_environments_dir_paths_json_string) }}
+    uses: ./.github/workflows/create-lab-repos.yaml
     with:
-      challenge_dir_path: ${{ matrix.challenge_dir_path }}
+      is_enabled: ${{ fromJSON(needs.global.outputs.primary_json_string)['activate_create_lab_repos_job'] }}
+
+      lab_dir_path: ${{ matrix.lab_dir_path }}
       primary_json_string: ${{ needs.global.outputs.primary_json_string }}
-      is_enabled: ${{ fromJSON(needs.global.outputs.primary_json_string)['activate_create_challenge_repos_job'] }}
 
   create_front_end:
     needs:
-      - create_challenge_repos
+      - create_lab_repos
       - global
     permissions:
       contents: read

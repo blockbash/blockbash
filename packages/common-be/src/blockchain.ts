@@ -1,22 +1,17 @@
-import {
-  TutorialsConfigOrchestrator,
-  type tutorialConfigTypes,
-} from "@blockbash/common/src/tutorial-configs";
-// Need to find a way to make this work
-import "@nomicfoundation/hardhat-ethers/internal/type-extensions";
-import type { BaseContract } from "ethers"
-import type { HardhatRuntimeEnvironment } from "hardhat/types"
-// Need to find a way to make this work
-import "hardhat-deploy/dist/src/type-extensions";
-// Need to find a way to make this work
+import type { BaseContract } from "ethers";
+import type { HardhatRuntimeEnvironment } from "hardhat/types";
 import type {
   DeployOptions,
   DeployResult,
-  Deployment
-} from "hardhat-deploy/dist/types"
-import "hardhat-deploy-ethers/dist/src/type-extensions";
+  Deployment,
+} from "hardhat-deploy/types";
 
-import type { BlockchainDeployDependencies } from "./blockchain.types"
+import {
+  TutorialsConfigOrchestrator,
+  type tutorialConfigTypes,
+} from "@blockbash/common";
+
+import type { BlockchainDeployDependencies } from "./blockchain.types";
 
 export class BlockchainDeploy {
   private readonly bigNumberLib: BlockchainDeployDependencies["bigNumberLib"];
@@ -41,11 +36,15 @@ export class BlockchainDeploy {
     });
   }
 
-  // If 'tags' arg is omitted, all contracts will be deployed
+  /**
+   * Deploys contracts onto local blockchain.
+   * @param tags - Corresponds to tags that are defined within lab-core/deploy/.  If tags === [], all deploy scripts will be executed.
+   * @private
+   */
   private async deployContracts({
     tags,
   }: {
-    tags?: tutorialConfigTypes.TutorialGUIDs;
+    tags?: tutorialConfigTypes.ChallengeGroupGUIDs;
   }): Promise<Record<string, Deployment>> {
     const deployment = this.hre.deployments.fixture(tags, {
       fallbackToGlobal: false,
@@ -140,18 +139,15 @@ export class BlockchainDeploy {
   async deployContractsByTags({
     tags,
   }: {
-    tags: tutorialConfigTypes.TutorialGUIDs;
+    tags: tutorialConfigTypes.ChallengeGroupGUIDs;
   }): Promise<Record<string, Deployment>> {
     // Each deployment function within lab/deploy will declare a
     // tags property.  This property is leveraged within the deploy process
     // (e.g., this.hre.deployments.fixture)
 
     // Turn off tracer during the initial deploy event
-    // Augmentation import causes hardhat to fail
-    // noinspection TypeScriptMissingAugmentationImport
     this.hre.tracer.enabled = false;
     const deployment = await this.deployContracts({ tags });
-    // noinspection TypeScriptMissingAugmentationImport
     this.hre.tracer.enabled = true;
     return deployment;
   }
@@ -211,9 +207,6 @@ export class BlockchainDeploy {
     contractName: tutorialConfigTypes.ContractName;
   }): Promise<bigint> {
     const deployedContract = await this.getDeployedContract({ contractName });
-    // Augmention should be provided via
-    // '@nomiclabs/hardhat-ethers/internal/type-extensions' noinspection
-    // TypeScriptMissingAugmentationImport
     return await this.hre.ethers.provider.getBalance(
       deployedContract.getAddress(),
     );

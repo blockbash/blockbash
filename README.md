@@ -1,1 +1,1 @@
-+ Detailed `README.md` coming soon!
+- Detailed `README.md` coming soon!

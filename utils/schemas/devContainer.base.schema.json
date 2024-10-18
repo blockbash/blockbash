@@ -132,17 +132,17 @@
           "description": "The user the container will be started with. The default is the user on the Docker image.",
           "type": "string"
         },
+        "customizations": {
+          "description": "Tool-specific configuration. Each tool should use a JSON object subproperty with a unique name to group its customizations.",
+          "type": "object"
+        },
         "features": {
-          "type": "object",
+          "additionalProperties": true,
           "description": "Features to add to the dev container.",
           "properties": {
             "fish": {
               "deprecated": true,
               "deprecationMessage": "Legacy feature will be removed in the future. Please check https://containers.dev/features for replacements."
-            },
-            "maven": {
-              "deprecated": true,
-              "deprecationMessage": "Legacy feature will be removed in the future. Please check https://containers.dev/features for replacements. E.g., `ghcr.io/devcontainers/features/java` has an option to install Maven."
             },
             "gradle": {
               "deprecated": true,
@@ -155,379 +155,30 @@
             "jupyterlab": {
               "deprecated": true,
               "deprecationMessage": "Legacy feature will be removed in the future. Please check https://containers.dev/features for replacements. E.g., `ghcr.io/devcontainers/features/python` has an option to install JupyterLab."
+            },
+            "maven": {
+              "deprecated": true,
+              "deprecationMessage": "Legacy feature will be removed in the future. Please check https://containers.dev/features for replacements. E.g., `ghcr.io/devcontainers/features/java` has an option to install Maven."
             }
           },
-          "additionalProperties": true
-        },
-        "name": {
-          "type": "string",
-          "description": "A name for the dev container which can be displayed to the user."
-        },
-        "overrideFeatureInstallOrder": {
-          "description": "Array consisting of the Feature id (without the semantic version) of Features in the order the user wants them to be installed.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "secrets": {
-          "description": "Recommended secrets for this dev container. Recommendations are provided as environment variable keys with optional metadata.",
-          "type": "object",
-          "patternProperties": {
-            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
-              "description": "Environment variable keys following unix-style naming conventions. eg: ^[a-zA-Z_][a-zA-Z0-9_]*$",
-              "type": "object",
-              "properties": {
-                "description": {
-                  "description": "A description of the secret.",
-                  "type": "string"
-                },
-                "documentationUrl": {
-                  "format": "uri",
-                  "type": "string",
-                  "description": "A URL to documentation about the secret."
-                }
-              },
-              "additionalProperties": false
-            },
-            "additionalProperties": false
-          },
-          "additionalProperties": false
+          "type": "object"
         },
         "forwardPorts": {
           "description": "Ports that are forwarded from the container to the local machine. Can be an integer port number, or a string of the format \"host:port_number\".",
-          "type": "array",
           "items": {
             "oneOf": [
               {
                 "maximum": 65535,
-                "type": "integer",
-                "minimum": 0
+                "minimum": 0,
+                "type": "integer"
               },
               {
                 "pattern": "^([a-z0-9-]+):(\\d{1,5})$",
                 "type": "string"
               }
             ]
-          }
-        },
-        "otherPortsAttributes": {
-          "type": "object",
-          "properties": {
-            "onAutoForward": {
-              "type": "string",
-              "enum": [
-                "notify",
-                "openBrowser",
-                "openPreview",
-                "silent",
-                "ignore"
-              ],
-              "enumDescriptions": [
-                "Shows a notification when a port is automatically forwarded.",
-                "Opens the browser when the port is automatically forwarded. Depending on your settings, this could open an embedded browser.",
-                "Opens a preview in the same window when the port is automatically forwarded.",
-                "Shows no notification and takes no action when this port is automatically forwarded.",
-                "This port will not be automatically forwarded."
-              ],
-              "description": "Defines the action that occurs when the port is discovered for automatic forwarding",
-              "default": "notify"
-            },
-            "elevateIfNeeded": {
-              "type": "boolean",
-              "description": "Automatically prompt for elevation (if needed) when this port is forwarded. Elevate is required if the local port is a privileged port.",
-              "default": false
-            },
-            "label": {
-              "type": "string",
-              "description": "Label that will be shown in the UI for this port.",
-              "default": "Application"
-            },
-            "requireLocalPort": {
-              "type": "boolean",
-              "markdownDescription": "When true, a modal dialog will show if the chosen local port isn't used for forwarding.",
-              "default": false
-            },
-            "protocol": {
-              "type": "string",
-              "enum": [
-                "http",
-                "https"
-              ],
-              "description": "The protocol to use when forwarding this port."
-            }
           },
-          "defaultSnippets": [
-            {
-              "body": {
-                "onAutoForward": "ignore"
-              }
-            }
-          ],
-          "markdownDescription": "Set default properties that are applied to all ports that don't get properties from the setting `remote.portsAttributes`. For example:\n\n```\n{\n  \"onAutoForward\": \"ignore\"\n}\n```",
-          "additionalProperties": false
-        },
-        "portsAttributes": {
-          "type": "object",
-          "patternProperties": {
-            "(^\\d+(-\\d+)?$)|(.+)": {
-              "type": "object",
-              "description": "A port, range of ports (ex. \"40000-55000\"), or regular expression (ex. \".+\\\\/server.js\").  For a port number or range, the attributes will apply to that port number or range of port numbers. Attributes which use a regular expression will apply to ports whose associated process command line matches the expression.",
-              "properties": {
-                "onAutoForward": {
-                  "type": "string",
-                  "enum": [
-                    "notify",
-                    "openBrowser",
-                    "openBrowserOnce",
-                    "openPreview",
-                    "silent",
-                    "ignore"
-                  ],
-                  "enumDescriptions": [
-                    "Shows a notification when a port is automatically forwarded.",
-                    "Opens the browser when the port is automatically forwarded. Depending on your settings, this could open an embedded browser.",
-                    "Opens the browser when the port is automatically forwarded, but only the first time the port is forward during a session. Depending on your settings, this could open an embedded browser.",
-                    "Opens a preview in the same window when the port is automatically forwarded.",
-                    "Shows no notification and takes no action when this port is automatically forwarded.",
-                    "This port will not be automatically forwarded."
-                  ],
-                  "description": "Defines the action that occurs when the port is discovered for automatic forwarding",
-                  "default": "notify"
-                },
-                "elevateIfNeeded": {
-                  "type": "boolean",
-                  "description": "Automatically prompt for elevation (if needed) when this port is forwarded. Elevate is required if the local port is a privileged port.",
-                  "default": false
-                },
-                "label": {
-                  "type": "string",
-                  "description": "Label that will be shown in the UI for this port.",
-                  "default": "Application"
-                },
-                "requireLocalPort": {
-                  "type": "boolean",
-                  "markdownDescription": "When true, a modal dialog will show if the chosen local port isn't used for forwarding.",
-                  "default": false
-                },
-                "protocol": {
-                  "type": "string",
-                  "enum": [
-                    "http",
-                    "https"
-                  ],
-                  "description": "The protocol to use when forwarding this port."
-                }
-              },
-              "default": {
-                "label": "Application",
-                "onAutoForward": "notify"
-              }
-            }
-          },
-          "markdownDescription": "Set default properties that are applied when a specific port number is forwarded. For example:\n\n```\n\"3000\": {\n  \"label\": \"Application\"\n},\n\"40000-55000\": {\n  \"onAutoForward\": \"ignore\"\n},\n\".+\\\\/server.js\": {\n \"onAutoForward\": \"openPreview\"\n}\n```",
-          "defaultSnippets": [
-            {
-              "body": {
-                "${1:3000}": {
-                  "label": "${2:Application}",
-                  "onAutoForward": "notify"
-                }
-              }
-            }
-          ],
-          "additionalProperties": false
-        },
-        "updateRemoteUserUID": {
-          "description": "Controls whether on Linux the container's user should be updated with the local user's UID and GID. On by default when opening from a local folder.",
-          "type": "boolean"
-        },
-        "init": {
-          "description": "Passes the --init flag when creating the dev container.",
-          "type": "boolean"
-        },
-        "initializeCommand": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "string",
-              "array"
-            ]
-          },
-          "description": "A command to run locally (i.e Your host machine, cloud VM) before anything else. This command is run before \"onCreateCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "type": [
-            "string",
-            "array",
-            "object"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "mounts": {
-          "description": "Mount points to set up when creating the container. See Docker's documentation for the --mount option for the supported syntax.",
-          "type": "array",
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/Mount"
-              },
-              {
-                "type": "string"
-              }
-            ]
-          }
-        },
-        "privileged": {
-          "description": "Passes the --privileged flag when creating the dev container.",
-          "type": "boolean"
-        },
-        "onCreateCommand": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "array",
-              "string"
-            ]
-          },
-          "description": "A command to run when creating the container. This command is run after \"initializeCommand\" and before \"updateContentCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "items": {
-            "type": "string"
-          },
-          "type": [
-            "string",
-            "array",
-            "object"
-          ]
-        },
-        "postAttachCommand": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "string",
-              "array"
-            ]
-          },
-          "description": "A command to run when attaching to the container. This command is run after \"postStartCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "type": [
-            "string",
-            "array",
-            "object"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "remoteEnv": {
-          "type": "object",
-          "additionalProperties": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "description": "Remote environment variables to set for processes spawned in the container including lifecycle scripts and any remote editor/IDE server process."
-        },
-        "securityOpt": {
-          "type": "array",
-          "description": "Passes docker security options to include when creating the dev container.",
-          "examples": [
-            "seccomp=unconfined"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "remoteUser": {
-          "description": "The username to use for spawning processes in the container including lifecycle scripts and any remote editor/IDE server process. The default is the same user as the container.",
-          "type": "string"
-        },
-        "postCreateCommand": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "string",
-              "array"
-            ]
-          },
-          "description": "A command to run after creating the container. This command is run after \"updateContentCommand\" and before \"postStartCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "type": [
-            "string",
-            "array",
-            "object"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "postStartCommand": {
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "string",
-              "array"
-            ]
-          },
-          "description": "A command to run after starting the container. This command is run after \"postCreateCommand\" and before \"postAttachCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "type": [
-            "string",
-            "array",
-            "object"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "updateContentCommand": {
-          "description": "A command to run when creating the container and rerun when the workspace content was updated while creating the container. This command is run after \"onCreateCommand\" and before \"postCreateCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
-          "type": [
-            "string",
-            "array",
-            "object"
-          ],
-          "items": {
-            "type": "string"
-          },
-          "additionalProperties": {
-            "items": {
-              "type": "string"
-            },
-            "type": [
-              "string",
-              "array"
-            ]
-          }
-        },
-        "userEnvProbe": {
-          "description": "User environment probe to run. The default is \"loginInteractiveShell\".",
-          "enum": [
-            "loginShell",
-            "none",
-            "loginInteractiveShell",
-            "interactiveShell"
-          ],
-          "type": "string"
-        },
-        "waitFor": {
-          "description": "The user command to wait for before continuing execution in the background while the UI is starting up. The default is \"updateContentCommand\".",
-          "enum": [
-            "initializeCommand",
-            "onCreateCommand",
-            "postCreateCommand",
-            "updateContentCommand",
-            "postStartCommand"
-          ],
-          "type": "string"
+          "type": "array"
         },
         "hostRequirements": {
           "description": "Host hardware requirements.",
@@ -542,8 +193,8 @@
                 {
                   "description": "Indicates whether a GPU is required. The string \"optional\" indicates that a GPU is optional. An object value can be used to configure more detailed requirements.",
                   "enum": [
-                    true,
                     false,
+                    true,
                     "optional"
                   ],
                   "type": [
@@ -552,21 +203,21 @@
                   ]
                 },
                 {
+                  "additionalProperties": false,
                   "description": "Indicates whether a GPU is required. The string \"optional\" indicates that a GPU is optional. An object value can be used to configure more detailed requirements.",
                   "properties": {
                     "cores": {
-                      "type": "integer",
+                      "description": "Number of required cores.",
                       "minimum": 1,
-                      "description": "Number of required cores."
+                      "type": "integer"
                     },
                     "memory": {
-                      "type": "string",
+                      "description": "Amount of required RAM in bytes. Supports units tb, gb, mb and kb.",
                       "pattern": "^\\d+([tgmk]b)?$",
-                      "description": "Amount of required RAM in bytes. Supports units tb, gb, mb and kb."
+                      "type": "string"
                     }
                   },
-                  "type": "object",
-                  "additionalProperties": false
+                  "type": "object"
                 }
               ]
             },
@@ -584,9 +235,356 @@
           "type": "object",
           "unevaluatedProperties": false
         },
-        "customizations": {
-          "description": "Tool-specific configuration. Each tool should use a JSON object subproperty with a unique name to group its customizations.",
+        "init": {
+          "description": "Passes the --init flag when creating the dev container.",
+          "type": "boolean"
+        },
+        "initializeCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run locally (i.e Your host machine, cloud VM) before anything else. This command is run before \"onCreateCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "mounts": {
+          "description": "Mount points to set up when creating the container. See Docker's documentation for the --mount option for the supported syntax.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/Mount"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "A name for the dev container which can be displayed to the user.",
+          "type": "string"
+        },
+        "onCreateCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run when creating the container. This command is run after \"initializeCommand\" and before \"updateContentCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "otherPortsAttributes": {
+          "additionalProperties": false,
+          "defaultSnippets": [
+            {
+              "body": {
+                "onAutoForward": "ignore"
+              }
+            }
+          ],
+          "markdownDescription": "Set default properties that are applied to all ports that don't get properties from the setting `remote.portsAttributes`. For example:\n\n```\n{\n  \"onAutoForward\": \"ignore\"\n}\n```",
+          "properties": {
+            "elevateIfNeeded": {
+              "default": false,
+              "description": "Automatically prompt for elevation (if needed) when this port is forwarded. Elevate is required if the local port is a privileged port.",
+              "type": "boolean"
+            },
+            "label": {
+              "default": "Application",
+              "description": "Label that will be shown in the UI for this port.",
+              "type": "string"
+            },
+            "onAutoForward": {
+              "default": "notify",
+              "description": "Defines the action that occurs when the port is discovered for automatic forwarding",
+              "enum": [
+                "ignore",
+                "notify",
+                "openBrowser",
+                "openPreview",
+                "silent"
+              ],
+              "enumDescriptions": [
+                "Opens a preview in the same window when the port is automatically forwarded.",
+                "Opens the browser when the port is automatically forwarded. Depending on your settings, this could open an embedded browser.",
+                "Shows a notification when a port is automatically forwarded.",
+                "Shows no notification and takes no action when this port is automatically forwarded.",
+                "This port will not be automatically forwarded."
+              ],
+              "type": "string"
+            },
+            "protocol": {
+              "description": "The protocol to use when forwarding this port.",
+              "enum": [
+                "http",
+                "https"
+              ],
+              "type": "string"
+            },
+            "requireLocalPort": {
+              "default": false,
+              "markdownDescription": "When true, a modal dialog will show if the chosen local port isn't used for forwarding.",
+              "type": "boolean"
+            }
+          },
           "type": "object"
+        },
+        "overrideFeatureInstallOrder": {
+          "description": "Array consisting of the Feature id (without the semantic version) of Features in the order the user wants them to be installed.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "portsAttributes": {
+          "additionalProperties": false,
+          "defaultSnippets": [
+            {
+              "body": {
+                "${1:3000}": {
+                  "label": "${2:Application}",
+                  "onAutoForward": "notify"
+                }
+              }
+            }
+          ],
+          "markdownDescription": "Set default properties that are applied when a specific port number is forwarded. For example:\n\n```\n\"3000\": {\n  \"label\": \"Application\"\n},\n\"40000-55000\": {\n  \"onAutoForward\": \"ignore\"\n},\n\".+\\\\/server.js\": {\n \"onAutoForward\": \"openPreview\"\n}\n```",
+          "patternProperties": {
+            "(^\\d+(-\\d+)?$)|(.+)": {
+              "default": {
+                "label": "Application",
+                "onAutoForward": "notify"
+              },
+              "description": "A port, range of ports (ex. \"40000-55000\"), or regular expression (ex. \".+\\\\/server.js\").  For a port number or range, the attributes will apply to that port number or range of port numbers. Attributes which use a regular expression will apply to ports whose associated process command line matches the expression.",
+              "properties": {
+                "elevateIfNeeded": {
+                  "default": false,
+                  "description": "Automatically prompt for elevation (if needed) when this port is forwarded. Elevate is required if the local port is a privileged port.",
+                  "type": "boolean"
+                },
+                "label": {
+                  "default": "Application",
+                  "description": "Label that will be shown in the UI for this port.",
+                  "type": "string"
+                },
+                "onAutoForward": {
+                  "default": "notify",
+                  "description": "Defines the action that occurs when the port is discovered for automatic forwarding",
+                  "enum": [
+                    "ignore",
+                    "notify",
+                    "openBrowser",
+                    "openBrowserOnce",
+                    "openPreview",
+                    "silent"
+                  ],
+                  "enumDescriptions": [
+                    "Opens a preview in the same window when the port is automatically forwarded.",
+                    "Opens the browser when the port is automatically forwarded, but only the first time the port is forward during a session. Depending on your settings, this could open an embedded browser.",
+                    "Opens the browser when the port is automatically forwarded. Depending on your settings, this could open an embedded browser.",
+                    "Shows a notification when a port is automatically forwarded.",
+                    "Shows no notification and takes no action when this port is automatically forwarded.",
+                    "This port will not be automatically forwarded."
+                  ],
+                  "type": "string"
+                },
+                "protocol": {
+                  "description": "The protocol to use when forwarding this port.",
+                  "enum": [
+                    "http",
+                    "https"
+                  ],
+                  "type": "string"
+                },
+                "requireLocalPort": {
+                  "default": false,
+                  "markdownDescription": "When true, a modal dialog will show if the chosen local port isn't used for forwarding.",
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "postAttachCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run when attaching to the container. This command is run after \"postStartCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "postCreateCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run after creating the container. This command is run after \"updateContentCommand\" and before \"postStartCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "postStartCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run after starting the container. This command is run after \"postCreateCommand\" and before \"postAttachCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "privileged": {
+          "description": "Passes the --privileged flag when creating the dev container.",
+          "type": "boolean"
+        },
+        "remoteEnv": {
+          "additionalProperties": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": "Remote environment variables to set for processes spawned in the container including lifecycle scripts and any remote editor/IDE server process.",
+          "type": "object"
+        },
+        "remoteUser": {
+          "description": "The username to use for spawning processes in the container including lifecycle scripts and any remote editor/IDE server process. The default is the same user as the container.",
+          "type": "string"
+        },
+        "secrets": {
+          "additionalProperties": false,
+          "description": "Recommended secrets for this dev container. Recommendations are provided as environment variable keys with optional metadata.",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "additionalProperties": false,
+              "description": "Environment variable keys following unix-style naming conventions. eg: ^[a-zA-Z_][a-zA-Z0-9_]*$",
+              "properties": {
+                "description": {
+                  "description": "A description of the secret.",
+                  "type": "string"
+                },
+                "documentationUrl": {
+                  "description": "A URL to documentation about the secret.",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "additionalProperties": false
+          },
+          "type": "object"
+        },
+        "securityOpt": {
+          "description": "Passes docker security options to include when creating the dev container.",
+          "examples": ["seccomp=unconfined"],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "updateContentCommand": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "string"
+            ]
+          },
+          "description": "A command to run when creating the container and rerun when the workspace content was updated while creating the container. This command is run after \"onCreateCommand\" and before \"postCreateCommand\". If this is a single string, it will be run in a shell. If this is an array of strings, it will be run as a single command without shell. If this is an object, each provided command will be run in parallel.",
+          "items": {
+            "type": "string"
+          },
+          "type": [
+            "array",
+            "object",
+            "string"
+          ]
+        },
+        "updateRemoteUserUID": {
+          "description": "Controls whether on Linux the container's user should be updated with the local user's UID and GID. On by default when opening from a local folder.",
+          "type": "boolean"
+        },
+        "userEnvProbe": {
+          "description": "User environment probe to run. The default is \"loginInteractiveShell\".",
+          "enum": [
+            "interactiveShell",
+            "loginInteractiveShell",
+            "loginShell",
+            "none"
+          ],
+          "type": "string"
+        },
+        "waitFor": {
+          "description": "The user command to wait for before continuing execution in the background while the UI is starting up. The default is \"updateContentCommand\".",
+          "enum": [
+            "initializeCommand",
+            "onCreateCommand",
+            "postCreateCommand",
+            "postStartCommand",
+            "updateContentCommand"
+          ],
+          "type": "string"
         }
       },
       "type": "object"

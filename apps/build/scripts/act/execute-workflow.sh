@@ -22,8 +22,8 @@ while [[ $# -gt 0 ]]; do
   case "${argument_name}" in
     --blockbash_app_private_key_base64=*) # base64-value or "null"
       # Corresponds to the BLOCKBASH-CI-DEV Github App
-      # within blockbash-challenges-dev Github Org.
-      # Is primarily leveraged to orchestrate challenge repos.
+      # within blockbash-labs-dev Github Org.
+      # Is primarily leveraged to orchestrate lab repos.
       flag_name="$(get_cli_flag_name "${argument_name}")"
       flag_value="$(get_cli_flag_value "${argument_name}")"
 
@@ -178,6 +178,7 @@ main() {
     --use-new-action-cache
     --container-options "${container_options_flags[*]}"
     #    --rm
+    --matrix "lab_environment_dir_path:${build_lab_environments_dir_path}/${bb_current_lab_guid_bash}"
   )
 
   local act_server_override_ip
@@ -200,7 +201,7 @@ main() {
 
   # ##############################################################################
   : << COMMENT
-  
+
   Act overrides workflow environment variables
   - All variables should be declared within global.yml
   - These environment variables will be set in all jobs. If a variable isn't needed
@@ -217,8 +218,8 @@ COMMENT
     act_flags+=(
       --platform "ubuntu-22.04=${docker_act_non_customized_image_full}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_BASE_IMAGES_JOB=${true}"
-      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_ENVIRONMENTS_JOB=${false}"
-      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_REPOS_JOB=${false}"
+      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_ENVIRONMENTS_JOB=${false}"
+      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_REPOS_JOB=${false}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_FRONT_END_JOB=${false}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MATRIX_OUTPUTS_JOB=${false}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MULTI_ARCH_IMAGES_JOB=${false}"
@@ -238,7 +239,7 @@ COMMENT
 
     # ##############################################################################
     : << COMMENT
-    
+
     Default Github Workflow values
     + Only applies to BLOCKBASH_* environment variables
     + keys AND values should correspond to env declarations within global.yaml
@@ -249,15 +250,15 @@ COMMENT
     + These should NOT be stored within global.env as this file is referenced within the Github build, etc.
     + To override these values, declare the same KEY within utils/local-config/overrides.env
       + See README.md for more context on this file.
-    
+
 COMMENT
     # ##############################################################################
 
     local target_archs_default='["linux/amd64", "linux/arm64"]'
     act_flags+=(
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_BASE_IMAGES_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_BASE_IMAGES_JOB:-${true}}"
-      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_ENVIRONMENTS_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_ENVIRONMENTS_JOB:-${true}}"
-      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_REPOS_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_CHALLENGE_REPOS_JOB:-${true}}"
+      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_ENVIRONMENTS_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_ENVIRONMENTS_JOB:-${true}}"
+      "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_REPOS_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_LAB_REPOS_JOB:-${true}}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_FRONT_END_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_FRONT_END_JOB:-${true}}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MATRIX_OUTPUTS_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MATRIX_OUTPUTS_JOB:-${true}}"
       "--env=BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MULTI_ARCH_IMAGES_JOB=${BLOCKBASH_GLOBAL_ACTIVATE_CREATE_MULTI_ARCH_IMAGES_JOB:-${true}}"
@@ -289,7 +290,7 @@ COMMENT
 
   # ##############################################################################
   : << COMMENT
-  
+
 
   + All secret names need to be declared within secret_env_var_names within set-secrets.sh
   + With the exception of GITHUB_TOKEN all secrets should be base64 encoded.

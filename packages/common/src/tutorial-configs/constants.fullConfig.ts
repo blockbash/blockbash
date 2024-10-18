@@ -1,13 +1,15 @@
 // TODO: Should I change the casing for the file name?
 // TODO: This shouldn't be so ugly
-import buildChallengesConfig from "../../../../apps/build/artifacts/challenges/merged-metadata.json";
-import { getChallengeURL } from "./configs";
+import buildLabsConfig from "../../../../apps/build/artifacts/labs/merged-metadata.json";
+import { getCodespaceLabURL, getVSCodeLabURL } from "./configs";
 import {
   AuthorName,
+  ChallengeGroupGUID,
   ContractName,
-  LearningPathGUID,
-  LearningPathName,
-  LearningPathURL,
+  LabGUIDBash,
+  PlaylistGUID,
+  PlaylistName,
+  PlaylistURLPath,
   TutorialCategoryGUID,
   TutorialCategoryName,
   TutorialDifficultyName,
@@ -16,6 +18,7 @@ import {
   TutorialTypeGUID,
   TutorialTypeName,
 } from "./constants.external";
+import { reentrancyFundamentalsTextReplacements } from "./constants/reentrancyFundamentals";
 import {
   type CreateTutorialConfigDependencies,
   type TutorialsConfig,
@@ -24,31 +27,40 @@ import {
 // instantiation code within common.src.index.ts) If these data structures need
 // to be accessed via other modules, you should deploy getters within exported
 // classes (e.g., TutorialsConfigOrchestrator)
-export enum ChallengeURLTypeGUID {
-  codespaceURL = "codespace_url",
-  vscodeURL = "vscode_url",
-}
 
+const baseVulnerableContractConfigs = {
+  ethAmount: 10,
+  proxy: false,
+};
+
+const baseAttackerContractConfigs = {
+  ethAmount: 1,
+  proxy: false,
+};
 const contractConfigs = {
   attacker: {
-    ethAmount: 1,
     name: ContractName.Attacker,
-    proxy: false,
+    ...baseAttackerContractConfigs,
   },
-  attackerSolution: {
-    ethAmount: 1,
-    name: ContractName.AttackerSolution,
-    proxy: false,
+  attackerSolutionPattern0: {
+    name: ContractName.AttackerSolutionPattern0,
+    ...baseAttackerContractConfigs,
   },
   vulnerable: {
-    ethAmount: 10,
     name: ContractName.Vulnerable,
-    proxy: false,
+    ...baseVulnerableContractConfigs,
   },
-  vulnerableSolution: {
-    ethAmount: 10,
-    name: ContractName.VulnerableSolution,
-    proxy: false,
+  vulnerableSolutionPattern0: {
+    name: ContractName.VulnerableSolutionPattern0,
+    ...baseVulnerableContractConfigs,
+  },
+  vulnerableSolutionPattern1: {
+    name: ContractName.VulnerableSolutionPattern1,
+    ...baseVulnerableContractConfigs,
+  },
+  vulnerableSolutionPattern2: {
+    name: ContractName.VulnerableSolutionPattern2,
+    ...baseVulnerableContractConfigs,
   },
 };
 
@@ -64,151 +76,189 @@ const contentTypeConfigs = {
     guid: TutorialTypeGUID.attackLab,
     name: TutorialTypeName.attackLab,
   },
+  attackTheory: {
+    guid: TutorialTypeGUID.attackTheory,
+    name: TutorialTypeName.attackTheory,
+  },
   defendLab: {
     guid: TutorialTypeGUID.defendLab,
     name: TutorialTypeName.defendLab,
   },
-  theory: {
-    guid: TutorialTypeGUID.theory,
-    name: TutorialTypeName.attackTheory,
+  defendTheory: {
+    guid: TutorialTypeGUID.defendTheory,
+    name: TutorialTypeName.defendTheory,
   },
 };
 
-const learningPathConfig = {
+const playlistConfig = {
   beginner: {
-    guid: LearningPathGUID.beginner,
-    name: LearningPathName.beginner,
-    url: LearningPathURL.beginner,
+    guid: PlaylistGUID.beginner,
+    name: PlaylistName.beginner,
+    url: PlaylistURLPath.beginner,
   },
 };
-
-const reentrancyFundamentalsChallengeTextReplacements = [
-  {
-    matchRegex: "\\<.*UnknownFunction.*\\>",
-    replaceWithText: "receive()",
-  },
-  {
-    matchRegex: "AttackerSolution",
-    replaceWithText: "Attacker",
-  },
-];
 
 const createTutorialsConfig = ({
   injectedDependencies,
 }: {
   injectedDependencies: CreateTutorialConfigDependencies;
 }) => {
+  const labUrls = {
+    reentrancyFundamentalsAttack: {
+      codespaceURL: injectedDependencies.getCodespaceLabURL({
+        buildLabsConfig: injectedDependencies.buildLabsConfig,
+        labGUIDBash: LabGUIDBash.reentrancyFundamentalsAttack,
+      }),
+      vscodeURL: injectedDependencies.getVSCodeLabURL({
+        buildLabsConfig: injectedDependencies.buildLabsConfig,
+        labGUIDBash: LabGUIDBash.reentrancyFundamentalsAttack,
+      }),
+    },
+    reentrancyFundamentalsDefend: {
+      codespaceURL: injectedDependencies.getCodespaceLabURL({
+        buildLabsConfig: injectedDependencies.buildLabsConfig,
+        labGUIDBash: LabGUIDBash.reentrancyFundamentalsDefend,
+      }),
+      vscodeURL: injectedDependencies.getVSCodeLabURL({
+        buildLabsConfig: injectedDependencies.buildLabsConfig,
+        labGUIDBash: LabGUIDBash.reentrancyFundamentalsDefend,
+      }),
+    },
+  };
   return [
     {
       authorName: AuthorName.ZachRoof,
       categories: [contentCategoryConfigs.reentrancy],
       description:
-        "In this tutorial, you'll learn the theory behind Reentrancy attacks.  In particular, you'll learn how the Attacker Contract will unexpectedly call (or \"re-enter\") the Vulnerable Contract before the Vulnerable Contract has updated its state.",
+        "In this lesson, you'll learn the theory behind Reentrancy attacks.  In particular, you'll learn how the Attacker Contract will unexpectedly call (or \"re-enter\") the Vulnerable Contract before the Vulnerable Contract has updated its state.",
       difficultyName: TutorialDifficultyName.beginner,
       durationMinutes: 30,
       guid: TutorialGUID.reentrancyFundamentalsAttackTheory,
-      learningPath: learningPathConfig.beginner,
       name: TutorialName.reentrancyFundamentalsAttackTheory,
+      playlist: playlistConfig.beginner,
       publishedDate: new Date(2024, 4, 21),
-      type: contentTypeConfigs.theory,
+      type: contentTypeConfigs.attackTheory,
       url: "/tutorials/reentrancy-fundamentals-attack-theory",
     },
     {
       authorName: AuthorName.ZachRoof,
       categories: [contentCategoryConfigs.reentrancy],
-      challengeTextReplacements:
-        reentrancyFundamentalsChallengeTextReplacements,
       description:
-        "In this lab, you'll leverage your Reentrancy knowledge to steal eth from the Vulnerable Contract",
+        "In this lab, you'll leverage your Reentrancy knowledge to steal funds from the Vulnerable Contract.",
       difficultyName: TutorialDifficultyName.beginner,
       durationMinutes: 30,
-      guid: TutorialGUID.reentrancyFundamentalsAttackPrompt,
+      guid: TutorialGUID.reentrancyFundamentalsAttackLab,
       lab: {
-        codespaceURL: injectedDependencies.getLabURL({
-          buildChallenges: injectedDependencies.buildChallenges,
-          challengeGUIDTypescript:
-            TutorialGUID.reentrancyFundamentalsAttackPrompt,
-          challengeURLTypeGUID: ChallengeURLTypeGUID.codespaceURL,
-        }),
-        contracts: [contractConfigs.attacker, contractConfigs.vulnerable],
-        vscodeURL: injectedDependencies.getLabURL({
-          buildChallenges: injectedDependencies.buildChallenges,
-          challengeGUIDTypescript:
-            TutorialGUID.reentrancyFundamentalsAttackPrompt,
-          challengeURLTypeGUID: ChallengeURLTypeGUID.vscodeURL,
-        }),
+        challengeGroups: [
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsAttackPrompt,
+            textReplacements: reentrancyFundamentalsTextReplacements,
+          },
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsAttackSolutionPattern0,
+            textReplacements: reentrancyFundamentalsTextReplacements,
+          },
+        ],
+        contracts: [
+          contractConfigs.attacker,
+          contractConfigs.attackerSolutionPattern0,
+          contractConfigs.vulnerable,
+        ],
+        ...labUrls.reentrancyFundamentalsAttack,
       },
-      learningPath: learningPathConfig.beginner,
-      name: TutorialName.reentrancyFundamentalsAttackPrompt,
+      name: TutorialName.reentrancyFundamentalsAttackLab,
+      playlist: playlistConfig.beginner,
       publishedDate: new Date(2024, 4, 21),
-
       type: contentTypeConfigs.attackLab,
       url: "/tutorials/reentrancy-fundamentals-attack-lab",
     },
     {
       authorName: AuthorName.ZachRoof,
       categories: [contentCategoryConfigs.reentrancy],
-      challengeTextReplacements:
-        reentrancyFundamentalsChallengeTextReplacements,
       description: "In this lesson, you'll review the Attack Lab's solution.",
       difficultyName: TutorialDifficultyName.beginner,
       durationMinutes: 15,
-      guid: TutorialGUID.reentrancyFundamentalsAttackSolution,
-      lab: {
-        codespaceURL: injectedDependencies.getLabURL({
-          buildChallenges: injectedDependencies.buildChallenges,
-          challengeGUIDTypescript:
-            TutorialGUID.reentrancyFundamentalsAttackPrompt,
-          challengeURLTypeGUID: ChallengeURLTypeGUID.codespaceURL,
-        }),
-        contracts: [
-          contractConfigs.attackerSolution,
-          contractConfigs.vulnerable,
-        ],
-        vscodeURL: injectedDependencies.getLabURL({
-          buildChallenges: injectedDependencies.buildChallenges,
-          challengeGUIDTypescript:
-            TutorialGUID.reentrancyFundamentalsAttackPrompt,
-          challengeURLTypeGUID: ChallengeURLTypeGUID.vscodeURL,
-        }),
-      },
-      learningPath: learningPathConfig.beginner,
-      name: TutorialName.reentrancyFundamentalsAttackSolution,
+      guid: TutorialGUID.reentrancyFundamentalsAttackLabSolution,
+      name: TutorialName.reentrancyFundamentalsAttackLabSolution,
+      playlist: playlistConfig.beginner,
       publishedDate: new Date(2024, 4, 27),
       type: contentTypeConfigs.attackLab,
       url: "/tutorials/reentrancy-fundamentals-attack-lab-solution",
     },
-    // {
-    //   authorName: AuthorName.ZachRoof,
-    //   categories: [contentCategoryConfigs.reentrancy],
-    //   challengeTextReplacements:
-    // reentrancyFundamentalsChallengeTextReplacements, description:
-    // "Reentrancy
-    // Fundamentals Defend Lab", difficultyName:
-    // TutorialDifficultyName.beginner, durationMinutes: 15, guid:
-    // TutorialGUID.reentrancyFundamentalsDefendPrompt, lab: { contracts:
-    // [contractConfigs.vulnerable, contractConfigs.attackerSolution], url: "",
-    // }, learningPath: learningPathConfig.beginner, name:
-    // TutorialName.reentrancyFundamentalsDefendPrompt, publishedDate: new
-    // Date(1995, 11, 17), type: contentTypeConfigs.defendLab, url:
-    // "/tutorials/reentrancy-fundamentals-defend-lab", }, { authorName:
-    // AuthorName.ZachRoof, categories: [contentCategoryConfigs.reentrancy],
-    // challengeTextReplacements:
-    // reentrancyFundamentalsChallengeTextReplacements, description:
-    // "Reentrancy Fundamentals Defend Lab Solution", difficultyName:
-    // TutorialDifficultyName.beginner, durationMinutes: 15, guid:
-    // TutorialGUID.reentrancyFundamentalsDefendSolution, lab: { contracts: [
-    // contractConfigs.vulnerableSolution, contractConfigs.attackerSolution, ],
-    // url: "", }, learningPath: learningPathConfig.beginner, name:
-    // TutorialName.reentrancyFundamentalsDefendSolution, publishedDate: new
-    // Date(1995, 11, 17), type: contentTypeConfigs.defendLab, url:
-    // "/tutorials/reentrancy-fundamentals-defend-lab", },
+    {
+      authorName: AuthorName.ZachRoof,
+      categories: [contentCategoryConfigs.reentrancy],
+      description:
+        "In this tutorial, you'll learn the theory behind Reentrancy defense.",
+      difficultyName: TutorialDifficultyName.beginner,
+      durationMinutes: 30,
+      guid: TutorialGUID.reentrancyFundamentalsDefendTheory,
+      name: TutorialName.reentrancyFundamentalsDefendTheory,
+      playlist: playlistConfig.beginner,
+      publishedDate: new Date(2024, 4, 21),
+      type: contentTypeConfigs.defendTheory,
+      url: "/tutorials/reentrancy-fundamentals-defend-theory",
+    },
+    {
+      authorName: AuthorName.ZachRoof,
+      categories: [contentCategoryConfigs.reentrancy],
+      description: "Reentrancy Fundamentals Defend Lab",
+      difficultyName: TutorialDifficultyName.beginner,
+      durationMinutes: 15,
+      guid: TutorialGUID.reentrancyFundamentalsDefendLab,
+      lab: {
+        challengeGroups: [
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsDefendPrompt,
+          },
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsDefendSolutionPattern0,
+          },
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsDefendSolutionPattern1,
+          },
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsDefendSolutionPattern2,
+          },
+          {
+            guid: ChallengeGroupGUID.reentrancyFundamentalsDefendSolutionPattern3,
+          },
+        ],
+        contracts: [
+          contractConfigs.attackerSolutionPattern0,
+          contractConfigs.vulnerable,
+          contractConfigs.vulnerableSolutionPattern0,
+          contractConfigs.vulnerableSolutionPattern1,
+          contractConfigs.vulnerableSolutionPattern2,
+        ],
+        ...labUrls.reentrancyFundamentalsDefend,
+      },
+      name: TutorialName.reentrancyFundamentalsDefendLab,
+      playlist: playlistConfig.beginner,
+      publishedDate: new Date(1995, 11, 17),
+      type: contentTypeConfigs.defendLab,
+      url: "/tutorials/reentrancy-fundamentals-defend-lab",
+    },
+    {
+      authorName: AuthorName.ZachRoof,
+      categories: [contentCategoryConfigs.reentrancy],
+      description: "Reentrancy Fundamentals Defend Lab Solution",
+      difficultyName: TutorialDifficultyName.beginner,
+      durationMinutes: 15,
+      guid: TutorialGUID.reentrancyFundamentalsDefendLabSolution,
+      name: TutorialName.reentrancyFundamentalsDefendLabSolution,
+      playlist: playlistConfig.beginner,
+      publishedDate: new Date(1995, 11, 17),
+      type: contentTypeConfigs.defendLab,
+      url: "/tutorials/reentrancy-fundamentals-defend-lab-solution",
+    },
   ] as TutorialsConfig;
 };
 
 export const tutorialsConfig = createTutorialsConfig({
   injectedDependencies: {
-    buildChallenges: buildChallengesConfig,
-    getLabURL: getChallengeURL,
+    buildLabsConfig,
+    getCodespaceLabURL,
+    getVSCodeLabURL,
   },
 });
