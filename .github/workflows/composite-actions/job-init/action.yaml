@@ -13,26 +13,25 @@ name: job-init
 # - For some reason, I can't get the Intellij Github Workflow plugin to resolve steps within Composite actions
 # ##############################################################################
 
-
 inputs:
-  cloudflare_token_base64:
-    default: "ZHVtbXlfY3JlZAo="
-    description: "null"
-    required: false
-  cosign_key_base64:
-    default: "ZHVtbXlfY3JlZAo="
-    description: "null"
-    required: false
-  cosign_password_base64:
-    default: "ZHVtbXlfY3JlZAo="
+  _github_token:
+    default: dummy_cred
     description: "null"
     required: false
   blockbash_app_private_key_base64:
-    default: "ZHVtbXlfY3JlZAo="
+    default: ZHVtbXlfY3JlZAo=
     description: "null"
     required: false
-  _github_token:
-    default: "dummy_cred"
+  cloudflare_token_base64:
+    default: ZHVtbXlfY3JlZAo=
+    description: "null"
+    required: false
+  cosign_key_base64:
+    default: ZHVtbXlfY3JlZAo=
+    description: "null"
+    required: false
+  cosign_password_base64:
+    default: ZHVtbXlfY3JlZAo=
     description: "null"
     required: false
   primary_json_string:

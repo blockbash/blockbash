@@ -1,55 +1,55 @@
-import type ora from "ora"
+import type ora from "ora";
 
-import type { Log } from "./logger.types"
-import type { SpinnerDependencies } from "./spinner.types"
+import type { Log } from "./logger.types";
+import type { SpinnerDependencies } from "./spinner.types";
 
 export class Spinner {
-  private readonly colorLib: SpinnerDependencies["colorLib"]
+  private readonly colorLib: SpinnerDependencies["colorLib"];
 
-  private readonly consoleLib: SpinnerDependencies["consoleLib"]
+  private readonly consoleLib: SpinnerDependencies["consoleLib"];
 
-  private readonly logger: SpinnerDependencies["logger"]
+  private readonly logger: SpinnerDependencies["logger"];
 
-  private readonly spinnerLib: SpinnerDependencies["spinnerLib"]
+  private readonly spinnerLib: SpinnerDependencies["spinnerLib"];
 
-  private spinners: Record<string, ora.Ora> = {}
+  private spinners: Record<string, ora.Ora> = {};
 
   constructor({
     injectedDependencies,
   }: {
-    injectedDependencies: SpinnerDependencies
+    injectedDependencies: SpinnerDependencies;
   }) {
-    this.spinnerLib = injectedDependencies.spinnerLib
-    this.logger = injectedDependencies.logger
-    this.colorLib = injectedDependencies.colorLib
-    this.consoleLib = injectedDependencies.consoleLib
+    this.spinnerLib = injectedDependencies.spinnerLib;
+    this.logger = injectedDependencies.logger;
+    this.colorLib = injectedDependencies.colorLib;
+    this.consoleLib = injectedDependencies.consoleLib;
     this.logger.setGlobalContext({
       className: Spinner.name,
       logicPath: __filename,
-    })
+    });
   }
 
   private isSpinnerInCorrectState({
     name,
     shouldExist,
   }: {
-    name: string
-    shouldExist: boolean
+    name: string;
+    shouldExist: boolean;
   }) {
     if (shouldExist) {
-      return typeof this.spinners[name] !== "undefined"
+      return typeof this.spinners[name] !== "undefined";
     }
-    return typeof this.spinners[name] === "undefined"
+    return typeof this.spinners[name] === "undefined";
   }
 
   private logBasedOnError({
     isErrorCondition,
     log,
   }: {
-    isErrorCondition: boolean
-    log: Log
+    isErrorCondition: boolean;
+    log: Log;
   }) {
-    return isErrorCondition ? this.logger.error(log) : this.logger.info(log)
+    return isErrorCondition ? this.logger.error(log) : this.logger.info(log);
   }
 
   failure({
@@ -58,16 +58,16 @@ export class Spinner {
     primarySpinnerText,
     secondarySpinnerText = "",
   }: {
-    isErrorCondition: boolean
-    name: string
-    primarySpinnerText: string
-    secondarySpinnerText?: string
+    isErrorCondition: boolean;
+    name: string;
+    primarySpinnerText: string;
+    secondarySpinnerText?: string;
   }) {
     const message = `${this.colorLib.red.bold.underline(
       "IMPORTANT",
     )}${this.colorLib.red(":")} ${this.colorLib.bold(
       primarySpinnerText,
-    )}\n${secondarySpinnerText}`
+    )}\n${secondarySpinnerText}`;
 
     const sharedLoggerArgsBase = {
       functionName: this.failure.name,
@@ -77,41 +77,41 @@ export class Spinner {
         message,
         name,
       },
-    }
+    };
 
     if (this.isSpinnerInCorrectState({ name, shouldExist: true })) {
-      this.spinners[name]?.fail(message)
-      this.logBasedOnError({ isErrorCondition, log: sharedLoggerArgsBase })
+      this.spinners[name]?.fail(message);
+      this.logBasedOnError({ isErrorCondition, log: sharedLoggerArgsBase });
     } else {
       this.logger.warn({
         functionName: this.failure.name,
         message: "Spinner not found",
-      })
+      });
       this.logBasedOnError({
         isErrorCondition,
         log: { ...sharedLoggerArgsBase, toUser: true },
-      })
+      });
     }
   }
 
   start({ name, spinnerText }: { name: string; spinnerText: string }) {
     // Insert new line
-    this.consoleLib.log()
+    this.consoleLib.log();
     const spinnerCheckArgs = {
       functionName: this.start.name,
       metadata: { name, spinnerText },
-    }
+    };
     if (this.isSpinnerInCorrectState({ name, shouldExist: false })) {
       this.logger.info({
         ...spinnerCheckArgs,
         message: `Starting spinner`,
-      })
-      this.spinners[name] = this.spinnerLib({ text: spinnerText }).start()
+      });
+      this.spinners[name] = this.spinnerLib({ text: spinnerText }).start();
     } else {
       this.logger.warn({
         ...spinnerCheckArgs,
         message: `Spinner started twice`,
-      })
+      });
     }
   }
 
@@ -120,9 +120,9 @@ export class Spinner {
     name,
     spinnerText,
   }: {
-    appendConsoleText?: string
-    name: string
-    spinnerText?: string
+    appendConsoleText?: string;
+    name: string;
+    spinnerText?: string;
   }) {
     const spinnerCheckArgs = {
       functionName: this.success.name,
@@ -131,18 +131,18 @@ export class Spinner {
         name,
         spinnerText: String(spinnerText),
       },
-    }
+    };
     if (this.isSpinnerInCorrectState({ name, shouldExist: true })) {
-      this.spinners[name]?.succeed(spinnerText)
+      this.spinners[name]?.succeed(spinnerText);
       this.logger.info({
         ...spinnerCheckArgs,
         message: `Spinner given a successful status.`,
-      })
+      });
     } else {
       this.logger.warn({
         ...spinnerCheckArgs,
         message: `Spinner was not found.`,
-      })
+      });
     }
 
     if (typeof appendConsoleText !== "undefined") {
@@ -150,7 +150,7 @@ export class Spinner {
         functionName: this.success.name,
         message: appendConsoleText,
         toUser: true,
-      })
+      });
     }
   }
 
@@ -159,13 +159,13 @@ export class Spinner {
     spinnerText,
     stderr,
   }: {
-    name: string
-    spinnerText: string
-    stderr: string
+    name: string;
+    spinnerText: string;
+    stderr: string;
   }) {
     const warnMsg = `${this.colorLib.bold(
       "Warning:",
-    )} ${spinnerText}\n${stderr.replace(/\n/g, " ")}`
+    )} ${spinnerText}\n${stderr.replace(/\n/g, " ")}`;
     const sharedLoggerArgs = {
       functionName: this.warn.name,
       metadata: {
@@ -173,19 +173,19 @@ export class Spinner {
         spinnerText: String(spinnerText),
         stderr,
       },
-    }
+    };
     if (this.isSpinnerInCorrectState({ name, shouldExist: true })) {
-      this.spinners[name]?.warn(warnMsg)
+      this.spinners[name]?.warn(warnMsg);
     } else {
       this.logger.warn({
         ...sharedLoggerArgs,
         message: `Spinner was not found.`,
-      })
+      });
       this.logger.info({
         ...sharedLoggerArgs,
         message: warnMsg,
         toUser: true,
-      })
+      });
     }
   }
 }

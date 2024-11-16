@@ -1,4 +1,4 @@
-import { type DependencyProps } from "@src/providers/dependency.types"
+import { type DependencyProps } from "@src/providers/dependency.types";
 import {
   createLogger,
   data,
@@ -6,8 +6,8 @@ import {
   navigation,
   queryString,
   tutorialConfig,
-} from "@utils"
-import React, { createContext } from "react"
+} from "@utils";
+import React, { createContext } from "react";
 
 const dependencyProviderDependencies = {
   createLogger,
@@ -16,18 +16,18 @@ const dependencyProviderDependencies = {
   navigation,
   queryString,
   tutorialConfig,
-}
+};
 
-const DepsContext = createContext(dependencyProviderDependencies)
+const DepsContext = createContext(dependencyProviderDependencies);
 
-function DependencyProvider({children, dependencies}: DependencyProps) {
+function DependencyProvider({ children, dependencies }: DependencyProps) {
   dependencies
     .createLogger()
-    .setGlobalContext({logicPath: __filename})
-    .logInnerStartExecution({functionName: DependencyProvider.name})
+    .setGlobalContext({ logicPath: __filename })
+    .logInnerStartExecution({ functionName: DependencyProvider.name });
   return (
     <DepsContext.Provider value={dependencies}>{children}</DepsContext.Provider>
-  )
+  );
 }
 
-export { DependencyProvider, DepsContext, dependencyProviderDependencies }
+export { DependencyProvider, DepsContext, dependencyProviderDependencies };

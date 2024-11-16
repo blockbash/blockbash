@@ -1,0 +1,339 @@
+---
+title: "Defend Theory"
+description: "Learn how to protect your smart contracts from reentrancy vulnerabilities. Learn about defense patterns like Checks-Effects-Interactions (CEI) and ReentrancyGuard through practical examples. Perfect for Solidity developers seeking to enhance their smart contract security skills."
+keywords:
+  - smart contract security
+  - reentrancy vulnerability
+  - solidity security
+  - reentrancy guard
+  - checks effects interactions
+  - smart contract defense patterns
+  - blockchain security
+  - cross-function reentrancy
+  - cross contract reentrancy
+  - read only reentrancy
+  - contract invariants
+  - gas restrictions solidity
+  - state variable security
+  - slither analysis
+  - solidity best practices
+  - smart contract attacks
+  - ethereum security
+  - web3 security
+  - defi security
+  - blockchain vulnerabilities
+sidebar_position: 4
+slug: "/tutorials/reentrancy-fundamentals-defend-theory"
+hide_title: true
+hide_table_of_contents: true
+---
+
+import {
+    Box,
+    chakra,
+    Code
+} from "@chakra-ui/react"
+import {tutorialConfigConst} from "@blockbash/common"
+import {Bold, CodeFootnote, CodePanel, InlineError, InlineTip, LinkAnchor, LinkTutorial, QuestionPrompt, Quote, TerminalCodePanel, Link, Tip, SectionWrapper, DiffCodePanel} from "../../../src/components"
+import {EventTraceTip, ExperimentalChallenge, LabPreStart, Liability, NonIdealPattern, QuizTiming} from "../../../src/features"
+
+## Introduction
+
+- In this lesson, you'll learn design patterns that help mitigate Reentrancy attacks. After you've learned the theory, you'll fix a Reentrancy bug in the lab environment!
+- <InlineTip label={"Tip"}/> Do you already have a grasp on how to defend against Reentrancy attacks?  Feel free to move to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendLab}/> and put your knowledge to the test!
+
+## Prerequisites
+
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
+
+<LabPreStart tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendLab}/>
+
+
+## Code {#primaryCode}
+
+<SectionWrapper>
+    <CodePanel>
+        <>
+            ```solidity collapse={1 - 23} {"1":31} {"2":33} title=Vulnerable.sol file=./contracts/reentrancy-fundamentals/Vulnerable.sol
+            ```
+        </>
+    </CodePanel>
+</SectionWrapper>
+
+## General considerations
+
+<Tip>These considerations apply regardless of what Defense Pattern you choose.</Tip>
+
+### Invariants
+- Invariants are properties of the program state that _should_ always be true.
+- Think of invariants like accounting rules. For example, your bank account's records should always match the actual money in the account. If there's ever a mismatch, something is wrong.
+- As you write code, it's vital to document what your invariants are. Within the `Vulnerable` contract, the primary invariant is: the sum of all `balances` should equal the contract's `ETH` balance.
+- <InlineTip label={"Mental Model"}/> Invariants can break for brief moments of time. For example, the time between
+<CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>1</CodeFootnote> and
+<CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>2</CodeFootnote>.  When you spot this violation, it's a hint that you should think about various edge cases.  In particular, you should ponder: "How would a financially motivated Attacker exploit this condition?" In this case, `Vulnerable` Contract calls into an untrusted contract (`Attacker` Contract) while invariants are violated.  This gives the `Attacker` Contract the ability to steal `ETH`.
+
+## Defense Pattern 1: Gas Restrictions
+- <NonIdealPattern/>
+
+### Code {#pattern1Code}
+<SectionWrapper>
+    <DiffCodePanel>
+        <>
+            ```diff collapse={1 - 23} lang="solidity" title="Vulnerable.sol" file=./artifacts/diffs/contracts/reentrancy-fundamentals/VulnerableSolutionPattern1.txt
+            ```
+        </>
+    </DiffCodePanel>
+</SectionWrapper>
+
+
+### Challenge
+
+<!-- @formatter:off -->
+<!-- Keep in line with other ExperimentalChallenge declaration -->
+<ExperimentalChallenge>
+  1. If you haven't done so already, complete the steps within the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.initExperimentLab}/> section.
+      - This will open the lab environment.
+  2. **OPTIONAL**: If you previously opened the lab environment and made changes to `Vulnerable.sol`, you'll need to close `Vulnerable.sol` and run the `revert` command within the lab environment's terminal.
+  3. In the lab environment, open `Vulnerable.sol`.
+  4. Apply the code diff (above) to `Vulnerable.sol`.
+      - <InlineTip label={"Reflection"}/> Before moving forward, try to predict how this will affect the Reentrancy vulnerability.
+  5. In the lab environment's terminal, execute `cv`.
+      - Behind the scenes, the `cv` command will automatically invoke `Attacker.attack()`.
+  6. Try your best to answer the questions (below).
+</ExperimentalChallenge>
+<!-- @formatter:on -->
+
+### Questions
+<Box my={"20px"}>
+    <QuizTiming/>
+</Box>
+1. The <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.pattern1Code} content={"code changes"}/> prevented the Reentrancy attack. Why did this occur?
+<QuestionPrompt hints={[{title: "Don't know where to begin", content: <chakra.span>Review the <Bold>Experimental Challenge</Bold>'s terminal output</chakra.span>, id: 1}]}>
+    <SectionWrapper>
+        <EventTraceTip/>
+        <TerminalCodePanel>
+            ```ansi {10 - 11} title="Event Trace" file=./outputs/hardhat-tracer/reentrancyFundamentalsDefendSolutionPattern1.txt
+            ```
+        </TerminalCodePanel>
+    </SectionWrapper>
+
+    Notice the `OUT_OF_GAS` error that prevented the Reentrancy attack. To understand why this occurred, we need to understand `send()` in more detail.
+
+    Solidity's `transfer()` and `send()`:
+    - Transfer an amount of Ether.
+    - Forward 2300 gas to the recipient. In practice, this means a recipient contract's fallback function would have 2300 gas to execute its logic.
+
+    <Quote author={"Consensys Diligence Blog"} href={'https://web.archive.org/web/20240228203710/https://consensys.io/diligence/blog/2019/09/stop-using-soliditys-transfer-now/'}>The whole reason `transfer()` and `send()` were introduced was to address the cause of the infamous hack on The DAO. The idea was that 2300 gas is enough to emit a log entry but insufficient to make a reentrant call that then modifies storage.</Quote>
+
+    As explained by Consensys, the idea behind the 2300 gas limit is to prevent reentrant state changes. In this case, the 2300 gas limit prevented the Reentrancy attack.
+
+    While the 2300 gas limit prevented this particular attack, there might be some edge cases to consider. You'll explore this topic in the next question.
+</QuestionPrompt>
+
+2. As it relates to Reentrancy, can you think of any edge cases with the `send()` coding pattern?
+<QuestionPrompt hints={[{title: "Don't know where to start", content: <chakra.span>Think of this pattern's assumptions.</chakra.span>, id: 1}]}>
+    `transfer()` and `send()` were previously the recommended approach for preventing Reentrancy attacks. It was assumed that Reentrancy couldn't occur with a 2300 gas limit. However, this recommendation was based on the assumption that opcode pricing would stay constant. EIP-1884 showed us that opcode pricing can change [^EIP-1884].
+
+    What happens if the price of an opcode decreases? In this situation, the 2300 gas could then "buy" more execution power. This additional execution power could then be leveraged for Reentrancy.
+
+    **Key takeaways**:
+    - <InlineError label={"Incorrect Assumption"}/>: Opcode pricing isn't stable. When considering a defensive pattern, ensure that your reasoning is "future proof".
+    - <InlineTip label={"Analysis"}/>: If you update <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>1</CodeFootnote> to `transfer()` or `send()`, you can not <Bold>currently</Bold> leverage Reentrancy to steal `ETH`. However, opcode pricing can change so you shouldn't use this pattern.
+</QuestionPrompt>
+
+## Defense Pattern 2: Reentrancy Guard
+<Quote author={"OpenZepplin Blog"} href={'https://web.archive.org/web/20240525171647/https://blog.openzeppelin.com/reentrancy-after-istanbul'}>A Reentrancy guard is a piece of code that causes execution to fail when Reentrancy is detected. There is an implementation of this pattern in OpenZeppelin Contracts called ReentrancyGuard, which provides the `nonReentrant` modifier. Applying this modifier to a function will render it “non-reentrant”, and attempts to re-enter this function will be rejected by reverting the call.</Quote>
+
+### Code {#pattern2Code}
+
+In the code (below), you'll see an updated `Vulnerable.sol` that exhibits the Reentrancy guard pattern.
+
+<SectionWrapper>
+    <DiffCodePanel>
+        <>
+            ```diff lang="solidity" title="Vulnerable.sol" file=./artifacts/diffs/contracts/reentrancy-fundamentals/VulnerableSolutionPattern2.txt
+            ```
+        </>
+    </DiffCodePanel>
+</SectionWrapper>
+
+<br/>
+
+`nonReentrant` works like a simple lock system. When a function with the `nonReentrant` modifier is called, `ReentrancyGuard.sol` will (behind the scenes) update a `_status` state variable. You can think of `_status` as holding the lock/unlocked status.
+
+When a `nonReentrant` function starts executing, it sets a lock (changing
+`_status` from `NOT_ENTERED` to `ENTERED`). If another function (in the call stack) tries to call **ANY** of the contract's `nonReentrant` functions, that call will be reverted. Once the function finishes execution, it removes the lock (setting `_status` back to `NOT_ENTERED`).
+
+Read the
+<Link href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/1edc2ae004974ebf053f4eba26b45469937b9381/contracts/utils/ReentrancyGuard.sol" shouldOpenTab={true}>ReentrancyGuard.sol</Link> source to learn more.
+
+In the upcoming questions/answers, you'll dive deeper into the nuances of `RentrancyGuard` including why `nonReentrant` is leveraged on `Vulnerable.deposit`.
+
+
+### Challenge
+<!-- @formatter:off -->
+<!-- Keep in line with other ExperimentalChallenge declaration -->
+<ExperimentalChallenge>
+  1. If you haven't done so already, complete the steps within the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.initExperimentLab}/> section.
+      - This will open the lab environment.
+  2. **OPTIONAL**: If you previously opened the lab environment and made changes to `Vulnerable.sol`, you'll need to close `Vulnerable.sol` and run the `revert` command within the lab environment's terminal.
+  4. In the lab environment, open `Vulnerable.sol`.
+  5. Apply the code diff (above) to `Vulnerable.sol`.
+      - <InlineTip label={"Reflection"}/> Before moving forward, try to predict how this will affect the Reentrancy vulnerability
+  6. In the lab environment's terminal, execute `cv`.
+      - Behind the scenes, the `cv` command will call `Attacker.attack()`.
+  7. Try your best to answer the questions (below).
+</ExperimentalChallenge>
+<!-- @formatter:on -->
+
+### Questions
+1. After executing `cv`, you'll notice that `Attacker.sol` wasn't able to steal any `ETH` from `Vulnerable.sol`. Although `nonReentrant` worked in this example, can this pattern be cumbersome to maintain?
+
+<QuestionPrompt>
+    <Box id={tutorialConfigConst.AnchorGUID.eventTrace1}>
+        <SectionWrapper>
+            <EventTraceTip/>
+            <TerminalCodePanel>
+                ```ansi {"1": 11} {"2": 12} title="Event Trace" file=./outputs/hardhat-tracer/reentrancyFundamentalsDefendSolutionPattern2.txt
+                ```
+            </TerminalCodePanel>
+
+        </SectionWrapper>
+    </Box>
+
+    Yes!  This pattern can be cumbersome to maintain.
+
+    - At <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace1} type={'reg'}>1</CodeFootnote>, you'll notice the Attacker received their `ETH` balance (via `Attacker.receive()`) but the `Vulnerable.balances[ATTACKER_ADDRESS]` state hasn't been updated. Into the future, imagine that another developer created a new method (i.e., `Vulnerable.newMethod()`) that used `Vulnerable.balances[ATTACKER_ADDRESS]`.
+    - At <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace1} type={'reg'}>2</CodeFootnote>, the Attacker could call any method in the contract.  So instead of calling `Vulnerable.withdrawAll()`, imagine the Attacker called `Vulnerable.newMethod()`. As `Vulnerable.newMethod()` uses the stale `balances` value, it could also be vulnerable to Reentrancy. So in this case, the developer would need to add the `nonReentrant` modifier to `Vulnerable.newMethod()` to lower the probability of Reentrancy. The `Vulnerable.newMethod()` example is typically classified as
+    Cross-Function
+    Reentrancy. Cross-Function Reentrancy occurs when one function initiates an external call (`Vulnerable.withdrawAll()`) before updating the state (`Vulnerable.balances`) and the external contract (`Attacker.sol`) calls another function (`Vulnerable.newMethod()`) that depends on this state.
+
+    <InlineError label={"Incorrect Assumption"}/> As you can imagine, the author of `Vulnerable.newMethod()` might not understand the limitations of `Vulnerable.balances[ATTACKER_ADDRESS]` and thereby might not remember to add the `nonReentrant` modifier. Ideally, the Reentrancy issue would be addressed where the invariants were originally violated (i.e., `Vulnerable.withdrawAll()`). We can't assume that other engineers will have the appropriate context.
+
+</QuestionPrompt>
+
+2. Could
+<LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.pattern2Code} content={"this code"}/> have any other Reentrancy vulnerabilities?
+<QuestionPrompt hints={[{title: "Don't know where to begin", content: <chakra.span>Think of ways that external contracts can observe another contract's state</chakra.span>, id: 1}]}>
+    <Box id={tutorialConfigConst.AnchorGUID.eventTrace2}>
+        <SectionWrapper>
+            <EventTraceTip/>
+            <TerminalCodePanel>
+                ```ansi {"1": 7} {"2": 11} title="Event Trace" file=./outputs/hardhat-tracer/reentrancyFundamentalsDefendSolutionPattern2.txt
+                ```
+            </TerminalCodePanel>
+        </SectionWrapper>
+    </Box>
+
+    Yes! This code could be vulnerable to Read-Only Reentrancy. You'll dive into this below.
+
+    - <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace2} type={'reg'}>2</CodeFootnote>: At this point in the execution flow, the Attacker received their deposited balance (via `Attacker.receive()`) but the `Vulnerable.balances[ATTACKER_ADDRESS]` state hasn't been updated. In `Vulnerable.sol`, the balances are easily observable by other contracts due to the `public` modifier within `mapping(address => uint256) public balances`. Behind the scenes, Solidity transforms this `public` modifier into a `view` function. So in other words, after <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'reg'}>1</CodeFootnote>, contracts that observe `Vulnerable.balances[ATTACKER_ADDRESS]` will be viewing an incorrect value. In fact, that's what
+    <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace2} type={'reg'}>2</CodeFootnote> is showing. From the `Attacker` contract's perspective, it's reading the broken invariant. In this case, `Vulnerable.sol` can be vulnerable to Read-Only Reentrancy. The primary characteristic of *Read*-Only Reentrancy is that a broken invariant is *read*.
+
+    So, how could this be exploited?
+
+    - Imagine there's another contract on the blockchain (i.e., `VulnerableLender`). Further, imagine that when `VulnerableLender.gatherAssets()` is called, it uses `Vulnerable.balances` to make its lending decision. At <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace2} type={'reg'}>1</CodeFootnote>, control of the execution is given to the `Attacker` contract. At this moment, the Attacker could call `VulnerableLender.gatherAssets()` and `VulnerableLender` would use the incorrect `Vulnerable.balances` value! This is an example of Cross-Contract Reentrancy and Read-Only Reentrancy. Cross-Contract Reentrancy occurs when multiple vulnerable contracts are involved in the Reentrancy vulnerability. Read-Only Reentrancy is a specific instance of Cross-Contract Reentrancy.
+    - Unfortunately, the `nonReentrant` modifier can't be used to fix this vulnerability. First, you can't apply modifiers to `public` contract variables. Even if you manually created the `view` function (that the `public` variable created behind-the-scenes), `nonReentrant` still wouldn't work. As previously discussed, `nonReentrant` needs to update a state variable (i.e., `_status`). State changes can't occur within `view` functions.
+
+</QuestionPrompt>
+
+### Summary
+- In the ideal world, you would not violate invariants while calling untrusted contracts. However, if you can't avoid this situation, `ReentrancyGuard` is a pattern that you can explore. As mentioned, `ReentrancyGuard` might produce unexpected outcomes and if you implement it, you'll need to be mindful of its challenges. For simplicity, all `ReentrancyGuard` challenges were not outlined in this lesson.
+
+## Defense Pattern 3: Checks-Effect-Interactions {#pattern3Section}
+
+The best way to combat Reentrancy vulnerabilities is to leverage the Checks-Effects-Interactions (CEI) pattern.
+
+Using Checks-Effects-Interactions (CEI):
+
+<!-- @formatter:off -->
+1. Classify all code statements as a Check, Effect or Interaction.
+    - **Checks** will *check* a condition.
+    - **Effects** will *affect* the contract state.
+    - **Interactions** will *interact* with an external contract.
+2. While coding, ensure the following order is preserved: Checks (occurs before) Effects (occurs before) Interactions.
+<!-- @formatter:on -->
+
+The primary benefit of CEI (compared to other defensive patterns) is that it fixes the "core" problem. When CEI is properly implemented, attackers cannot exploit inconsistent contract states.
+
+What are the pros and cons of this pattern?
+<!-- @formatter:off -->
+- **Pros**:
+    - Simple to reason about.
+    - Applies to all Reentrancy variants (e.g., Single-Function Reentrancy, Cross-Function Reentrancy, Cross-Contract Reentrancy, etc.)
+        - <InlineTip label={"Tip"}/> All of these variants have been covered within this page's **Answer** sections or within <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>.
+- **Cons**: Prone to error. All code statements need to be classified and ordered correctly. What occurs if someone forgot to add the correct ordering? Or what happens if a linter changes the order of code statements?  To counteract these issues, you can use `slither` to help detect Reentrancy bugs as well as other security issues.  You'll learn more about `slither` in the upcoming paragraphs.
+<!-- @formatter:on -->
+
+<InlineTip label={"Mental Model"}/> Bugs happen.  Always assume that a security protection will fail.  At a minimum, you should have 2 security protections for every major vulnerability class.  When you have multiple protections, you're applying defense-in-depth. Defense-in-depth is like protecting a medieval castle - no single defense is
+perfect, so multiple layers work together. The moat might freeze over, the guards might be bribed, but an Attacker would need to overcome ALL of these independent defenses to come inside. By having multiple varied defenses, even if one layer fails (or has "bugs"), the others continue protecting your valuable assets.
+
+In the next experimental challenge, you'll leverage `slither` to detect a CEI violation. `slither` is a Solidity & Vyper static analysis framework maintained by [Trail Of Bits](https://www.trailofbits.com/). It runs a suite of vulnerability detectors, prints visual information about contract details, and provides an API to easily write custom analyses. `slither` enables developers to find vulnerabilities, enhance their code comprehension, and quickly prototype custom analyses.[^slither]
+
+<!-- @formatter:off -->
+<ExperimentalChallenge>
+    1. If you haven't done so already, complete the steps within the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.initExperimentLab}/> section.
+        - This will open the lab environment.
+    2. **OPTIONAL**: If you previously made changes to `Vulnerable.sol`, you'll need to close `Vulnerable.sol` and run the `revert` command within the lab environment's terminal.
+    7. Try your best to answer the questions (below).
+</ExperimentalChallenge>
+<!-- @formatter:on -->
+
+### Questions
+1. Navigate to the <LinkAnchor anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode}/> section and focus on `withdrawAll()`.  Where applicable, classify all code statements as a **Check**, **Effect** or **Interaction**.  What order did you observe?
+<QuestionPrompt>
+    1. Check
+    2. Interaction
+    3. Effect
+
+    Notice how the Checks-Effects-Interactions (CEI) pattern is violated. This is why the code is vulnerable to Reentrancy.
+</QuestionPrompt>
+2. In the lab's terminal, execute
+<Code>{tutorialConfigConst.TutorialCommands.reentrancyFundamentalsSlither}</Code>.  Is the output expected?
+<QuestionPrompt>
+    <SectionWrapper>
+        <TerminalCodePanel>
+            ```ansi title="Terminal output" file=./outputs/slither/reentrancyFundamentalsVulnerable.txt
+            ```
+        </TerminalCodePanel>
+    </SectionWrapper>
+
+    Yes, this output is expected! `slither` correctly found the broken invariant (`Vulnerable.balances`) and disclosed where this invariant is used.
+
+    It's highly recommended to run `slither` within a CI pipeline so you can find vulnerabilities before deploying to production. If the CEI pattern is violated, `slither` might give insight. If your CI pipeline leverages Github Actions, you're in luck! The creators of `slither`, created a [Github Action](https://github.com/crytic/slither-action) that you can leverage.
+</QuestionPrompt>
+
+
+## Key Takeaways
+- Reentrancy can occur in various forms (e.g., Single-Function Reentrancy, Cross-Function Reentrancy, Cross-Contract Reentrancy, Read-Only Reentrancy).
+- The best way to combat Reentrancy vulnerabilities is to leverage the Checks-Effects-Interactions (CEI) pattern.
+- Checks-Effects-Interactions can be prone to error.  While no tool is perfect, you can leverage `slither` in your CI pipeline to notify you of potential CEI violations.
+
+## Next Steps
+- In the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendLab}/>, you'll update `Vulnerable.sol` for the Checks-Effects-Interactions pattern.
+
+## Real World Examples
+
+- [A Historical Collection of Reentrancy Attacks
+](https://github.com/pcaversaccio/reentrancy-attacks)
+
+## Inspiration
+We wanted to thank the content creators who published the content below. Without people like you, BlockBash tutorials couldn't exist :)
+- [Reentrancy After Istanbul](https://blog.openzeppelin.com/reentrancy-after-istanbul)
+- [Read-only Reentrancy: In-Depth](https://officercia.mirror.xyz/DBzFiDuxmDOTQEbfXhvLdK0DXVpKu1Nkurk0Cqk3QKc)
+- [Read-only reentrancy attacks: understanding the threat to your smart contract](https://medium.com/zokyo-io/read-only-reentrancy-attacks-understanding-the-threat-to-your-smart-contracts-99444c0a7334)
+- [Smart Contract Security Field Guide: Reentrancy](https://scsfg.io/hackers/reentrancy/)
+- [The Ultimate Guide To Reentrancy](https://medium.com/immunefi/the-ultimate-guide-to-reentrancy-19526f105ac)
+- [Fuzz / Invariant Tests | The New Bare Minimum For Smart Contract Security](https://patrickalphac.medium.com/fuzz-invariant-tests-the-new-bare-minimum-for-smart-contract-security-87ebe150e88c)
+- [The Full Guide on Reentrancy Attacks in Solidity Smart Contracts](https://www.cyfrin.io/blog/what-is-a-reentrancy-attack-solidity-smart-contracts)
+
+## Disclosures
+<Liability/>
+
+## Appendix
+
+<!-- @formatter:off -->
+[^EIP-1884]:  [EIP-1884](https://eips.ethereum.org/EIPS/eip-1884)
+[^slither]: [slither README](https://github.com/crytic/slither/blob/2c792b2b73c6c1fbbf5464bd1f9fc8ccedf0c0bf/README.md)
+<!-- @formatter:on -->

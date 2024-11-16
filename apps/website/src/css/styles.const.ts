@@ -20,4 +20,8 @@ enum Styles {
   yellowPrimaryColor = "yellow.400",
 }
 
-export { Styles };
+enum ClassNames {
+  diffCodePanel = "diff-code-panel",
+}
+
+export { ClassNames, Styles };

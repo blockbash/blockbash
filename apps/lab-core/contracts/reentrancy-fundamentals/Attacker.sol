@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
+// WARNING: This is buggy code. Do NOT use in the real world.
 
-pragma solidity 0.8.19;
+pragma solidity 0.8.24;
 
 import "./shared/AttackerBase.sol";
-import "./shared/EventsBase.sol";
 
-contract Attacker is AttackerBase, EventsBase {
+contract Attacker is AttackerBase {
   // IMPORTANT: ONLY CHANGE THE FUNCTIONS THAT HAVE BEEN OUTLINED IN THE INSTRUCTIONS
   uint256 private constant _ATTACK_AMOUNT = 1 ether;
-
 
   constructor(
     address _vulnerableContractAddress
@@ -16,31 +15,38 @@ contract Attacker is AttackerBase, EventsBase {
 
   function attack() external override {
     // Helpful for debugging
-    emit AttackerContractBalance(address(this).balance / 1 ether);
+    emit AttackerContractBalance_(address(this).balance / 1 ether);
 
     // TIP: You can call methods on the vulnerableContract
     // E.g., `vulnerableContract.withdrawAll()`
 
-    // INSERT LOGIC HERE: START
+    // COMMENT GROUP A: START
     // LOGIC...
-    // INSERT LOGIC HERE: END
+    // COMMENT GROUP A: END
 
     // Helpful for debugging
-    emit AttackerContractBalance(address(this).balance / 1 ether);
-    emit VulnerableContractBalance(address(vulnerableContract).balance / 1 ether);
+    emit AttackerContractBalance_(address(this).balance / 1 ether);
+    emit VulnerableContractBalance_(
+      address(vulnerableContract).balance / 1 ether
+    );
   }
 
-  // Function is executed when VulnerableContract sends eth.
+  // Function is executed when VulnerableContract sends ETH.
   receive() external payable override {
     // Helpful for debugging
-    emit AttackerContractBalance(address(this).balance / 1 ether);
+    emit AttackerContractBalance_(address(this).balance / 1 ether);
+    emit VulnerableContractBalance_(
+      address(vulnerableContract).balance / 1 ether
+    );
+    emit AttackerDepositBalance_(
+      vulnerableContract.balances(address(this)) / 1 ether
+    );
 
     // TIP: You can call methods on the vulnerableContract
     // E.g., `vulnerableContract.withdrawAll()`
 
-    // INSERT LOGIC HERE: START
+    // COMMENT GROUP A: START
     // LOGIC...
-    // INSERT LOGIC HERE: END
+    // COMMENT GROUP A: END
   }
-
 }

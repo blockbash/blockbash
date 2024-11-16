@@ -1,7 +1,7 @@
 {
   "customizations": {
     "blockbash": {
-      "challenge_release": $challenge_release
+      "lab_release": $lab_release
     },
     "codespaces": {
       "openFiles": []

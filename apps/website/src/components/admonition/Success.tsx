@@ -5,16 +5,23 @@ import { IoMdCheckmarkCircle } from "react-icons/io";
 import { AdmonitionWrapper } from "./AdmonitionWrapper";
 import { type AdmonitionProps } from "./admonition.types";
 
-export function Success(props: AdmonitionProps): JSX.Element {
+export function Success({
+  children,
+  isCentered = false,
+  isFlattened = true,
+  labelOverride,
+}: AdmonitionProps): JSX.Element {
   const color: NonNullable<ColorProps["color"]> = "green.500";
   return (
     <AdmonitionWrapper
       icon={IoMdCheckmarkCircle}
       iconBackgroundColor={color}
-      label={"Success"}
+      isCentered={isCentered}
+      isFlattened={isFlattened}
+      label={typeof labelOverride === "undefined" ? "Success" : labelOverride}
       labelColor={color}
     >
-      {props.children}
+      {children}
     </AdmonitionWrapper>
   );
 }

@@ -1,13 +1,22 @@
-import type { ethTypes, loggerTypes } from "@blockbash/common/src"
+import type { tutorialConfigTypes } from "@blockbash/common";
+import type { ethTypes, loggerTypes } from "@blockbash/common/src";
+import type { BigNumber } from "@ethersproject/bignumber";
+import type { DeployFunction as HardhatDeployFunction } from "hardhat-deploy/types";
 
-import type { BigNumber } from "@ethersproject/bignumber"
+import { BlockchainDeploy } from "./blockchain";
 
-import { BlockchainDeploy } from "./blockchain"
-
-interface BlockchainDeployDependencies {
-  bigNumberLib: typeof BigNumber
-  ethLib: ethTypes.Eth
-  logger: loggerTypes.ILoggerMin
+interface DeployFunction extends HardhatDeployFunction {
+  tags: tutorialConfigTypes.ChallengeGroupGUIDs;
 }
 
-export { BlockchainDeploy, type BlockchainDeployDependencies }
+interface BlockchainDeployDependencies {
+  bigNumberLib: typeof BigNumber;
+  ethLib: ethTypes.Eth;
+  logger: loggerTypes.ILoggerMin;
+}
+
+export {
+  BlockchainDeploy,
+  type BlockchainDeployDependencies,
+  type DeployFunction,
+};

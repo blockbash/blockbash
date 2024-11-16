@@ -49,8 +49,14 @@ const coreJsonRules = {
   ],
 };
 
-const jsoncFilePatterns = ["**/*.devcontainer*.json", "**/tsconfig.json"];
 const packagejsonPattern = "**/package.json";
+const tasksjsonPattern = "**/tasks.template.json";
+
+const jsoncFilePatterns = [
+  "**/*.devcontainer*.json",
+  "**/tsconfig.json",
+  tasksjsonPattern,
+];
 
 module.exports = {
   globals: {
@@ -58,11 +64,16 @@ module.exports = {
     globalThis: false,
   },
   // eslint ignores dotfiles by default, so we un-ignore with !
-  ignorePatterns: ["**/node_modules/**", "!.*"],
+  ignorePatterns: [
+    "**/node_modules/**",
+    "!.*",
+    "pnpm-lock.yaml",
+    "**/compilers/**",
+  ],
   overrides: [
     {
       extends: ["plugin:mdx/recommended"],
-      files: ["**/*.{md,mdx}"],
+      files: ["**/*.md"],
       parser: "eslint-mdx",
       rules: {
         "mdx/remark": "error",
@@ -118,7 +129,15 @@ module.exports = {
       extends: ["plugin:jsonc/recommended-with-jsonc"],
       files: ["**/*.jsonc", ...jsoncFilePatterns],
       parser: "jsonc-eslint-parser",
-      rules: coreJsonRules,
+      rules: { ...coreJsonRules },
+    },
+    {
+      // In certain files, sorting array values is problematic as the
+      // array order needs to be preserved
+      extends: ["plugin:jsonc/recommended-with-jsonc"],
+      files: [tasksjsonPattern],
+      parser: "jsonc-eslint-parser",
+      rules: { "jsonc/no-useless-escape": 0, "jsonc/sort-array-values": 0 },
     },
     {
       extends: ["plugin:jsonc/recommended-with-json"],

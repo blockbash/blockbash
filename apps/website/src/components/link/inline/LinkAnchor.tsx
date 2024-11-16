@@ -5,11 +5,11 @@ import {
 import { navigation } from "@utils";
 import React from "react";
 
-import { Link } from "./Link";
+import { Link, type LinkProps } from "./Link";
 
 export interface LinkAnchorProps {
   anchorGUID: tutorialConfigTypes.AnchorGUID;
-  content?: string;
+  content?: LinkProps["children"];
   shouldOpenTab?: boolean;
 }
 

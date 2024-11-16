@@ -10,4 +10,4 @@ enum QueryStringKey {
   tutorialTypes = "tutorialTypes",
 }
 
-export { FilterOptions, QueryStringKey }
+export { FilterOptions, QueryStringKey };

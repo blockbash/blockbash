@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "challenge:smoke_test": "pnpm run challenge:verify reentrancyFundamentalsAttackPrompt",
-    "challenge:verify": "tsx src/main.ts challenge verify",
-    "challenge:verify_solution": "tsx src/main.ts challenge verify --test-suite",
+    "challenges:verify": "tsx src/main.ts challenges verify",
+    "challenges:verify_solution": "tsx src/main.ts challenges verify --test-suite",
     "depcheck": "depcheck --skip-missing=true"
   },
   "dependencies": {

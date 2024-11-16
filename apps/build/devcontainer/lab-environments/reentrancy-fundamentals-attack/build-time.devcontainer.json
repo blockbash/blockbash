@@ -1,0 +1,17 @@
+{
+  "build": {
+    "args": {
+      "default_challenge_prompt_group_guid_typescript": "reentrancyFundamentalsAttackPrompt",
+      "default_challenge_solution_group_guid_typescript": "reentrancyFundamentalsAttackSolutionPattern0",
+      "full_lab_base_image_tag": "${localEnv:full_lab_base_image_tag}",
+      "lab_additional_symlinked_relative_file_paths": "shared/EventsBase.sol,shared/VulnerableBase.sol,shared/AttackerBase.sol",
+      "lab_contracts_dir_name": "reentrancy-fundamentals",
+      "lab_guid_bash": "reentrancy-fundamentals-attack",
+      "lab_open_relative_file_paths": "Vulnerable.sol,Attacker.sol",
+      "lab_release": "1",
+      "lab_shell_scripts_dir_path": "${localEnv:lab_shell_scripts_dir_path}",
+      "target": "lab_1"
+    }
+  },
+  "name": "Blockbash - Reentrancy Fundamentals Attack Lab"
+}

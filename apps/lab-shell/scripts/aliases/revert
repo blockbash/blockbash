@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# reverts the lab contracts to the beginning state.
+
+# shellcheck source=./../../../../packages/common/scripts/source-all.sh
+. /blockbash/packages/common/scripts/source-all.sh --absolute_paths="true" --die_on_error="true"
+
+main() {
+  log_info "Invoking revert"
+  rm -rf "${container_lab_core_contracts_dir_path}"
+  cp --recursive "${container_lab_core_contracts_backup_dir_path}" "${container_lab_core_contracts_dir_path}"
+  # After the contracts directory is updated, there CAN be a mismatch between the editor tab's content and the filesystem content. Thus we ask the learner to reopen any files.
+  echo "lab revert successful.  Please close (and re-open) all tabs to complete the revert process."
+}
+
+# https://unix.stackexchange.com/a/333204
+# Pipes stderr to terminal (and log file)
+exec 3>&1
+main 2>&1 >&3 | tee -a "${bash_log_file_path}"

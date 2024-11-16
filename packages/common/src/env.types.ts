@@ -1,7 +1,7 @@
-import { Env } from "./env"
+import { Env } from "./env";
 
 interface EnvDependencies {
-  envVars: typeof process.env
+  envVars: typeof process.env;
 }
 
-export { Env, type EnvDependencies }
+export { Env, type EnvDependencies };

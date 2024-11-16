@@ -6,11 +6,11 @@
     "depcheck": "depcheck --skip-missing=true"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "6.7.5",
-    "eslint-config-standard-with-typescript": "39.1.1",
+    "@typescript-eslint/parser": "6.21.0",
+    "eslint-config-love": "^47.0.0",
     "eslint-plugin-chai-friendly": "0.7.2",
     "eslint-plugin-mocha": "10.2.0",
-    "eslint-plugin-perfectionist": "2.1.0",
+    "eslint-plugin-perfectionist": "2.11.0",
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0"
   }

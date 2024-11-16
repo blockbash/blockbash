@@ -1,3 +1,3 @@
-import { Styles } from "./styles.const"
+import { ClassNames, Styles } from "./styles.const";
 
-export { Styles }
+export { ClassNames, Styles };

@@ -1,17 +1,18 @@
-import { type LearningPathGUID } from "./constants.external";
-import { type ChallengeURLTypeGUID } from "./constants.fullConfig";
+import { type ChallengeGroupGUID, LabURLTypeGUID } from "./constants.external";
 import {
   type Contract,
   type ContractNames,
   type Contracts,
   type CreateTutorialConfigDependencies,
   type GetContract,
+  type LabGUIDBash,
+  type PlaylistGUID,
   type Schema,
   type Tutorial,
   type TutorialCategoriesWithCount,
   type TutorialGUID,
-  type TutorialLearningPathWithCount,
-  type TutorialLearningPathsWithCount,
+  type TutorialPlaylistWithCount,
+  type TutorialPlaylistsWithCount,
   type TutorialTypesWithCount,
   type Tutorials,
   type TutorialsConfig,
@@ -98,22 +99,20 @@ export class TutorialsConfigOrchestrator {
     return activeContent;
   }
 
-  getActiveLearningPath(
-    path: LearningPathGUID,
-  ): TutorialLearningPathWithCount | undefined {
-    const paths = this.getActiveLearningPaths();
+  getActivePlaylist(path: PlaylistGUID): TutorialPlaylistWithCount | undefined {
+    const paths = this.getActivePlaylists();
     const filteredPaths = paths.filter((_path) => path === _path.guid);
     return filteredPaths[0];
   }
 
-  getActiveLearningPaths(): TutorialLearningPathsWithCount {
-    const paths = this.tutorials.map((tutorial) => tutorial.learningPath);
+  getActivePlaylists(): TutorialPlaylistsWithCount {
+    const paths = this.tutorials.map((tutorial) => tutorial.playlist);
     const activeContent = this.getUniqueDictCount(
       paths.flat(),
-      this.schema.learningPathGUIDValue,
+      this.schema.playlistGUIDValue,
     );
     this.logger.logInnerFinishedExecution({
-      functionName: this.getActiveLearningPaths.name,
+      functionName: this.getActivePlaylists.name,
       metadata: activeContent,
     });
 
@@ -131,12 +130,27 @@ export class TutorialsConfigOrchestrator {
   //   return category.name
   // }
 
-  getChallengeTextReplacements({
-    tutorialGUID,
-  }: {
-    tutorialGUID: TutorialGUID;
-  }) {
-    return this.getTutorial(tutorialGUID).challengeTextReplacements;
+  getChallengeGroup(challengeGroupGUID: ChallengeGroupGUID) {
+    const challengeGroups = this.challengeGroups.filter(
+      (challengeGroup) => challengeGroup.guid === challengeGroupGUID,
+    );
+    const loggerArgs = {
+      functionName: this.getChallengeGroup.name,
+      metadata: {
+        challengeGroupGUID,
+        challengeGroups,
+      },
+    };
+    if (challengeGroups.length === 0 || challengeGroups[0] === undefined) {
+      const message = "No challenge group was found";
+      this.logger.error({ ...loggerArgs, message });
+      throw new Error(message);
+    } else if (challengeGroups.length > 1) {
+      const message = `${challengeGroups.length} challenges groups found!  There should only be 1.`;
+      this.logger.error({ ...loggerArgs, message });
+      throw new Error(message);
+    }
+    return challengeGroups[0];
   }
 
   getContract({ contractName, tutorialGUID }: GetContract) {
@@ -162,7 +176,7 @@ export class TutorialsConfigOrchestrator {
     return contracts[0];
   }
 
-  getContractsByTutorial() {
+  getContractsByTutorial(): Record<TutorialGUID, Contracts> {
     // noinspection TypeScriptMissingAugmentationImport
     return this.lowdashLib.groupBy(
       this.contracts,
@@ -238,31 +252,80 @@ export class TutorialsConfigOrchestrator {
     });
   }
 
+  get challengeGroupGUIDs() {
+    return this.challengeGroups.map((challengeGroup) => {
+      return challengeGroup.guid;
+    });
+  }
+
+  get challengeGroups() {
+    return this.tutorials
+      .map((tutorial) => {
+        if (typeof tutorial.lab === "undefined") {
+          return [];
+        } else {
+          return tutorial.lab.challengeGroups;
+        }
+      })
+      .flat();
+  }
+
   get tutorialGUIDs() {
     return this.tutorials.map((tutorial) => tutorial.guid);
   }
 }
 
-export function getChallengeURL({
-  buildChallenges,
-  challengeGUIDTypescript,
-  challengeURLTypeGUID,
+export function getVSCodeLabURL({
+  buildLabsConfig,
+  labGUIDBash,
 }: {
-  buildChallenges: CreateTutorialConfigDependencies["buildChallenges"];
-  challengeGUIDTypescript: string;
-  challengeURLTypeGUID: ChallengeURLTypeGUID;
+  buildLabsConfig: CreateTutorialConfigDependencies["buildLabsConfig"];
+  labGUIDBash: LabGUIDBash;
 }): string {
-  const challenges = buildChallenges.filter(
-    (challenge) =>
-      challenge.challenge_guid_typescript === challengeGUIDTypescript,
-  );
-  if (challenges.length !== 1) {
-    throw new Error("Too many challenges");
-  }
-  const tutorialUrl = challenges[0]?.[challengeURLTypeGUID];
+  return getLabURL({
+    buildLabsConfig,
+    labGUIDBash,
+    labURLType: LabURLTypeGUID.vscodeURL,
+  });
+}
 
-  if (typeof tutorialUrl === "undefined") {
-    throw new Error("Wrong challenge type");
+export function getCodespaceLabURL({
+  buildLabsConfig,
+  labGUIDBash,
+}: {
+  buildLabsConfig: CreateTutorialConfigDependencies["buildLabsConfig"];
+  labGUIDBash: LabGUIDBash;
+}): string {
+  return getLabURL({
+    buildLabsConfig,
+    labGUIDBash,
+    labURLType: LabURLTypeGUID.codespaceURL,
+  });
+}
+
+function getLabURL({
+  buildLabsConfig,
+  labGUIDBash,
+  labURLType,
+}: {
+  buildLabsConfig: CreateTutorialConfigDependencies["buildLabsConfig"];
+  labGUIDBash: LabGUIDBash;
+  labURLType: LabURLTypeGUID;
+}): string {
+  const labs = buildLabsConfig.filter(
+    (lab) => lab.lab_guid_bash === labGUIDBash,
+  );
+  if (labs.length > 1) {
+    throw new Error(
+      `labGUIDBash '${labGUIDBash}' matched too many labs.  Matched labs == ${labs.length}`,
+    );
+  } else if (labs.length === 0) {
+    throw new Error(`labGUIDBash '${labGUIDBash}' didn't match any labs.`);
   }
-  return tutorialUrl;
+  const labURL = labs[0]?.[labURLType];
+
+  if (typeof labURL === "undefined") {
+    throw new Error("Wrong lab type");
+  }
+  return labURL;
 }

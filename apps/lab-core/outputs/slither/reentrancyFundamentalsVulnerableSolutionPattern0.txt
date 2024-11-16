@@ -1,0 +1,6 @@
+INFO:Detectors:[92m
+Low level call in VulnerableSolutionPattern0.withdrawAll() (VulnerableSolutionPattern0.sol#25-35):
+	- (success,None) = msg.sender.call{value: beginExecutionBalance}() (VulnerableSolutionPattern0.sol#32)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+INFO:Slither:VulnerableSolutionPattern0.sol analyzed (2 contracts with 93 detectors), 1 result(s) found
+
