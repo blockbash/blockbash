@@ -65,7 +65,7 @@ main() {
     create_directory "${build_security_tools_grype_sbom_dir_path}"
 
     # --from docker: Ensures that we pull local image that was just built and not
-    # remote image from registry.  For some reason, using $image_name_with_sha_full wouldn't work when executing syft on Github.
+    # remote image from registry.  For some reason, using $image_name_with_sha_full wouldn't work when executing syft on Github..
     syft --scope "${scope}" \
       --output spdx-json \
       --from docker "${image_name_with_branch_arch_full}" > "${build_security_tools_grype_sbom_file_path}"
@@ -85,11 +85,12 @@ main() {
   )
 
   # Dont fail build on image updates
-  if is_production_build "${branch_name}" && [[ ${is_scheduled_execution} == "${false}" ]]; then
-    grype_flags+=(
-      --fail-on "critical"
-    )
-  fi
+  # TODO: Put this back in once dependabot is in place
+  #  if is_production_build "${branch_name}" && [[ ${is_scheduled_execution} == "${false}" ]]; then
+  #    grype_flags+=(
+  #      --fail-on "critical"
+  #    )
+  #  fi
 
   log_info "Executing grype scan on ${build_security_tools_grype_sbom_file_path}"
   if

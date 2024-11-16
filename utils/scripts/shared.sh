@@ -30,7 +30,7 @@ cd "$(get_blockbash_root_dir_path)" || exit
 # shellcheck source-path=./../../packages/common/scripts/source-all.sh
 . "packages/common/scripts/source-all.sh" --absolute_paths="true" --die_on_error="true"
 
-if [[ ${should_clear_bash_log} == "${true}"   ]]; then
+if [[ ${should_clear_bash_log} == "${true}" ]]; then
   log_info "Deleting previous bash logs as should_clear_bash_log is ${true}"
   rm -rf "${logs_dir_path:?}/bash.log"
 fi

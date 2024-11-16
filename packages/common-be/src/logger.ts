@@ -1,39 +1,40 @@
-import type { loggerTypes } from "@blockbash/common"
+import type { loggerTypes } from "@blockbash/common";
 
-import { Levels, LogMessages } from "./logger.constants"
 import type {
   ILogger,
   InternalLogger,
   Log,
-  LoggerDependencies
-} from "./logger.types"
+  LoggerDependencies,
+} from "./logger.types";
+
+import { Levels, LogMessages } from "./logger.constants";
 
 export class Logger implements ILogger {
-  private className: string | undefined
+  private className: string | undefined;
 
-  private readonly debugLogFilePath: LoggerDependencies["debugLogFilePath"]
+  private readonly debugLogFilePath: LoggerDependencies["debugLogFilePath"];
 
-  private isContextSet = false
+  private isContextSet = false;
 
-  private readonly isDeveloperEnv: LoggerDependencies["isDeveloperEnv"]
+  private readonly isDeveloperEnv: LoggerDependencies["isDeveloperEnv"];
 
-  private readonly logger: InternalLogger
+  private readonly logger: InternalLogger;
 
-  private readonly loggerLib: LoggerDependencies["loggerLib"]
+  private readonly loggerLib: LoggerDependencies["loggerLib"];
 
-  private logicPath: string | undefined
+  private logicPath: string | undefined;
 
-  private readonly problemLevels = [Levels.WARN, Levels.ERROR]
+  private readonly problemLevels = [Levels.WARN, Levels.ERROR];
 
   constructor({
     injectedDependencies,
   }: {
-    injectedDependencies: LoggerDependencies
+    injectedDependencies: LoggerDependencies;
   }) {
-    this.loggerLib = injectedDependencies.loggerLib
-    this.isDeveloperEnv = injectedDependencies.isDeveloperEnv
-    this.debugLogFilePath = injectedDependencies.debugLogFilePath
-    this.logger = this.initLogger()
+    this.loggerLib = injectedDependencies.loggerLib;
+    this.isDeveloperEnv = injectedDependencies.isDeveloperEnv;
+    this.debugLogFilePath = injectedDependencies.debugLogFilePath;
+    this.logger = this.initLogger();
   }
 
   private createLog({
@@ -43,11 +44,11 @@ export class Logger implements ILogger {
     metadata,
     toUser,
   }: {
-    functionName: string
-    level: Levels
-    message: string
-    metadata: loggerTypes.LogMetadata
-    toUser: boolean
+    functionName: string;
+    level: Levels;
+    message: string;
+    metadata: loggerTypes.LogMetadata;
+    toUser: boolean;
   }) {
     if (!this.isContextSet) {
       this.logger.log({
@@ -59,7 +60,7 @@ export class Logger implements ILogger {
           logicPath: this.logicPath,
         },
         toUser: false,
-      })
+      });
     }
     this.logger.log({
       className: this.className,
@@ -71,7 +72,7 @@ export class Logger implements ILogger {
         logicPath: this.logicPath,
       },
       toUser,
-    })
+    });
   }
 
   private static currentTime() {
@@ -79,7 +80,7 @@ export class Logger implements ILogger {
       dateStyle: "short",
       timeStyle: "medium",
       timeZone: "America/New_York",
-    }).format(Date.now())
+    }).format(Date.now());
   }
 
   private initLogger(): InternalLogger {
@@ -91,14 +92,14 @@ export class Logger implements ILogger {
         this.isDeveloperEnv &&
         this.problemLevels.includes(info.level.toLowerCase() as Levels)
       ) {
-        return info
+        return info;
       }
-      if (info["toUser"]) {
-        return info
+      if (info.toUser) {
+        return info;
       }
       // By returning false, we suppress the output
-      return false
-    })
+      return false;
+    });
     return this.loggerLib.createLogger({
       level: Levels.INFO,
       transports: [
@@ -121,12 +122,12 @@ export class Logger implements ILogger {
             this.loggerLib.format.printf(
               (info) =>
                 // TODO: Suppress Errors
-                `${String(info["timestamp"])} - ${this.getInvocationName({
-                  functionName: info["functionName"],
+                `${String(info.timestamp)} - ${this.getInvocationName({
+                  functionName: info.functionName,
                 })} - ${info.level.toLocaleUpperCase()} - ${String(
                   info.message,
                 )} - ${JSON.stringify(
-                  info["meta"],
+                  info.meta,
                   (_, v) => (typeof v === "bigint" ? v.toString() : v),
                   4,
                 )}`,
@@ -135,7 +136,7 @@ export class Logger implements ILogger {
           level: "silly",
         }),
       ],
-    })
+    });
   }
 
   debug({ functionName, message, metadata, toUser = false }: Log) {
@@ -145,8 +146,8 @@ export class Logger implements ILogger {
       message,
       metadata,
       toUser,
-    })
-    return this
+    });
+    return this;
   }
 
   error({ functionName, message, metadata, toUser = true }: Log) {
@@ -156,18 +157,18 @@ export class Logger implements ILogger {
       message,
       metadata,
       toUser,
-    })
-    return this
+    });
+    return this;
   }
 
   getInvocationName({ functionName }: { functionName: string }) {
-    let invocationName: string
+    let invocationName: string;
     if (typeof this.className === "undefined") {
-      invocationName = functionName
+      invocationName = functionName;
     } else {
-      invocationName = `${this.className}.${functionName}`
+      invocationName = `${this.className}.${functionName}`;
     }
-    return invocationName
+    return invocationName;
   }
 
   info({ functionName, message, metadata, toUser = false }: Log) {
@@ -177,8 +178,8 @@ export class Logger implements ILogger {
       message,
       metadata,
       toUser,
-    })
-    return this
+    });
+    return this;
   }
 
   logInnerFinishedExecution({
@@ -190,8 +191,8 @@ export class Logger implements ILogger {
       message: LogMessages.InnerFinishedExecution,
       metadata,
       toUser: false,
-    })
-    return this
+    });
+    return this;
   }
 
   logInnerStartExecution({
@@ -203,8 +204,8 @@ export class Logger implements ILogger {
       message: LogMessages.InnerStartExecution,
       metadata,
       toUser: false,
-    })
-    return this
+    });
+    return this;
   }
 
   logOuterFinishedExecution({
@@ -216,8 +217,8 @@ export class Logger implements ILogger {
       message: LogMessages.OuterFinishedExecution,
       metadata,
       toUser: false,
-    })
-    return this
+    });
+    return this;
   }
 
   logOuterStartExecution({
@@ -229,25 +230,25 @@ export class Logger implements ILogger {
       message: LogMessages.OuterStartExecution,
       metadata,
       toUser: false,
-    })
-    return this
+    });
+    return this;
   }
 
   setGlobalContext({
     className,
     logicPath,
   }: {
-    className?: string
-    logicPath: string
+    className?: string;
+    logicPath: string;
   }) {
     if (className) {
-      this.className = className
+      this.className = className;
     }
     if (logicPath) {
-      this.logicPath = logicPath
+      this.logicPath = logicPath;
     }
-    this.isContextSet = true
-    return this
+    this.isContextSet = true;
+    return this;
   }
 
   warn({ functionName, message, metadata, toUser = false }: Log) {
@@ -257,7 +258,7 @@ export class Logger implements ILogger {
       message,
       metadata,
       toUser,
-    })
-    return this
+    });
+    return this;
   }
 }

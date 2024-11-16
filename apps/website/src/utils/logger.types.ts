@@ -1,12 +1,12 @@
-import { type loggerTypes } from "@blockbash/common"
-import { type Logger as LoggerLib } from "tslog"
+import { type loggerTypes } from "@blockbash/common";
+import { type Logger as LoggerLib } from "tslog";
 
 interface LoggerDependencies {
-  LoggerLib: typeof LoggerLib
+  LoggerLib: typeof LoggerLib;
 }
 
-type CreateLogger = () => ILogger
+type CreateLogger = () => ILogger;
 
-type ILogger = loggerTypes.ILoggerMin
+type ILogger = loggerTypes.ILoggerMin;
 
-export type { CreateLogger, ILogger, LoggerDependencies }
+export type { CreateLogger, ILogger, LoggerDependencies };

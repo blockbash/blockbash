@@ -3,10 +3,11 @@ import {
   ChakraProvider,
   extendTheme,
 } from "@chakra-ui/react";
+import { sharedInlineStyles } from "@src/components/global-styles.const";
 import { Styles } from "@src/css";
 import { dependencyProviderDependencies } from "@src/providers/dependency";
 import { DependencyProvider, createLogger } from "@utils";
-// @ts-expect-error: chakra-ui-steps: It looks like this package needs to update its
+// @ts-expect-error: chakra-ui-steps needs to update its typing conventions
 import { StepsTheme as Steps } from "chakra-ui-steps";
 import React from "react";
 const commonButtonBaseStyle: ButtonProps = {
@@ -34,7 +35,15 @@ const customTheme = extendTheme({
     },
     Code: {
       baseStyle: {
-        margin: 0.5,
+        ...sharedInlineStyles,
+      },
+    },
+    Link: {
+      baseStyle: {
+        _hover: {
+          textDecoration: "var(--ifm-link-hover-decoration)",
+        },
+        color: "var(--ifm-link-color)",
       },
     },
     Steps,
@@ -48,11 +57,14 @@ const customTheme = extendTheme({
   },
   styles: {
     global: {
+      body: {
+        lineHeight: 1.75,
+      },
       // ol: {
       // background: "black",
       // },
       // Certain Docusaurus styles are on all pages (e.g., the navigation bar).
-      // Declare a CSS-reset (below) if these styles cause a conflict with
+      // Declare a CSS-cr (below) if these styles cause a conflict with
       // Chakra
     },
   },

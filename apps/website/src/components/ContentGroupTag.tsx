@@ -1,8 +1,8 @@
-import { Tag as ChakraTag, type TagProps } from "@chakra-ui/react"
-import React from "react"
+import { Tag as ChakraTag, type TagProps } from "@chakra-ui/react";
+import React from "react";
 
 export function ContentGroupTag(props: TagProps) {
-  const { children } = props
+  const { children } = props;
   return (
     <ChakraTag
       boxShadow="lg"
@@ -13,5 +13,5 @@ export function ContentGroupTag(props: TagProps) {
     >
       {children}
     </ChakraTag>
-  )
+  );
 }

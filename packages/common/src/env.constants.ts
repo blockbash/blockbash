@@ -8,4 +8,4 @@ enum EnvVarName {
   "nodeEnv" = "NODE_ENV",
 }
 
-export { EnvVarName, LabExecEnvGUID }
+export { EnvVarName, LabExecEnvGUID };

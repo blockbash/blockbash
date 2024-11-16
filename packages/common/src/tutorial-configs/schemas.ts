@@ -3,11 +3,12 @@ import { z } from "zod";
 
 import {
   AuthorName,
+  ChallengeGroupGUID,
   ContractName,
   DeployAccountGUID,
-  LearningPathGUID,
-  LearningPathName,
-  LearningPathURL,
+  PlaylistGUID,
+  PlaylistName,
+  PlaylistURLPath,
   TutorialCategoryGUID,
   TutorialCategoryName,
   TutorialDifficultyName,
@@ -15,9 +16,9 @@ import {
   TutorialName,
   TutorialTypeGUID,
   TutorialTypeName,
+  hardhatTracerGlobalTextReplacements,
 } from "./constants.external";
 import { type TutorialsConfigSchemasDependencies } from "./types";
-
 // All "Schemas" take config inputs from
 // constants.fullConfig.ts
 class TutorialsConfigSchemas {
@@ -43,6 +44,17 @@ class TutorialsConfigSchemas {
     return this.schemaLib.array(this.categorySchema).nonempty();
   }
 
+  private get challengeGroupSchema() {
+    return this.schemaLib.object({
+      guid: this.schemaLib.nativeEnum(ChallengeGroupGUID),
+      textReplacements: this.challengeTextReplacementsSchema,
+    });
+  }
+
+  private get challengeGroupsSchema() {
+    return this.schemaLib.array(this.challengeGroupSchema);
+  }
+
   private get challengeTextReplacementSchema() {
     return this.schemaLib.object({
       matchRegex: this.schemaLib.string(),
@@ -51,7 +63,9 @@ class TutorialsConfigSchemas {
   }
 
   private get challengeTextReplacementsSchema() {
-    return this.schemaLib.array(this.challengeTextReplacementSchema).optional();
+    return this.schemaLib
+      .array(this.challengeTextReplacementSchema)
+      .default(hardhatTracerGlobalTextReplacements);
   }
 
   private get contractSchema() {
@@ -78,11 +92,11 @@ class TutorialsConfigSchemas {
     return this.schemaLib.array(this.contractSchema);
   }
 
-  private get learningPathSchema() {
+  private get playlistSchema() {
     return this.schemaLib.object({
-      guid: this.schemaLib.nativeEnum(LearningPathGUID),
-      name: this.schemaLib.nativeEnum(LearningPathName),
-      url: this.schemaLib.nativeEnum(LearningPathURL),
+      guid: this.schemaLib.nativeEnum(PlaylistGUID),
+      name: this.schemaLib.nativeEnum(PlaylistName),
+      url: this.schemaLib.nativeEnum(PlaylistURLPath),
     });
   }
 
@@ -97,8 +111,8 @@ class TutorialsConfigSchemas {
         durationMinutes: this.schemaLib.number(),
         guid: this.schemaLib.nativeEnum(TutorialGUID),
         lab: this.labSchema.optional(),
-        learningPath: this.learningPathSchema,
         name: this.schemaLib.nativeEnum(TutorialName),
+        playlist: this.playlistSchema,
         publishedDate: this.schemaLib.date(),
         type: this.typeSchema,
         url: this.schemaLib.string(),
@@ -133,14 +147,15 @@ class TutorialsConfigSchemas {
 
   public get labSchema() {
     return this.schemaLib.object({
+      challengeGroups: this.challengeGroupsSchema,
       codespaceURL: this.schemaLib.string(),
       contracts: this.contractsSchema,
       vscodeURL: this.schemaLib.string(),
     });
   }
 
-  get learningPathGUIDValue() {
-    return this.learningPathSchema.keyof().Enum.guid;
+  get playlistGUIDValue() {
+    return this.playlistSchema.keyof().Enum.guid;
   }
 
   get tutorialsSchema() {
@@ -154,5 +169,4 @@ const schema = new TutorialsConfigSchemas({
     schemaLib: z,
   },
 });
-
 export { TutorialsConfigSchemas, schema };

@@ -1,3 +1,3 @@
-type CommanderOption = true | undefined
+type CommanderOption = true | undefined;
 
-export type { CommanderOption }
+export type { CommanderOption };

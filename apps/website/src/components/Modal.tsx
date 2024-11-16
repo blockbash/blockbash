@@ -11,9 +11,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  chakra,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Bold, Divider, InlineTip } from "@components";
+import { Bold, Divider, Tip } from "@components";
 import React from "react";
 
 import { Styles } from "../css";
@@ -44,6 +45,7 @@ export function Modal({
         background={"white"}
         boxShadow={Styles.boxShadowMin}
         maxW={maxW}
+        mx={"auto"}
         p={5}
         rounded={"xl"}
       >
@@ -51,10 +53,9 @@ export function Modal({
           <Bold fontSize={"lg"}>{title}</Bold>
         </Box>
         <Center>
-          <InlineTip
-            appendText={"Click on the image to zoom in"}
-            label={"Tip"}
-          />
+          <Tip>
+            <chakra.span>Click on the image to zoom in</chakra.span>
+          </Tip>
         </Center>
         <Box my={3}>
           <Divider />

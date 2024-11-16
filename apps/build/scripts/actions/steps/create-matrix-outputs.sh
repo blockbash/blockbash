@@ -44,7 +44,7 @@ main() {
     done
 
     # Merge all matrix outputs (for a given job_name) into a single file. This file will contain an array of json objects.
-    # Ex Path: /blockbash/apps/build/artifacts/matrix-outputs/final/create-challenge-images.json
+    # Ex Path: /blockbash/apps/build/artifacts/matrix-outputs/final/create-lab-images.json
     local build_matrix_outputs_final_file_path="${build_matrix_outputs_final_dir_path}/${job_name}.json"
     jq "${jq_common_flags[@]}" --slurp . "${job_scratch_dir_path}"/*.json > "${build_matrix_outputs_final_file_path}"
 

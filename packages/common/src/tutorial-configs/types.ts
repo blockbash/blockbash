@@ -1,18 +1,26 @@
 import type lodash from "lodash";
 
-// TODO: Fix BigNumber
+// @ts-expect-error: TODO: Fix BigNumber
 import { type BigNumber } from "ethers";
 import { type z } from "zod";
 
-import type BuildChallengesConfig from "../../../../apps/build/artifacts/challenges/merged-metadata.json";
+import type buildLabsConfig from "../../../../apps/build/artifacts/labs/merged-metadata.json";
 
 import { type Eth } from "../eth";
 import { type ILoggerMin } from "../logger.types";
-import { TutorialsConfigOrchestrator, type getChallengeURL } from "./configs";
+import {
+  TutorialsConfigOrchestrator,
+  type getCodespaceLabURL,
+  type getVSCodeLabURL,
+} from "./configs";
 import {
   type AnchorGUID,
   type AnchorName,
-  type AttackDescriptions,
+  type ChallengeDescriptions,
+  type ChallengeGroupGUID,
+  type LabGUIDBash,
+  type LabURLTypeGUID,
+  type PlaylistGUID,
 } from "./constants.external";
 import { TutorialsConfigSchemas, type schema } from "./schemas";
 
@@ -33,8 +41,9 @@ type TutorialsSchema = typeof schema.tutorialsSchema;
 type TutorialsConfig = z.input<TutorialsSchema>;
 
 interface CreateTutorialConfigDependencies {
-  buildChallenges: typeof BuildChallengesConfig;
-  getLabURL: typeof getChallengeURL;
+  buildLabsConfig: typeof buildLabsConfig;
+  getCodespaceLabURL: typeof getCodespaceLabURL;
+  getVSCodeLabURL: typeof getVSCodeLabURL;
 }
 
 // Tutorial
@@ -45,12 +54,12 @@ type TutorialGUIDKabob = Tutorial["guidKabob"];
 type TutorialGUIDs = TutorialGUID[];
 
 // Tutorial Learning Path
-type TutorialLearningPath = Tutorial["learningPath"];
-interface TutorialLearningPathWithCount extends TutorialLearningPath {
+type TutorialPlaylist = Tutorial["playlist"];
+interface TutorialPlaylistWithCount extends TutorialPlaylist {
   count: number;
 }
-type TutorialLearningPathsWithCount = TutorialLearningPathWithCount[];
-type TutorialLearningPathName = TutorialLearningPath["name"];
+type TutorialPlaylistsWithCount = TutorialPlaylistWithCount[];
+type TutorialPlaylistName = TutorialPlaylist["name"];
 
 // Tutorial Categories
 type TutorialCategories = Tutorial["categories"];
@@ -107,13 +116,16 @@ interface GetContract {
 }
 
 // Challenges
-type ChallengeDescriptions = AttackDescriptions;
+type ChallengeGroup = TutorialLab["challengeGroups"][0];
+type ChallengeGroupGUIDs = ChallengeGroupGUID[];
 
 export {
   type AnchorGUID,
   type AnchorName,
-  type BuildChallengesConfig,
   type ChallengeDescriptions,
+  type ChallengeGroup,
+  type ChallengeGroupGUID,
+  type ChallengeGroupGUIDs,
   type ChallengeTextReplacements,
   type Contract,
   type ContractDeployAccountGUID,
@@ -122,6 +134,9 @@ export {
   type Contracts,
   type CreateTutorialConfigDependencies,
   type GetContract,
+  type LabGUIDBash,
+  type LabURLTypeGUID,
+  type PlaylistGUID,
   type Schema,
   type Tutorial,
   type TutorialCategories,
@@ -134,9 +149,9 @@ export {
   type TutorialGUID,
   type TutorialGUIDKabob,
   type TutorialGUIDs,
-  type TutorialLearningPathName,
-  type TutorialLearningPathWithCount,
-  type TutorialLearningPathsWithCount,
+  type TutorialPlaylistName,
+  type TutorialPlaylistWithCount,
+  type TutorialPlaylistsWithCount,
   type TutorialSelectableFilterGUID,
   type TutorialSelectableFilterGUIDs,
   type TutorialSelectableFiltersWithCount,
@@ -151,4 +166,5 @@ export {
   TutorialsConfigSchemas,
   type TutorialsConfigSchemasDependencies,
   type TutorialsSchema,
+  type buildLabsConfig,
 };

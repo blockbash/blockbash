@@ -5,4 +5,4 @@ enum LogMessages {
   OuterStartExecution = "Start Execution (Outer)",
 }
 
-export { LogMessages }
+export { LogMessages };

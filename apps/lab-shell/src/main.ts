@@ -1,26 +1,26 @@
 /**
  * Main entrypoint to cli
  */
-import { tutorialConfig } from "@blockbash/common-be"
-import { Argument, Option, program } from "@commander-js/extra-typings"
+import { tutorialConfig } from "@blockbash/common-be";
+import { Argument, Option, program } from "@commander-js/extra-typings";
+import { createChallenges } from "src/commands/challenges";
+const challengesSubCommand = program.command("challenges");
 
-import { createChallenge } from "./commands/challenge"
-
-const challengeSubCommand = program.command("challenge")
-
-challengeSubCommand
+challengesSubCommand
   .command("verify")
   .addArgument(
-    new Argument("<tutorialGUID>").choices(tutorialConfig.tutorialGUIDs),
+    new Argument("<challengeGroupGUID>").choices(
+      tutorialConfig.challengeGroupGUIDs,
+    ),
   )
   .addOption(
     new Option(
       "-t, --test-suite",
-      "Leveraged for running internal test suite",
+      "Leveraged for executing internal test suite",
     ).hideHelp(),
   )
-  .action((tutorialGUID, options) => {
-    createChallenge().execute(tutorialGUID, options.testSuite)
-  })
+  .action((challengeGroupGUID, options) => {
+    createChallenges().execute(challengeGroupGUID, options.testSuite);
+  });
 
-program.parse()
+program.parse();

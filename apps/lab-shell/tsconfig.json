@@ -6,14 +6,10 @@
     "@tsconfig/node20/tsconfig",
     "@tsconfig/strictest/tsconfig"
   ],
-  "include": [
-    "**/*"
-  ],
+  "include": ["**/*"],
   "ts-node": {
     "files": true,
-    "require": [
-      "tsconfig-paths/register"
-    ],
+    "require": ["tsconfig-paths/register"],
     // Quickens ts-node operations
     "swc": true
   }

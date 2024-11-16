@@ -1,0 +1,169 @@
+---
+title: "Attack Lab"
+description: "Transform your Solidity development skills with our interactive re-entrancy vulnerability lab. Learn by doing as you exploit real smart contract weaknesses in a guided environment. Perfect for developers seeking practical blockchain security experience."
+keywords:
+  - smart contract security
+  - re-entrancy vulnerability
+  - re-entrancy attack
+  - solidity security
+  - ethereum security
+  - smart contract exploitation
+  - blockchain security practice
+  - solidity tutorial
+  - smart contract hacking
+  - web3 security
+  - defi security
+  - ethereum vulnerabilities
+  - smart contract audit
+  - blockchain security training
+  - practical solidity
+  - hands-on blockchain
+  - ethereum development
+  - smart contract development
+  - blockchain security fundamentals
+  - secure smart contracts
+sidebar_position: 2
+slug: "/tutorials/reentrancy-fundamentals-attack-lab"
+hide_title: true
+hide_table_of_contents: true
+---
+
+<!-- Intellij mdx plugin doesn't support ts path aliases -->
+import {chakra, Code, ListItem} from "@chakra-ui/react"
+import {tutorialConfigConst} from "@blockbash/common"
+import {
+    ChallengePromptSection,
+    DiagramFootnote,
+    HintOrderedList,
+    LinkAnchor,
+    LinkTutorial
+} from "../../../src/components"
+import {Help, LabOptions, LabSample, LabWorkflow, Liability} from "../../../src/features"
+
+## Introduction
+
+- It's time for some hands-on experience! In this lab, you'll leverage your Reentrancy knowledge to steal funds from the
+<LinkTutorial
+    tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}
+    content="Vulnerable Contract"
+    anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode}/>. Within the lab environment, you'll update the `Attacker` Contract (i.e., `Attacker.sol`) to exploit a Reentrancy vulnerability within the `Vulnerable` Contract (i.e., `Vulnerable.sol`).
+- As explained in the
+<LinkTutorial
+    tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}
+    anchorGUID={tutorialConfigConst.AnchorGUID.labWorkflow}/> section, the Challenge Verification Engine will verify your solution.
+- For you to pass the lab, you must complete the <LinkAnchor
+    anchorGUID={tutorialConfigConst.AnchorGUID.labChallenges}/>.
+
+## Prerequisites
+
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
+
+## Lab Sample
+<LabSample/>
+
+
+## Lab Challenges {#labChallenges}
+
+<ChallengePromptSection challenges={[
+    {
+        hints: [
+            {
+                title: <>Where do I begin?</>,
+                content: <chakra.span>
+                    <HintOrderedList>
+                        <ListItem>
+                            Within the lab environment, go to the terminal and
+                            execute <Code>cvs</Code>.
+                        </ListItem>
+                        <ListItem>
+                            You are now viewing the solution's call stack. Use this
+                            information to reverse engineer the solution. When reviewing
+                            the output, you'll notice
+                            that <Code>Attacker.attack()</Code> is invoked. As discussed
+                            in the <LinkTutorial
+                            tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}
+                            anchorGUID={tutorialConfigConst.AnchorGUID.labWorkflow}/> section, <Code>Attacker.attack()</Code> is
+                            automatically invoked during the challenge verification
+                            process. In other words, you don't need to
+                            call <Code>Attacker.attack()</Code> within your solution.
+                        </ListItem>
+                    </HintOrderedList>
+                </chakra.span>,
+                id: 1
+            },
+            {
+                title: <>How do I continuously withdraw funds?</>,
+                content: <chakra.span>Think about how you can
+                    leverage <Code>Attacker.receive()</Code> to perform unexpected actions
+                    during the <Code>ETH</Code> transfer process.
+                </chakra.span>,
+                id: 2
+            }
+        ],
+        id: 1,
+        title: tutorialConfigConst.ChallengeDescriptions.shouldBeAbleToStealAllEthFromVulnerableContract,
+    },
+    {
+        hints: [
+            {
+                title: <>Where should I begin?</>,
+                content: (
+                    <chakra.span>
+                        <HintOrderedList>
+                            <ListItem>
+                                Review{' '}
+                                <DiagramFootnote
+                                    prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote> within
+                                the{' '}
+                                <LinkTutorial
+                                    tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}
+                                    anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.
+                            </ListItem>
+                            <ListItem>
+                                Review{' '}
+                                <DiagramFootnote
+                                    prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>3a</DiagramFootnote> within
+                                the{' '}
+                                <LinkTutorial
+                                    tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}
+                                    anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>. What can occur if you withdraw too much <Code>ETH</Code>?
+
+                            </ListItem>
+                        </HintOrderedList>
+
+                    </chakra.span>),
+                id: 2
+            }],
+        id: 2,
+        title: tutorialConfigConst.ChallengeDescriptions.shouldNotCauseARevertOperation,
+    }
+]}/>
+
+## Lab Workflow {#labWorkflow}
+<LabWorkflow tutorialTypeGUID={tutorialConfigConst.TutorialTypeGUID.attackLab}
+             updateContractCTA={(
+                 <chakra.span>
+                     Add your exploit code to <Code>Attacker.sol</Code>.
+                 </chakra.span>
+             )}
+             tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}/>
+
+## Lab Options {#labOptions}
+<LabOptions
+    Goal={
+        <chakra.span>
+            In this lab, you'll leverage your Reentrancy knowledge to steal funds from
+            the <Code>Vulnerable</Code> Contract!
+        </chakra.span>
+    }
+    tutorialGUID={
+        tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab
+    }
+/>
+
+## Need Help? {#needHelp}
+<Help
+    tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}></Help>
+
+## Disclosures
+<Liability/>

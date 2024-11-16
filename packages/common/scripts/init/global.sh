@@ -47,10 +47,10 @@ docker_architectures=(
 all_architectures=("${runner_architectures[@]}" "${docker_architectures[@]}")
 
 image_names_short=(
-  "${docker_challenge_base_image_name_short}"
+  "${docker_lab_base_image_name_short}"
   "${docker_runner_image_name_short}"
 )
 
 execution_environment_workflows=(
-  "${challenge_workflow_devcontainer_vscode}"
+  "${lab_workflow_devcontainer_vscode}"
 )

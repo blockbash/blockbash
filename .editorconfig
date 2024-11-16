@@ -1,0 +1,20 @@
+# Prettier/editor will leverage this file
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+
+# For mdx, I need to align with commonmark specification which requires indent_size of 4 for lists
+[*.mdx]
+indent_size = 4
+
+# For md, which is linted by remark, I need to align with remark lint's indent size.
+[*.md]
+indent_size = 2

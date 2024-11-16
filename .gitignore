@@ -6,17 +6,21 @@
 
 # MISC
 *.log
-.devcontainer/*
+.devcontainer/
 .DS_Store
 .env*
 .git
 .idea/
 .run/
-logs/*
+logs/
 node_modules/
 # *.dtmp/*.bkp: Temporary drawio files
 *.dtmp
 *.bkp
+.husky/_/*
+.aider*/
+.vale-styles
+ai/
 
 # UTILS
 utils/local-config/*
@@ -25,7 +29,7 @@ utils/local-config/*
 # !utils/local-config/overrides.env
 
 # APPS/BUILD ARTIFACTS
-apps/build/artifacts/challenges/**/*.json
+apps/build/artifacts/labs/**/*.json
 apps/build/artifacts/dummy-secrets/*
 apps/build/artifacts/matrix-outputs/final/*
 apps/build/artifacts/matrix-outputs/raw/*
@@ -39,6 +43,8 @@ apps/lab-core/artifacts/challenge-results/*
 apps/lab-core/artifacts/hardhat-artifacts/*
 apps/lab-core/artifacts/hardhat-cache/*
 apps/lab-core/artifacts/types/typechain/*
+apps/lab-core/artifacts/diffs/*
+apps/lab-core/artifacts/compilers/*
 
 # WEBSITE
 apps/website/artifacts/build/*

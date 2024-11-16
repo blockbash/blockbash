@@ -6,14 +6,12 @@ import { InlineAdmonitionWrapper } from "./InlineAdmonitionWrapper";
 import { type InlineAdmonitionWrapperProps } from "./inlineAdmonition.types";
 
 export interface InlineErrorProps {
-  appendText?: InlineAdmonitionWrapperProps["appendText"];
   label: InlineAdmonitionWrapperProps["label"];
 }
 export function InlineError(props: InlineErrorProps): JSX.Element {
   const color: NonNullable<ColorProps["color"]> = "red.500";
   return (
     <InlineAdmonitionWrapper
-      appendText={props.appendText}
       icon={IoMdAlert}
       iconBackgroundColor={color}
       label={props.label}

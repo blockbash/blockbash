@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-get_shared_challenge_docker_run_flags() {
+get_shared_lab_docker_run_flags() {
   local container_name="${1}"
   local blockbash_repo_bind_dir_path="${2}" # can pass "null" to omit mount flags
   local format="${3}"                       # cli/json
@@ -16,6 +16,7 @@ get_shared_challenge_docker_run_flags() {
       "--mount=type=bind,source=${blockbash_repo_bind_dir_path},readonly,target=${container_repo_dir_path}"
       "--mount=type=bind,source=${logs_dir_path},target=${container_logs_dir_path}"
       # Allow certain paths to be writeable
+      "--mount=type=bind,source=${lab_core_outputs_dir_path},target=${container_lab_core_outputs_dir_path}"
       "--mount=type=volume,target=${container_repo_node_modules_dir_path}"
       "--mount=type=volume,target=${container_lab_core_artifacts_dir_path}"
     )
@@ -75,7 +76,7 @@ get_image_registry() {
   if is_github_build; then
     github_org_name="${github_primary_org_name_prod}"
   else
-    github_org_name="${github_challenges_org_name_dev}"
+    github_org_name="${github_labs_org_name_dev}"
   fi
   echo -n "${github_image_registry_domain}/${github_org_name}/${image_name_short}"
 }
@@ -116,17 +117,17 @@ create_matrix_docker_outputs() {
   # ##############################################################################
   : << COMMENT
 
-  create-base-images and create-challenge-environments:
+  create-base-images and create-lab-environments:
     - Jobs have a matrix configuration
     - These matrix jobs create a container image for a particular target_arch.
 
   Workflow:
-    - create-base-images/create-challenge-environments -> create-matrix-outputs -> create-multi-arch-images
+    - create-base-images/create-lab-environments -> create-matrix-outputs -> create-multi-arch-images
     - create-multi-arch-images will leverage the artifacts (generated here) to create a multi architecture container image.
 
   image_name_with_branch_full:
     - Will (ultimately) be the multi-arch image name that is generated in the create-multi-arch-images job.
-    - Before this multi-arch image is generated, we need the platform-specific image tags that are generated in the create-base-images and create-challenge-environment jobs (i.e., matrix jobs). Each matrix job will persist the platform specific image information into a directory.  This directory will correspond to image_name_with_branch_full. As the matrix jobs are effectively sharing a filesystem (via an Github Action Artifact), we use a directory (for each multi-arch image) so there aren't any filesystem conflicts. In the create-multi-arch-images job, each directory (with its metadata) is leveraged to create a multi arch image
+    - Before this multi-arch image is generated, we need the platform-specific image tags that are generated in the create-base-images and create-lab-environment jobs (i.e., matrix jobs). Each matrix job will persist the platform specific image information into a directory.  This directory will correspond to image_name_with_branch_full. As the matrix jobs are effectively sharing a filesystem (via an Github Action Artifact), we use a directory (for each multi-arch image) so there aren't any filesystem conflicts. In the create-multi-arch-images job, each directory (with its metadata) is leveraged to create a multi arch image
 
   Future Work:
     - TODO: Change this once outputs can be referenced from matrix jobs
@@ -135,7 +136,7 @@ create_matrix_docker_outputs() {
 COMMENT
   # ##############################################################################
 
-  # job_name: Name of job that is creating the output (e.g., create-base-images/create-challenge-images). Results will be grouped via the job_name.
+  # job_name: Name of job that is creating the output (e.g., create-base-images/create-lab-images). Results will be grouped via the job_name.
   local job_name="${1}" #
   local image_name_with_branch_full="${2}"
   local branch_name="${3}"
@@ -163,7 +164,7 @@ create_github_workflow_outputs() {
   local branch_name="${1}"
   local image_name_short="${2}"
   local target_arch="${3}"
-  local challenge_repo_name_full="${4}"
+  local lab_repo_name_full="${4}"
   local matrix_guid="${5}"
 
   local image_name_with_branch_arch_full image_name_with_sha_full
@@ -182,7 +183,7 @@ create_github_workflow_outputs() {
   image_name_with_branch_full=$(get_image_name_with_branch_full "${branch_name}" "${image_name_short}")
 
   set_build_output "${key_image_name_with_branch_full}" "${image_name_with_branch_full}"
-  set_build_output "${key_challenge_repo_name_full}" "${challenge_repo_name_full}"
+  set_build_output "${key_lab_repo_name_full}" "${lab_repo_name_full}"
 
   local hashed_matrix_guid
   hashed_matrix_guid="$(get_input_hash "${matrix_guid}")"

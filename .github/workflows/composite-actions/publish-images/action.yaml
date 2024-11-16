@@ -26,9 +26,8 @@ inputs:
     required: true
 runs:
   steps:
-    - if: ${{ false }}
-      shell: bash
-      id: "null"
+    - id: "null"
+      if: ${{ false }}
       # language=sh
       run: |
         # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
@@ -37,6 +36,7 @@ runs:
         # echo "build_security_tools_grype_sbom_dir_path=null" >> $GITHUB_ENV
         # echo "publish_images_matrix_outputs_pre=null" >> $GITHUB_ENV
         # echo "build_matrix_outputs_dir_path=null" >> $GITHUB_ENV
+      shell: bash
     - if: ${{ env.activate_security_validations == 'true' }}
       name: Setup Security Tools
       uses: ./.github/workflows/composite-actions/setup-security-tools-installers
@@ -93,7 +93,7 @@ runs:
       # TODO: Cant upgrade to @v4 until this is fixed: https://github.com/nektos/act/issues/2135
       # Corresponding PR: https://github.com/nektos/act/pull/2224
       # Uploads image manifest artifacts that were created in create-base-images.sh and
-      # create-challenge-environments.sh
+      # create-lab-environments.sh
       # publish_images_matrix_outputs_pre: Will be normalized by create-matrix-outputs job
       with:
         if-no-files-found: error

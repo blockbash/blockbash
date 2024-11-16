@@ -1,0 +1,106 @@
+---
+title: "Attack Lab: Solution"
+description: "Discover the solution to our Reentrancy Attack Lab and learn how to exploit vulnerabilities in Solidity smart contracts. Dive into the code to understand the attack flow and secure your contracts. Master smart contract security with our hands-on tutorial. Start learning now!"
+keywords:
+  - smart contract security
+  - solidity security
+  - ethereum security
+  - blockchain security
+  - smart contract vulnerabilities
+  - reentrancy attacks
+  - reentrancy vulnerabilities
+  - reentrancy attack solution
+  - reentrancy attack prevention
+  - smart contract exploitation
+  - smart contract hacking
+  - hands-on smart contract security
+  - solidity vulnerabilities
+  - ethereum vulnerabilities
+  - blockchain vulnerabilities
+  - smart contract attack vectors
+  - smart contract testing
+  - smart contract auditing
+  - solidity best practices
+  - ethereum best practices
+  - blockchain development
+  - smart contract development
+  - decentralized application security
+  - smart contract security tutorial
+  - reentrancy attack tutorial
+  - solidity smart contract tutorial
+  - ethereum smart contract tutorial
+sidebar_position: 3
+slug: "/tutorials/reentrancy-fundamentals-attack-lab-solution"
+hide_title: true
+draft: false
+hide_table_of_contents: true
+---
+
+<!-- Intellij mdx plugin doesn't support ts path aliases -->
+import {chakra} from "@chakra-ui/react"
+import {tutorialConfigConst} from "@blockbash/common"
+import {Bold, CodeFootnote, DiagramFootnote, InlineTip, LinkAnchor, LinkTutorial, SectionWrapper, SolutionCodePanel, TerminalCodePanel, Tip} from "../../../src/components"
+import {CodePanelSolutionTip, Liability, SolutionProcessDiagramTip} from "../../../src/features"
+
+## Introduction
+
+- In this lesson, you'll dive into the solution of the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}/>.
+
+## Prerequisites
+
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory}/>
+- <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackLab}/>
+
+## Code Solution {#primaryCode}
+
+<SectionWrapper>
+    <CodePanelSolutionTip showHighlightInstructions showMaximizeInstruction/>
+    <SolutionCodePanel>
+        ```solidity title=Vulnerable.sol file=./contracts/reentrancy-fundamentals/Vulnerable.sol collapse={1 - 24} {"5": 29} {"6":32}
+        ```
+
+        ```solidity title=Attacker.sol file=./contracts/reentrancy-fundamentals/AttackerSolutionPattern0.sol collapse={1 - 21} ins={"1": 24} ins={"2": 25} ins={"3": 50} ins={"4": 51}
+
+        ```
+    </SolutionCodePanel>
+</SectionWrapper>
+
+
+### Explanation
+<SolutionProcessDiagramTip/>
+<br/>
+
+<chakra.span><Bold>Challenge: </Bold>{tutorialConfigConst.ChallengeDescriptions.shouldBeAbleToStealAllEthFromVulnerableContract}</chakra.span>
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'ins'}>1</CodeFootnote>: Corresponds to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>'s <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.seedingPhase}>1</DiagramFootnote>
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={'ins'}>2</CodeFootnote>: Corresponds to the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>'s <DiagramFootnote prefix={tutorialConfigConst.DiagramConstructNames.transferPhase}>3a</DiagramFootnote>.  This initiates the first cycle of the Attack Loop.
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={"ins"}>4</CodeFootnote>: Initiates all subsequent cycles of the <LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsAttackTheory} content="Process Diagram's 'attack loop'" anchorGUID={tutorialConfigConst.AnchorGUID.processDiagram}/>.  This process continues until all <code>ETH</code> has been transferred to the `Attacker` Contract.
+    - <InlineTip label={"Tip"}/> To help visualize this process, review the <LinkAnchor content={tutorialConfigConst.AnchorName.eventTrace} anchorGUID={tutorialConfigConst.AnchorGUID.eventTrace}/> section.
+
+
+<chakra.span><Bold>Challenge: </Bold>{tutorialConfigConst.ChallengeDescriptions.shouldNotCauseARevertOperation}</chakra.span>
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={"ins"}>1</CodeFootnote>: Deposits `_ATTACK_AMOUNT` (i.e., 1 `ETH`) into the Attacker's account within `Vulnerable` Contract.  This will ensure that <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={"reg"}>5</CodeFootnote> will not be evaluated.
+- <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={"ins"}>3</CodeFootnote>: Will ensure the `Vulnerable` Contract only sends available `ETH`.  If `Vulnerable` Contract tries to send `ETH` that it doesn't have, <CodeFootnote anchorGUID={tutorialConfigConst.AnchorGUID.primaryCode} type={"reg"}>6</CodeFootnote> will cause a revert operation.
+
+## Event Trace {#eventTrace}
+
+<SectionWrapper>
+    <Tip>
+        <chakra.span>Use the event trace (below) to understand the solution's execution flow</chakra.span>
+
+    </Tip>
+    <TerminalCodePanel>
+        ```ansi title="Event Trace" file=./outputs/hardhat-tracer/reentrancyFundamentalsAttackSolutionPattern0.txt
+        ```
+    </TerminalCodePanel>
+</SectionWrapper>
+
+### Reflection {#reflection}
+- <InlineTip label={"Self Quiz"}/> Does the event trace correspond to your understanding of Reentrancy?
+
+## Next Steps
+- In the
+<LinkTutorial tutorialGUID={tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendTheory}/>, you'll learn design patterns that can help mitigate Reentrancy attacks
+
+## Disclosures
+<Liability/>

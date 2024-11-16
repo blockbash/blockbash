@@ -27,13 +27,13 @@ export function Playlists(): JSX.Element {
       <Divider />
       <CardBody>
         <ButtonGroup size="sm" variant="solid">
-          {deps.tutorialConfig.getActiveLearningPaths().map((path) => (
+          {deps.tutorialConfig.getActivePlaylists().map((playlist) => (
             <LinkComponent
-              href={`${path.url}`}
-              key={path.guid}
+              href={`${playlist.url}`}
+              key={playlist.guid}
               shouldOpenTab={false}
             >
-              <Button size="sm">{`${path.name} (${path.count})`}</Button>
+              <Button size="sm">{`${playlist.name} (${playlist.count})`}</Button>
             </LinkComponent>
           ))}
         </ButtonGroup>

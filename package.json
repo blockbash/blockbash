@@ -2,9 +2,10 @@
   "name": "@blockbash/root",
   "private": true,
   "scripts": {
+    "build": "bb-init",
     "depcheck": "depcheck --skip-missing=true --ignores='remark-*,@tsconfig/*'",
     "global:depcheck": "pnpm run --recursive --if-present --no-bail depcheck --quiet",
-    "build": "bb-init"
+    "prepare": "node .husky/install.mjs"
   },
   "scriptsComments": {
     "depcheckIgnores": {
@@ -17,17 +18,21 @@
     "@tsconfig/strictest": "2.0.5"
   },
   "devDependencies": {
-    "depcheck": "1.4.6",
-    "eslint": "8.51.0",
-    "eslint-config-prettier": "9.0.0",
+    "depcheck": "1.4.7",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
-    "eslint-mdx": "2.2.0",
-    "eslint-plugin-jsonc": "2.10.0",
-    "eslint-plugin-mdx": "2.2.0",
-    "eslint-plugin-perfectionist": "2.1.0",
-    "eslint-plugin-prettier": "5.0.0",
-    "eslint-plugin-yml": "1.10.0",
-    "prettier-plugin-sh": "^0.13.1",
+    "eslint-mdx": "3.1.5",
+    "eslint-plugin-jsonc": "2.16.0",
+    "eslint-plugin-mdx": "3.1.5",
+    "eslint-plugin-perfectionist": "2.11.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "eslint-plugin-yml": "1.14.0",
+    "husky": "^9.1.4",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
+    "prettier-plugin-sh": "^0.14.0",
+    "prettier-plugin-solidity": "^1.4.0",
     "remark-frontmatter": "5.0.0",
     "remark-lint-fenced-code-flag": "3.1.2",
     "remark-lint-first-heading-level": "3.1.2",
@@ -71,7 +76,10 @@
       "remark-lint-no-shortcut-reference-image",
       "remark-lint-no-shortcut-reference-link",
       "remark-lint-no-undefined-references"
-    ]
+    ],
+    "settings": {
+      "bullet": "+"
+    }
   },
   "volta": {
     "node": "20.12.2",

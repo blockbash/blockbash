@@ -135,6 +135,7 @@ COMMENT
     --build-arg "build_dir_path=${build_dir_path}"
     --build-arg "build_devcontainer_dir_path=${build_devcontainer_dir_path}"
     --build-arg "build_global_config_file_path=${build_script_global_config_file_path}"
+    --build-arg "lab_core_contracts_backup_dir_path=${lab_core_contracts_backup_dir_path}"
     --build-arg "build_scripts_dir_path=${build_scripts_dir_path}"
     --build-arg "build_scripts_workflow_steps_dir_path=${build_scripts_workflow_steps_dir_path}"
     --build-arg "common_config_dir_path=${common_config_dir_path}"
@@ -157,6 +158,8 @@ COMMENT
     --build-arg "shared_pnpm_store_dir_path=${shared_pnpm_store_dir_path}"
     --build-arg "should_user_environment_die_on_error=${should_user_environment_die_on_error}"
     --build-arg "website_dir_path=${website_dir_path}"
+    --build-arg "lab_core_compilers_solcjs_symlink_file_path=${lab_core_compilers_solcjs_symlink_file_path}"
+    --build-arg "container_svm_dir_path=${container_svm_dir_path}"
     --build-arg "utils_local_config_dir_path=${utils_local_config_dir_path}"
     --cache-from "$(get_cache_flag "${branch_name}" "${image_name_short}" "${target_arch}" "${docker_cache_from}")"
     --cache-from "$(get_cache_flag "${production_branch}" "${image_name_short}" "${target_arch}" "${docker_cache_from}")"
@@ -197,8 +200,8 @@ COMMENT
 
   create_github_workflow_outputs "${branch_name}" "${image_name_short}" "${target_arch}" "${null}" "${matrix_guid}"
 
-  if [[ ${image_name_short} != "${docker_challenge_base_image_name_short}" ]]; then
-    # We only publish cache images for docker_challenge_base_image_name_short
+  if [[ ${image_name_short} != "${docker_lab_base_image_name_short}" ]]; then
+    # We only publish cache images for docker_lab_base_image_name_short
     create_matrix_docker_outputs "${key_create_base_images_job}" "${image_name_with_branch_full}" "${branch_name}" "${image_name_short}" "${target_arch}"
     override_multi_arch_image_name "${current_arch}" "${target_arch}" "${branch_name}" "${image_name_short}"
   fi

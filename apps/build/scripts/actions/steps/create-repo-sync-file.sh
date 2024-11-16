@@ -21,11 +21,11 @@ while [ $# -gt 0 ]; do
       branch_name="${flag_value}"
       log_debug "Setting ${flag_name} to: ${flag_value}"
       ;;
-    --challenge_environment_dir_path=*)
+    --lab_environment_dir_path=*)
       flag_name="$(get_cli_flag_name "${argument_name}")"
       flag_value="$(get_cli_flag_value "${argument_name}")"
       log_debug "Setting ${flag_name} to: ${flag_value}"
-      challenge_environment_dir_path="${flag_value}"
+      lab_environment_dir_path="${flag_value}"
       ;;
     *)
       flag_name="$(get_cli_flag_name "${argument_name}")"
@@ -41,14 +41,14 @@ while [ $# -gt 0 ]; do
 done
 
 main() {
-  local challenge_guid_bash challenge_repo_name_full image_name_short image_name_with_branch_full release container_name
+  local lab_guid_bash lab_repo_name_full image_name_short image_name_with_branch_full release container_name
 
-  challenge_guid_bash="$(get_build_challenge_guid_bash "${challenge_environment_dir_path}")"
-  challenge_repo_name_full=$(get_challenge_repo_name_full "${challenge_guid_bash}" "${branch_name}")
+  lab_guid_bash="$(get_build_lab_guid_bash "${lab_environment_dir_path}")"
+  lab_repo_name_full=$(get_lab_repo_name_full "${lab_guid_bash}" "${branch_name}")
 
   tee -a "${runner_github_sync_file}" << EOF
-${challenge_repo_name_full}:
-  - source: $(get_devcontainer_artifact_file_path "${challenge_guid_bash}" "${run_time_prefix}")
+${lab_repo_name_full}:
+  - source: $(get_devcontainer_artifact_file_path "${lab_guid_bash}" "${run_time_prefix}")
     dest: ${devcontainer_hidden_file_name}
 EOF
   log_file_contents "${runner_github_sync_file}" "${debug_level}"
