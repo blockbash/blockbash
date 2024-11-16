@@ -65,7 +65,7 @@ main() {
     create_directory "${build_security_tools_grype_sbom_dir_path}"
 
     # --from docker: Ensures that we pull local image that was just built and not
-    # remote image from registry.  For some reason, using $image_name_with_sha_full wouldn't work when executing syft on Github.
+    # remote image from registry.  For some reason, using $image_name_with_sha_full wouldn't work when executing syft on Github..
     syft --scope "${scope}" \
       --output spdx-json \
       --from docker "${image_name_with_branch_arch_full}" > "${build_security_tools_grype_sbom_file_path}"
