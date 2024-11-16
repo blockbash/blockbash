@@ -6,12 +6,12 @@ import {
   TabPanels,
 } from "@chakra-ui/react";
 import { Styles } from "@src/css";
-import React, { type ReactNode } from "react";
+import React, { type ReactElement } from "react";
 
 import { SectionWrapper } from "./layout/SectionWrapper";
 
 interface Tab {
-  content: ReactNode;
+  content: ReactElement;
   title: string;
 }
 
@@ -43,9 +43,7 @@ export function Tabs(props: TabsProps): JSX.Element {
       >
         {props.tabs.map((tab) => (
           <TabPanel key={tab.title}>
-            <SectionWrapper marginTop={0} spacing={2}>
-              {tab.content}
-            </SectionWrapper>
+            <SectionWrapper spacing={2}>{tab.content}</SectionWrapper>
           </TabPanel>
         ))}
       </TabPanels>

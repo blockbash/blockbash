@@ -2,12 +2,12 @@ import {
   type blockchainTypes,
   type loggerTypes,
   type tutorialConfigTypes,
-} from "@blockbash/common-be"
+} from "@blockbash/common-be";
 
 interface ReentrancyFundamentalsDependencies {
-  blockchainDeploy: blockchainTypes.BlockchainDeploy
-  logger: loggerTypes.ILogger
-  tutorialConfig: tutorialConfigTypes.TutorialsConfigOrchestrator
+  blockchainDeploy: blockchainTypes.BlockchainDeploy;
+  logger: loggerTypes.ILogger;
+  tutorialConfig: tutorialConfigTypes.TutorialsConfigOrchestrator;
 }
 
-export type { ReentrancyFundamentalsDependencies }
+export type { ReentrancyFundamentalsDependencies };

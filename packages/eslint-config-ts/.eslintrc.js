@@ -1,13 +1,22 @@
 // Settings that should be applied to all typescript files
+// TODO: Ensure that all rule bundles support (and rule packages) support eslint 9.  When so, update to support eslint flat config and then bump all eslint related package versions.
 const typescriptBaseExtends = [
-  "standard-with-typescript",
+  "eslint-config-love",
   "plugin:perfectionist/recommended-natural",
   "plugin:prettier/recommended",
 ];
+
+const overridesBaseExtends = {
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: "./tsconfig.json",
+  },
+};
 module.exports = {
   overrides: [
     {
       excludedFiles: ["*.spec.ts"],
+      ...overridesBaseExtends,
       extends: [
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
@@ -15,11 +24,8 @@ module.exports = {
       ],
       // Leveraged so eslint can find imported modules correctly
       files: ["*.{ts,tsx}"], // Your TypeScript files extension
-      parser: "@typescript-eslint/parser",
-      parserOptions: {
-        project: "./tsconfig.json",
-      },
       rules: {
+        "@typescript-eslint/explicit-function-return-type": 0,
         /*
          * no-unescaped-entities: This rule will fire whenever an apostrophe is within a sentence. Yes, I could use the entity "&apos;" but that would decrease readability.  The cons outweigh the pros.
          * */
@@ -35,6 +41,7 @@ module.exports = {
     {
       extends: ["plugin:mocha/recommended", ...typescriptBaseExtends],
       files: ["*.spec.ts"],
+      ...overridesBaseExtends,
       plugins: ["chai-friendly"],
       rules: {
         "@typescript-eslint/no-unused-expressions": 0,

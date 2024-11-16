@@ -12,31 +12,36 @@
  */
 
 :root {
-    /* Based on the "Beginner Path" button. Updated color slightly to align with WCAG-AA contrast ratio */
-    --ifm-color-primary: #e22424;
-    --ifm-color-primary-dark: #d01c1c;
-    --ifm-color-primary-darker: #c51a1a;
-    --ifm-color-primary-darkest: #a21515;
-    --ifm-color-primary-light: #e53b3b;
-    --ifm-color-primary-lighter: #e74747;
-    --ifm-color-primary-lightest: #eb6969;
-    --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
-    --ifm-link-hover-decoration: none;
-    /* Enforce correct spacing in markdown lists and list elements */
-    --ifm-list-paragraph-margin: 0px;
-    --ifm-paragraph-margin-bottom: .5rem;
-    --ifm-list-item-margin: 0px;
+  /* Based on the "Beginner Path" button. Updated color slightly to align with WCAG-AA contrast ratio */
+  --ifm-color-primary: #e22424;
+  --ifm-color-primary-dark: #d01c1c;
+  --ifm-color-primary-darker: #c51a1a;
+  --ifm-color-primary-darkest: #a21515;
+  --ifm-color-primary-light: #e53b3b;
+  --ifm-color-primary-lighter: #e74747;
+  --ifm-color-primary-lightest: #eb6969;
+  --docusaurus-highlighted-code-line-bg: rgb(0 0 0 / 10%);
+  --ifm-link-hover-decoration: none;
+  --ife-link-color: var(--ifm-color-primary);
+  /* Enforce correct spacing in markdown lists and list elements */
+  --ifm-list-paragraph-margin: 0px;
+  --ifm-paragraph-margin-bottom: .5rem;
+  --ifm-list-item-margin: 0px;
+}
+
+.diff-code-panel .ec-line.highlight .code {
+  padding-left: 4%;
 }
 
 .markdown li {
-    margin-bottom: var(--ifm-paragraph-margin-bottom);
-    margin-top: var(--ifm-paragraph-margin-bottom);
+  margin-bottom: var(--ifm-paragraph-margin-bottom);
+  margin-top: var(--ifm-paragraph-margin-bottom);
 }
 
 div.cui-steps__vertical-step-content {
-    /* Leveraged by chakra-ui-steps */
-    padding-left: 0;
-    z-index: 1;
+  /* Leveraged by chakra-ui-steps */
+  padding-left: 0;
+  z-index: 1;
 }
 
 

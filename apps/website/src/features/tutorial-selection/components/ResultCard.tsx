@@ -39,7 +39,7 @@ export function ResultCard(props: ResultCardProps): JSX.Element {
             whiteSpace="pre"
           >
             <Text mb={0}>
-              {`🚗 ${tutorial.learningPath.name}`}
+              {`🚗 ${tutorial.playlist.name}`}
               {"  "}
               {` ✍️ ${tutorial.authorName}`}
             </Text>

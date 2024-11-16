@@ -1,76 +1,39 @@
 import {
+  type blockchainTypes,
   createBlockchainDeploy,
   createLogger,
   tutorialConfig,
   tutorialConfigConst,
-} from "@blockbash/common-be"
-import {
-  ReentrancyFundamentals,
-  type reentrancyFundamentalsTypes,
-} from "@lib/deploy"
-import {
-  type Attacker__factory as AttackerFactory,
-  type Vulnerable,
-} from "@typechain"
-import { type HardhatRuntimeEnvironment } from "hardhat/types"
-import { type DeployFunction } from "hardhat-deploy/types"
-
-class ReentrancyFundamentalsDefendPrompt extends ReentrancyFundamentals {
-  constructor({
-    injectedDependencies,
-  }: {
-    injectedDependencies: reentrancyFundamentalsTypes.ReentrancyFundamentalsDependencies
-  }) {
-    super({ injectedDependencies })
-  }
-
-  async deploy(): Promise<void> {
-    await this.blockchainDeploy.deploy({
-      contract: this.tutorialConfig.getContract({
-        contractName: tutorialConfigConst.ContractName.Vulnerable,
-        tutorialGUID:
-          tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendPrompt,
-      }),
-    })
-    const vulnerableContract = (await this.blockchainDeploy.getDeployedContract(
-      {
-        contractName: tutorialConfigConst.ContractName.Vulnerable,
-      },
-    )) as Vulnerable
-
-    await this.blockchainDeploy.deploy({
-      constructorArgs: [await vulnerableContract.getAddress()] as Parameters<
-        AttackerFactory["deploy"]
-      >,
-      contract: this.tutorialConfig.getContract({
-        contractName: tutorialConfigConst.ContractName.AttackerSolution,
-        tutorialGUID:
-          tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendPrompt,
-      }),
-    })
-  }
-}
-
-const createReentrancyFundamentalsDefendPrompt: DeployFunction = async (
+} from "@blockbash/common-be";
+import { ReentrancyFundamentals } from "@lib/deploy";
+import { type HardhatRuntimeEnvironment } from "hardhat/types";
+/**
+ * ContractNames.AttackerSolutionPattern0 will try to exploit ContractNames.Vulnerable
+ */
+// config
+const attackerContractName =
+  tutorialConfigConst.ContractName.AttackerSolutionPattern0;
+const tutorialGUID =
+  tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendLab;
+const vulnerableContractName = tutorialConfigConst.ContractName.Vulnerable;
+const challengeGroupGUID =
+  tutorialConfigConst.ChallengeGroupGUID.reentrancyFundamentalsDefendPrompt;
+const createDeployment: blockchainTypes.DeployFunction = async (
   hre: HardhatRuntimeEnvironment,
 ): Promise<void> => {
-  await new ReentrancyFundamentalsDefendPrompt({
+  await new ReentrancyFundamentals({
     injectedDependencies: {
       blockchainDeploy: createBlockchainDeploy({ hre }),
       logger: createLogger(),
       tutorialConfig,
     },
-  }).deploy()
-}
+  }).deploy({
+    attackerContractName,
+    challengeGroupGUID,
+    tutorialGUID,
+    vulnerableContractName,
+  });
+};
 
-export default createReentrancyFundamentalsDefendPrompt
-createReentrancyFundamentalsDefendPrompt.tags = [
-  tutorialConfigConst.TutorialGUID.reentrancyFundamentalsDefendPrompt,
-]
-// ;(async () => {
-//   await createReentrancyFundamentalsAttackPrompt(hre)
-//   await deployments.fixture([
-//     tutorialConfigConst.TutorialNames.reentrancy_fundamentals_attack_prompt,
-//   ])
-// console.log(await deployments.all())
-// })()
+export default createDeployment;
+createDeployment.tags = [challengeGroupGUID];

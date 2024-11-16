@@ -14,12 +14,11 @@ on:
 
 jobs:
   create_front_end:
-    runs-on: ubuntu-22.04
     environment: ${{ github.ref_name }}
+    runs-on: ubuntu-22.04
     steps:
-      - if: ${{ false }}
-        shell: bash
-        id: "null"
+      - id: "null"
+        if: ${{ false }}
         # language=sh
         run: |
           # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
@@ -27,6 +26,7 @@ jobs:
           # echo "should_publish=null" >> $GITHUB_ENV
           # echo "publish_images_matrix_outputs_post=null" >> $GITHUB_ENV
           # echo "build_matrix_outputs_final_dir_path=null" >> $GITHUB_ENV
+        shell: bash
       # See commentary in create-deployment.yaml as to why we are doing this if
       # statement on all job steps
       - if: inputs.is_enabled == 'true'
@@ -44,21 +44,21 @@ jobs:
         name: Setup PNPM Cache
         uses: ./.github/workflows/composite-actions/setup-pnpm
         with:
-          fail_on_cache_miss: "true"
+          # This step should leverage the pnpm cache that was created in global.yaml but sometimes act (in the global env) has issues fetching the cache
+          fail_on_cache_miss: "false"
       - id: create_website_build
         if: inputs.is_enabled == 'true'
         name: Create Website Build
         # language=sh
         run: |
           bash "${build_scripts_workflow_steps_dir_path}/create-website-build.sh" \
-            --branch_name=${branch_name}
+            --is_interactive_shell=false
       - id: create_deployment
         if: env.should_publish == 'true' && inputs.is_enabled == 'true'
         name: Publish Website
         # language=sh
         run: |
-          bash "${build_scripts_workflow_steps_dir_path}/create-website-deployment.sh" \
-            --branch_name=${branch_name}
+          bash "${build_scripts_workflow_steps_dir_path}/create-website-deployment.sh"
       - id: cleanup_actions
         if: inputs.is_enabled == 'true' && always()
         name: Execute Cleanup Actions

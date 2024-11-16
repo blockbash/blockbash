@@ -4,7 +4,7 @@
 : << COMMENT
 
 PURPOSE: Initialize Blockbash project.
-- Create configuration files for local development
+- Create (or re-create) configuration files for local development
 - Install dependencies
 - This should be called before any build operation.
 
@@ -20,14 +20,14 @@ script_dir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 main() {
   cd "${blockbash_root_dir_path}" || die "Couldn't cd into ${blockbash_root_dir_path}"
 
-  log_debug "Installing dependencies"
+  log_info "Installing dependencies"
   pnpm install
+  init_solcjs "${solc_version}" "${lab_core_compilers_solcjs_symlink_file_path}"
 
-  log_debug "Compiling Solidity contracts and generating contract types"
-  pnpm run --filter @blockbash/lab-core contract:compile
-
-  # create_challenge_metadata_file: Use branch-related value (within override.env) by default
+  # create_lab_metadata_file: Use branch-related value (within override.env) by default
   create_configurations "${BLOCKBASH_GLOBAL_BRANCH_NAME:-$(get_current_git_branch)}"
+
+  invoke_contract_compilation
 }
 
 # https://unix.stackexchange.com/a/333204

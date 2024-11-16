@@ -65,9 +65,7 @@
       "label": "bb-kill-terminal"
     },
     {
-      "dependsOn": [
-        "bb-update-rebuild-container"
-      ],
+      "dependsOn": ["bb-update-rebuild-container"],
       "dependsOrder": "sequence",
       "label": "update"
     },
@@ -94,4 +92,3 @@
   ],
   "version": "2.0.0"
 }
-

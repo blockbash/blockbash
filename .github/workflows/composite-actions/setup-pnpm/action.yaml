@@ -12,14 +12,14 @@ inputs:
     required: true
 runs:
   steps:
-    - if: ${{ false }}
-      shell: bash
-      id: "null"
+    - id: "null"
+      if: ${{ false }}
       # language=sh
       run: |
         # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
         # echo "cache_key_pnpm=null" >> $GITHUB_ENV
         # echo "shared_pnpm_store_dir_path=null" >> $GITHUB_ENV
+      shell: bash
     - name: Initialize pnpm
       # language=sh
       run: |

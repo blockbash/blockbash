@@ -1,5 +1,6 @@
 import { type loggerTypes } from "@blockbash/common";
-import { type BoxProps, Flex, Stack } from "@chakra-ui/react";
+import { type BoxProps, Flex, Heading, Stack } from "@chakra-ui/react";
+import { TopHeader } from "@components";
 import { useLocation } from "@docusaurus/router";
 import { FeaturesOverview } from "@features";
 import { type Dependencies, useDependencies } from "@hooks";
@@ -15,7 +16,6 @@ import {
 import React, { useEffect, useState } from "react";
 
 import { FilterCard } from "./FilterCard";
-import { Header } from "./Header";
 import { Playlists } from "./Playlists";
 import { ResultCards } from "./ResultCards";
 
@@ -221,7 +221,24 @@ function TutorialSelection(): JSX.Element {
         pb={5}
         wrap="wrap"
       >
-        <Header />
+        <TopHeader title={"BlockBash"}>
+          <Heading
+            as="h1"
+            fontWeight="light"
+            size="xl"
+            textTransform="capitalize"
+          >
+            Where developers learn Ethereum security
+          </Heading>
+          <Heading
+            as="h2"
+            fontWeight="light"
+            size="md"
+            textTransform="capitalize"
+          >
+            free. open source. hands-on.
+          </Heading>
+        </TopHeader>
       </Flex>
 
       <Flex

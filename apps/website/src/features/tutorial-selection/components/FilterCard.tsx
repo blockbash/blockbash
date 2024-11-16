@@ -48,7 +48,7 @@ export function FilterCard(props: FilterCardProps): JSX.Element {
             <SearchBar searchValue={searchedTutorialName} />
           </WrapItem>
           {/* 375 is device wrapping point in Chrome dev tools */}
-          <Show ssr={true} breakpoint="(min-width: 376px)">
+          <Show breakpoint="(min-width: 376px)" ssr={true}>
             <Spacer />
           </Show>
           <WrapItem>

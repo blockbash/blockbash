@@ -1,12 +1,9 @@
-import {
-  type Env,
-  type TutorialsConfigOrchestrator,
-} from "@blockbash/common"
-import { type CreateLogger } from "@src/utils/logger.types"
-import { type Data } from "@src/utils/data"
-import { type Navigation } from "@src/utils/navigation"
-import { type QueryString } from "@src/utils/queryString"
-import { type ReactNode } from "react"
+import { type Env, type TutorialsConfigOrchestrator } from "@blockbash/common";
+import { type Data } from "@src/utils/data";
+import { type CreateLogger } from "@src/utils/logger.types";
+import { type Navigation } from "@src/utils/navigation";
+import { type QueryString } from "@src/utils/queryString";
+import { type ReactNode } from "react";
 
 interface DependencyProviderDependencies {
   createLogger: CreateLogger;
@@ -22,4 +19,4 @@ interface DependencyProps {
   dependencies: DependencyProviderDependencies;
 }
 
-export type { DependencyProps, DependencyProviderDependencies }
+export type { DependencyProps, DependencyProviderDependencies };

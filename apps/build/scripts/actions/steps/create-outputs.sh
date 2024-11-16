@@ -18,19 +18,19 @@ while [ $# -gt 0 ]; do
       log_debug "Setting ${flag_name} to: ${flag_value}"
       activate_create_base_images_job="${flag_value}"
       ;;
-    --activate_create_challenge_environments_job=*)
+    --activate_create_lab_environments_job=*)
       flag_name="$(get_cli_flag_name "${argument_name}")"
       flag_value="$(get_cli_flag_value "${argument_name}")"
       validate_bool "${flag_name}" "${flag_value}"
       log_debug "Setting ${flag_name} to: ${flag_value}"
-      activate_create_challenge_environments_job="${flag_value}"
+      activate_create_lab_environments_job="${flag_value}"
       ;;
-    --activate_create_challenge_repos_job=*)
+    --activate_create_lab_repos_job=*)
       flag_name="$(get_cli_flag_name "${argument_name}")"
       flag_value="$(get_cli_flag_value "${argument_name}")"
       validate_bool "${flag_name}" "${flag_value}"
       log_debug "Setting ${flag_name} to: ${flag_value}"
-      activate_create_challenge_repos_job="${flag_value}"
+      activate_create_lab_repos_job="${flag_value}"
       ;;
     --activate_create_front_end_job=*)
       flag_name="$(get_cli_flag_name "${argument_name}")"
@@ -155,16 +155,16 @@ main() {
     die "You must set should_publish == true if should_publish_images == true"
   fi
 
-  local should_user_environment_die_on_error github_challenges_org_name github_challenges_org_app_id
+  local should_user_environment_die_on_error github_labs_org_name github_labs_org_app_id
   if is_production_build "${branch_name}"; then
     should_user_environment_die_on_error="${false}"
-    github_challenges_org_name="${github_challenges_org_name_prod}"
-    github_challenges_org_app_id="${github_challenges_org_app_id_prod}"
+    github_labs_org_name="${github_labs_org_name_prod}"
+    github_labs_org_app_id="${github_labs_org_app_id_prod}"
   else
     # should_user_environment_die_on_error: Force errors to "bubble up" in non-prod for quicker feedback
     should_user_environment_die_on_error="${true}"
-    github_challenges_org_name="${github_challenges_org_name_dev}"
-    github_challenges_org_app_id="${github_challenges_org_app_id_dev}"
+    github_labs_org_name="${github_labs_org_name_dev}"
+    github_labs_org_app_id="${github_labs_org_app_id_dev}"
   fi
 
   local workflow_uuid
@@ -179,8 +179,8 @@ main() {
     --arg BLOCKBASH_LOG_LEVEL "${blockbash_log_level}" \
     --arg BLOCKBASH_IS_LOCAL "${blockbash_is_local}" \
     --arg activate_create_base_images_job "${activate_create_base_images_job}" \
-    --arg activate_create_challenge_environments_job "${activate_create_challenge_environments_job}" \
-    --arg activate_create_challenge_repos_job "${activate_create_challenge_repos_job}" \
+    --arg activate_create_lab_environments_job "${activate_create_lab_environments_job}" \
+    --arg activate_create_lab_repos_job "${activate_create_lab_repos_job}" \
     --arg activate_create_front_end_job "${activate_create_front_end_job}" \
     --arg activate_create_matrix_outputs_job "${activate_create_matrix_outputs_job}" \
     --arg activate_create_multi_arch_images_job "${activate_create_multi_arch_images_job}" \
@@ -195,14 +195,14 @@ main() {
     --arg cache_key_grype "${cache_key_grype}" \
     --arg cache_key_pnpm "${cache_key_pnpm}" \
     --arg cache_key_security_tools_debs "${cache_key_security_tools_debs}" \
-    --arg challenges_github_org_app_id_dev "${github_challenges_org_app_id_dev}" \
-    --arg challenges_github_org_app_id_prod "${github_challenges_org_app_id_prod}" \
+    --arg labs_github_org_app_id_dev "${github_labs_org_app_id_dev}" \
+    --arg labs_github_org_app_id_prod "${github_labs_org_app_id_prod}" \
     --arg common_scripts_dir_path "${common_scripts_dir_path}" \
     --arg common_scripts_init_dir_path "${common_scripts_init_dir_path}" \
-    --arg docker_challenge_base_image_name_short "${docker_challenge_base_image_name_short}" \
+    --arg docker_lab_base_image_name_short "${docker_lab_base_image_name_short}" \
     --arg docker_runner_image_name_short "${docker_runner_image_name_short}" \
-    --arg github_challenges_org_app_id "${github_challenges_org_app_id}" \
-    --arg github_challenges_org_name "${github_challenges_org_name}" \
+    --arg github_labs_org_app_id "${github_labs_org_app_id}" \
+    --arg github_labs_org_name "${github_labs_org_name}" \
     --arg is_scheduled_execution "${is_scheduled_execution}" \
     --arg publish_images_matrix_outputs_post "${publish_images_matrix_outputs}_post" \
     --arg publish_images_matrix_outputs_pre "${publish_images_matrix_outputs}_pre" \
@@ -231,7 +231,7 @@ main() {
   if [[ ${workflow_variant} == "${act_workflow_variant_create_runner_image}" ]]; then
     image_name_short="${docker_runner_image_name_short}"
   elif [[ ${workflow_variant} == "${act_workflow_variant_null}" ]]; then
-    image_name_short="${docker_challenge_base_image_name_short}"
+    image_name_short="${docker_lab_base_image_name_short}"
   else
     die "Workflow variant (${workflow_variant}) not valid!"
   fi
@@ -246,16 +246,16 @@ main() {
 
   set_build_output "create_base_images_container_matrix_json_string" "${create_base_images_container_matrix_json_string}"
 
-  local challenge_environments_dir_paths_json_string
-  challenge_environments_dir_paths_json_string="$(find "${build_challenge_environments_dir_path}" \
+  local lab_environments_dir_paths_json_string
+  lab_environments_dir_paths_json_string="$(find "${build_lab_environments_dir_path}" \
     -maxdepth 1 \
     -mindepth 1 \
-    -type d |
-    jq --raw-input \
+    -type d \
+    | jq --raw-input \
       --slurp \
       "${jq_common_flags[@]}" 'split("\n")[:-1]')"
 
-  set_build_output "challenge_environments_dir_paths_json_string" "${challenge_environments_dir_paths_json_string}"
+  set_build_output "lab_environments_dir_paths_json_string" "${lab_environments_dir_paths_json_string}"
 
   # null_credential: In the Github Workflow files, this is referenced in places where env.null_credential isn't permissible.  Thus, we pass it as a build output
   set_build_output "null_credential" "${null_credential}"

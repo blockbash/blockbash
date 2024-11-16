@@ -70,17 +70,14 @@ fi
 # shellcheck source=./utils/build.sh
 . "${_sa_script_dir_path}/utils/build.sh"
 
-# shellcheck source=./utils/challenge.sh
-. "${_sa_script_dir_path}/utils/challenge.sh"
+# shellcheck source=./utils/lab.sh
+. "${_sa_script_dir_path}/utils/lab.sh"
 
 # shellcheck source=./utils/data.sh
 . "${_sa_script_dir_path}/utils/data.sh"
 
 # shellcheck source=./utils/docker.sh
 . "${_sa_script_dir_path}/utils/docker.sh"
-
-# shellcheck source=./utils/filesystem.sh
-. "${_sa_script_dir_path}/utils/filesystem.sh"
 
 # shellcheck source=./utils/secret.sh
 . "${_sa_script_dir_path}/utils/secret.sh"
@@ -91,5 +88,5 @@ fi
 # shellcheck source=./utils/host.sh
 . "${_sa_script_dir_path}/utils/host.sh"
 
-# shellcheck source=./utils/network.sh
-. "${_sa_script_dir_path}/utils/network.sh"
+# shellcheck source=./utils/git.sh
+. "${_sa_script_dir_path}/utils/git.sh"

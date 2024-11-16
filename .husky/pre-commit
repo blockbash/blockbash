@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Inspired from https://typicode.github.io/husky/get-started.html#scripting
+bb-format --staged-files-only=true
+git update-index --again

@@ -13,7 +13,7 @@ install_local_debs() {
   local cli_name="${2}"
 
   sudo dpkg --install --skip-same-version --recursive "${local_file_path}" &> /dev/null
-  if [[ ${cli_name} != "${null}"   ]] && ! command -v ${cli_name} &> /dev/null; then
+  if [[ ${cli_name} != "${null}" ]] && ! command -v ${cli_name} &> /dev/null; then
     die "${cli_name} not installed!"
   fi
 }
@@ -44,6 +44,7 @@ install_base_apt_clis() {
   moreutils: installs ts which allows a performant way to prepend timestamps to log messages
   vim: make it easier to debug (learners might like this too)
   gh: for fetching updates repo in codespaces
+  python3-pip/pipx: Needed for slither and potentially other functionaity into the future
 COMMENT
   # ##############################################################################
 
@@ -58,7 +59,9 @@ COMMENT
     ca-certificates \
     moreutils \
     openssh-client \
-    vim
+    vim \
+    python3-pip \
+    pipx
 }
 
 apt_cleanup() {
@@ -101,4 +104,43 @@ pnpm_fetch() {
   local shared_pnpm_store_dir_path="${1}"
   pnpm fetch \
     --config.store-dir="${shared_pnpm_store_dir_path}"
+}
+
+cargo_installs() {
+  local solc_version="${1}"
+  # Using 0.5.8 of svm-rs doesn't work
+  cargo install --version 0.5.7 svm-rs && svm install "${solc_version}"
+}
+
+init_solcjs() {
+  local version="${1}" # Ex: 0.8.24
+  local lab_core_compilers_solcjs_symlink_file_path="${2}"
+
+  local solidity_url_prefix="https://github.com/ethereum/solidity/releases/download/v${version}"
+
+  local solcjs_url="${solidity_url_prefix}/soljson.js"
+  local solcjs_symlink_file_path="${lab_core_compilers_solcjs_symlink_file_path}"
+  local solcjs_with_version_file_path="${solcjs_symlink_file_path}-${version}"
+
+  local solcjs_with_version_file_name
+  solcjs_with_version_file_name="$(basename "${solcjs_with_version_file_path}")"
+
+  if ! download_file "${solcjs_url}" "${solcjs_with_version_file_path}" "${false}"; then
+    die "Couldn't download solcjs!"
+  fi
+
+  # solc*_with_version_file_name: Needs to be a relative link as the symlink can be created in dev environment and then shared within the container.  If it's not a relative link, the difference in absolute paths will cause issues.
+  create_symlink "${solcjs_with_version_file_name}" "${solcjs_symlink_file_path}"
+}
+
+init_solc() {
+  # Only occurs in docker env (not local env outside container)
+  # No need to run solc binary outside container
+  local solc_version="${1}"
+  local container_svm_dir_path="${2}"
+
+  local solc_file_path="/usr/local/bin/solc"
+
+  create_symlink "${container_svm_dir_path}/${solc_version}/solc-${solc_version}" "${solc_file_path}"
+  chmod +x "${solc_file_path}"
 }

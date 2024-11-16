@@ -57,7 +57,6 @@ while [ $# -gt 0 ]; do
   fi
   shift
 done
-
 main() {
   local created_new_deb_file full_repo_name first_directory_hash second_directory_hash security_tools_debs_github_repos
 

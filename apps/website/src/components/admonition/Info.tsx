@@ -5,16 +5,23 @@ import { IoMdAlert } from "react-icons/io";
 import { AdmonitionWrapper } from "./AdmonitionWrapper";
 import { type AdmonitionProps } from "./admonition.types";
 
-export function Info(props: AdmonitionProps): JSX.Element {
+export function Info({
+  children,
+  isCentered = false,
+  isFlattened = true,
+  labelOverride,
+}: AdmonitionProps): JSX.Element {
   const color: NonNullable<ColorProps["color"]> = "blue.500";
   return (
     <AdmonitionWrapper
       icon={IoMdAlert}
       iconBackgroundColor={color}
-      label={"Info"}
+      isCentered={isCentered}
+      isFlattened={isFlattened}
+      label={typeof labelOverride === "undefined" ? "Info" : labelOverride}
       labelColor={color}
     >
-      {props.children}
+      {children}
     </AdmonitionWrapper>
   );
 }

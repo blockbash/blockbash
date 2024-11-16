@@ -1,0 +1,11 @@
+{
+  "exec": "bb-site",
+  "ext": "txt,ts,sol",
+  "restartable": "rs",
+  "verbose": true,
+  "watch": [
+    "../lab-core/contracts",
+    "../lab-core/outputs",
+    "src/remark-plugins"
+  ]
+}

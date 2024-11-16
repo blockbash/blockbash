@@ -1,15 +1,15 @@
-import { type loggerTypes } from "@blockbash/common"
+import { type loggerTypes } from "@blockbash/common";
 
-import { QueryString } from "./queryString"
-import { type QueryStringKey } from "./queryString.const"
+import { QueryString } from "./queryString";
+import { type QueryStringKey } from "./queryString.const";
 
-type TutorialSearchText = string
+type TutorialSearchText = string;
 type QueryStringFilterGroupKey =
   | QueryStringKey.tutorialCategories
-  | QueryStringKey.tutorialTypes
+  | QueryStringKey.tutorialTypes;
 
 interface QueryStringDependencies {
-  logger: loggerTypes.ILoggerBase
+  logger: loggerTypes.ILoggerBase;
 }
 
 export {
@@ -17,4 +17,4 @@ export {
   type QueryStringDependencies,
   type QueryStringFilterGroupKey,
   type TutorialSearchText,
-}
+};

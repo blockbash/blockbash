@@ -3,9 +3,9 @@
 // https://github.com/wighawag/hardhat-deploy#typescript-support
 {
   "compilerOptions": {
+    "allowJs": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "allowJs": true,
     "checkJs": true,
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,

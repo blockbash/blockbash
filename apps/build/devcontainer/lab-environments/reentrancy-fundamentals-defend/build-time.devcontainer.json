@@ -1,0 +1,17 @@
+{
+  "build": {
+    "args": {
+      "default_challenge_prompt_group_guid_typescript": "reentrancyFundamentalsDefendPrompt",
+      "default_challenge_solution_group_guid_typescript": "reentrancyFundamentalsDefendSolutionPattern0",
+      "full_lab_base_image_tag": "${localEnv:full_lab_base_image_tag}",
+      "lab_additional_symlinked_relative_file_paths": "shared/EventsBase.sol,shared/VulnerableBase.sol",
+      "lab_contracts_dir_name": "reentrancy-fundamentals",
+      "lab_guid_bash": "reentrancy-fundamentals-defend",
+      "lab_open_relative_file_paths": "Vulnerable.sol",
+      "lab_release": "1",
+      "lab_shell_scripts_dir_path": "${localEnv:lab_shell_scripts_dir_path}",
+      "target": "lab_1"
+    }
+  },
+  "name": "Blockbash - Reentrancy Fundamentals Defend Lab"
+}

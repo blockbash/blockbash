@@ -1,3 +1,5 @@
+import type { HardhatRuntimeEnvironment } from "hardhat/types";
+
 import {
   Env,
   Eth,
@@ -16,7 +18,6 @@ import chalk from "chalk";
 import * as console from "console";
 import { ethers } from "ethers";
 import * as fs from "fs";
-import type { HardhatRuntimeEnvironment } from "hardhat/types"
 import jp from "jsonpath";
 import lowdash from "lodash";
 import ora from "ora";
@@ -37,7 +38,6 @@ import { Shell } from "./shell";
 import * as shellTypes from "./shell.types";
 import { Spinner } from "./spinner";
 import * as spinnerTypes from "./spinner.types";
-
 // Env Initialization
 const env = new Env({ injectedDependencies: { envVars: process.env } });
 

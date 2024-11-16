@@ -15,9 +15,8 @@ inputs:
     required: true
 runs:
   steps:
-    - if: ${{ false }}
-      shell: bash
-      id: "null"
+    - id: "null"
+      if: ${{ false }}
       # language=sh
       run: |
         # Hacky way for GITHUB WORKFLOW plugin to recognize GITHUB_ENV
@@ -26,6 +25,7 @@ runs:
         # echo "build_security_tools_grype_db_dir_path=null" >> $GITHUB_ENV
         # echo "cache_key_grype=null" >> $GITHUB_ENV
         # echo "create_grype_db=null" >> $GITHUB_ENV
+      shell: bash
     - name: Initialize .debs Cache
       uses: actions/cache/restore@v4
       with: # We always want to restore the cache. To do this, we set key and

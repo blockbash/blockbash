@@ -15,24 +15,24 @@ execute_local_build_init_logic() {
 }
 
 create_configurations() {
-  # Configurations that should be created in all execution contexts (e.g., host workstation, runner, challenge docker environment, etc.)
+  # Configurations that should be created in all execution contexts (e.g., host workstation, runner, lab docker environment, etc.)
   local branch_name="${1}"
 
   log_debug "Generating configurations..."
-  create_challenge_configuration_files "${branch_name}"
+  create_lab_configuration_files "${branch_name}"
   create_vscode_tasks_file
 }
 
-create_challenge_container_configurations() {
-  # Configurations that should only be created within the challenge container
-  # challenge_guid_bash: allows the correct challenge metadata file to be located from within the container
-  local challenge_guid_bash="${1}"
-  set_container_state_value "${key_challenge_guid_bash}" "${challenge_guid_bash}"
+create_lab_container_configurations() {
+  # Configurations that should only be created within the lab container
+  # lab_guid_bash: allows the correct lab metadata file to be located from within the container
+  local lab_guid_bash="${1}"
+  set_container_state_value "${key_lab_guid_bash}" "${lab_guid_bash}"
   set_container_state_value "${key_has_bootstrapped}" "${false}"
 }
 
 get_matrix_image_metadata_file_path() {
-  # job_name: Name of job that is creating the output (e.g., create-base-images/create-challenge-images). Results will be grouped via the job_name.
+  # job_name: Name of job that is creating the output (e.g., create-base-images/create-lab-images). Results will be grouped via the job_name.
   local job_name_file_path="${1}"
   local image_name_with_branch_full="${2}"
 

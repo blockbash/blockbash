@@ -19,7 +19,7 @@ main() {
   # When the devcontainer initializes, the devcontainer internals can mutate
   # PATH (e.g., make `code` available, etc.).  So we must pass the mutated path
   # to all bash invocations.
-  ( 
+  (
     # Most scripts expect to start in the /blockbash directory
     cd "${container_repo_dir_path}" || die "Couldn't cd into ${container_repo_dir_path}"
     PATH=${PATH} bash "${lab_shell_scripts_hooks_dir_path}/open-files.sh" &>> "${container_logs_dir_path}"/open-files-sh.debug.log &

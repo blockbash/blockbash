@@ -83,3 +83,9 @@ fi
 
 # shellcheck source=./utils/package.sh
 . "${_si_script_dir_path}/utils/package.sh"
+
+# shellcheck source=./utils/filesystem.sh
+. "${_si_script_dir_path}/utils/filesystem.sh"
+
+# shellcheck source=./utils/network.sh
+. "${_si_script_dir_path}/utils/network.sh"

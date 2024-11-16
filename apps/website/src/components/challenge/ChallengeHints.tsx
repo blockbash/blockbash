@@ -8,17 +8,19 @@ import {
   chakra,
 } from "@chakra-ui/react";
 import { Styles } from "@src/css";
-import React, { type ReactNode } from "react";
+import React from "react";
 
 import {
+  accordionButtonBaseStyles,
+  accordionIconBaseStyles,
   accordionItemBaseStyles,
   accordionPanelBaseStyles,
 } from "./challenge.const";
 
 export interface Hint {
-  content: ReactNode;
+  content: React.ReactElement;
   id: number;
-  title: ReactNode;
+  title: React.ReactElement;
 }
 
 export interface ChallengeHintsProps {
@@ -26,12 +28,11 @@ export interface ChallengeHintsProps {
 }
 
 export function ChallengeHints({ hints }: ChallengeHintsProps): JSX.Element {
-  const buttonBackgroundColor: ButtonProps["backgroundColor"] =
-    Styles.warningMedium;
+  const buttonBackgroundColor: ButtonProps["backgroundColor"] = "white";
 
   return (
     <Accordion allowMultiple>
-      {hints.map((hint) => {
+      {hints.map((hint): JSX.Element => {
         return (
           <AccordionItem
             {...accordionItemBaseStyles}
@@ -42,18 +43,17 @@ export function ChallengeHints({ hints }: ChallengeHintsProps): JSX.Element {
             <AccordionButton
               _expanded={{ bg: buttonBackgroundColor }}
               _hover={{ bg: buttonBackgroundColor }}
-              as={"button"}
               backgroundColor={buttonBackgroundColor}
-              border={"none"}
+              {...accordionButtonBaseStyles}
             >
               <chakra.span flex="1" textAlign="left">
                 {hint.title}
               </chakra.span>
-              <AccordionIcon />
+              <AccordionIcon {...accordionIconBaseStyles} />
             </AccordionButton>
             <AccordionPanel
               {...accordionPanelBaseStyles}
-              bg={Styles.warningMinimum}
+              bg={"white"}
               borderColor={Styles.borderColorMed}
               p={2}
               paddingLeft={4}

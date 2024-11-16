@@ -1,6 +1,7 @@
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 
+import { tutorialConfigConst } from "@blockbash/common";
 // noinspection ES6PreferShortImport
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import path from "path";
@@ -12,6 +13,7 @@ import { getTheme } from "shiki-themes";
 
 // Can't use path aliases (within imports) as they haven't been loaded
 import { expressiveCode, expressiveCodeThemes } from "./docusaurus.const";
+import { ClassNames } from "./src/css";
 // noinspection ES6PreferShortImport
 import { remarkTextReplacePlugin } from "./src/remark-plugins/text-replace";
 // Can't use path aliases as they haven't been loaded
@@ -26,6 +28,7 @@ const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
   },
   plugins: [
     // Must define expressive code related css here
+    // If you need to add styles to expressive code based on a css class that is defined outside of expressive code, add it to custom.css
     pluginCollapsibleSections(),
     {
       baseStyles: `
@@ -50,10 +53,16 @@ const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
   styleOverrides: {
     collapsibleSections: {
       // Styles the "X collapsed lines" indicator
-      closedBackgroundColor: ({ theme }) =>
-        theme.name === expressiveCodeThemes.githubLight
-          ? "var(--chakra-colors-gray-200)"
-          : "rgb(84 174 255 / 20%)",
+      closedBackgroundColor: ({ theme }) => {
+        switch (theme.name) {
+          case expressiveCodeThemes.githubLight:
+            return "var(--chakra-colors-gray-200)";
+          case expressiveCodeThemes.materialThemeDarker:
+            return "rgb(84 174 255 / 20%)";
+          default:
+            throw Error(`${theme.name} isnt defined`);
+        }
+      },
     },
     frames: {
       editorActiveTabBackground: "var(--chakra-colors-gray-200)",
@@ -61,12 +70,23 @@ const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
       editorActiveTabIndicatorTopColor: "unset",
       // editorBackground: Styles.whiteBackgroundEmphasisColorCssVar,
       editorBackground: "var(--chakra-colors-gray-50)",
-      // editorTabBarBackground: if not "white", top frame border will be
-      // removed
+      // editorTabBarBackground: if not "white", top frame border will be removed
       editorTabBarBackground: "white",
       editorTabBarBorderColor: "unset",
       frameBoxShadowCssValue: "unset",
       terminalTitlebarDotsOpacity: ".5",
+    },
+    textMarkers: {
+      backgroundOpacity: ({ theme }) => {
+        switch (theme.name) {
+          case expressiveCodeThemes.githubLight:
+            return "50%";
+          case expressiveCodeThemes.materialThemeDarker:
+            return "70%";
+          default:
+            throw Error(`${theme.name} isnt defined`);
+        }
+      },
     },
   },
   themeCssSelector: (theme) =>
@@ -134,7 +154,7 @@ const config = {
                * file */
               remarkCodeSnippets,
               {
-                baseDir: path.resolve(__dirname, "../lab-core/contracts"),
+                baseDir: path.resolve(__dirname, "../lab-core"),
               },
             ],
             [remarkTextReplacePlugin, {}],
@@ -152,7 +172,7 @@ const config = {
     ],
   ],
   projectName: "BlockBash",
-  tagline: "Where Developers Learn Blockchain Security",
+  tagline: "Where Developers learn Ethereum security",
   themeConfig: {
     // image: 'img/docusaurus-social-card.jpg',
     colorMode: {
@@ -170,10 +190,23 @@ const config = {
           items: [
             {
               label: "Beginner Path",
-              to: "/beginner-path/",
+              to: `/${tutorialConfigConst.PlaylistURLPath.beginner}/`,
             },
           ],
           title: "Playlists",
+        },
+        {
+          items: [
+            {
+              href: "/",
+              label: "Tutorials",
+            },
+            {
+              href: "/about",
+              label: "About",
+            },
+          ],
+          title: "Sections",
         },
         {
           items: [
@@ -190,6 +223,16 @@ const config = {
     navbar: {
       hideOnScroll: true,
       items: [
+        {
+          href: "/",
+          label: "Tutorials",
+          position: "right",
+        },
+        {
+          href: "/about",
+          label: "About",
+          position: "right",
+        },
         {
           href: "https://github.com/blockbash/blockbash",
           label: "GitHub",

@@ -1,98 +1,92 @@
-import { envConst } from "@blockbash/common-be"
+import { envConst } from "@blockbash/common-be";
 
 import {
   type ChallengeEnvDependencies,
   type EnvDescribe,
   type GetDescribeOrSkip,
-} from "./challengeEnv.types"
+} from "./challengeEnv.types";
 
 class ChallengeEnv {
-  private readonly env: ChallengeEnvDependencies["env"]
+  private readonly env: ChallengeEnvDependencies["env"];
 
-  private readonly logger: ChallengeEnvDependencies["logger"]
+  private readonly logger: ChallengeEnvDependencies["logger"];
 
-  private readonly testLib: ChallengeEnvDependencies["testLib"]
+  private readonly testLib: ChallengeEnvDependencies["testLib"];
 
   constructor({
     injectedDependencies,
   }: {
-    injectedDependencies: ChallengeEnvDependencies
+    injectedDependencies: ChallengeEnvDependencies;
   }) {
-    this.testLib = injectedDependencies.testLib
-    this.env = injectedDependencies.env
-    this.logger = injectedDependencies.logger
+    this.testLib = injectedDependencies.testLib;
+    this.env = injectedDependencies.env;
+    this.logger = injectedDependencies.logger;
     this.logger.setGlobalContext({
       className: ChallengeEnv.name,
       logicPath: __filename,
-    })
+    });
   }
 
   private getDescribeOrSkip({
-    challengeGroupName,
     env,
-    testSummary,
+    testGroupName,
   }: GetDescribeOrSkip): Mocha.PendingSuiteFunction | Mocha.SuiteFunction {
-    const { currentLabExecEnv } = this.env
+    const { currentLabExecEnv } = this.env;
     const loggerArgs = {
       functionName: this.getDescribeOrSkip.name,
       metadata: {
-        challengeGroupName,
         currentLabExecEnv,
         env,
-        testSummary,
+        testGroupName,
       },
-    }
+    };
     if (!this.env.isValidLabExecEnv) {
-      const err = "No lab execution environment variable defined"
+      const err = "No lab execution environment variable defined";
       this.logger.error({
         ...loggerArgs,
         message: err,
-      })
-      throw new Error(err)
+      });
+      throw new Error(err);
     }
     if (currentLabExecEnv === env) {
       this.logger.debug({
         ...loggerArgs,
         message: "Initialized describe() for challenges",
-      })
-      return this.testLib.describe
+      });
+      return this.testLib.describe;
     }
     this.logger.debug({
       ...loggerArgs,
       message: "Initialized describe.skip() for challenges",
-    })
-    return this.testLib.describe.skip
+    });
+    return this.testLib.describe.skip;
   }
 
   public getAutomationEnvDescribe({
-    challengeGroupName,
     fn,
-    testSummary,
+    testGroupName,
   }: EnvDescribe): Mocha.Suite | void {
-    const env = envConst.LabExecEnvGUID.automation
+    const env = envConst.LabExecEnvGUID.automation;
     const envDescribe = this.getDescribeOrSkip({
-      challengeGroupName,
       env,
-      testSummary,
-    })
+      testGroupName,
+    });
 
-    return envDescribe(`${env} environment`, fn)
+    return envDescribe(`${env} environment`, fn);
   }
 
   public getUserEnvDescribe({
-    challengeGroupName,
     fn,
-    testSummary,
+    testGroupName,
   }: EnvDescribe): Mocha.Suite | void {
-    const env = envConst.LabExecEnvGUID.user
+    const env = envConst.LabExecEnvGUID.user;
     const envDescribe = this.getDescribeOrSkip({
-      challengeGroupName,
       env,
-      testSummary,
-    })
+      testGroupName,
+    });
 
-    return envDescribe(`${env} environment`, fn)
+    return envDescribe(`${env} environment`, fn);
   }
 }
 
-export { ChallengeEnv }
+export { ChallengeEnv };

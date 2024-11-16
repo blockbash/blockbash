@@ -1,5 +1,8 @@
-import { type ReactNode } from "react";
+import type React from "react";
 
 export interface AdmonitionProps {
-  children: ReactNode;
+  children: React.ReactElement;
+  isCentered?: boolean;
+  isFlattened?: boolean;
+  labelOverride?: string;
 }

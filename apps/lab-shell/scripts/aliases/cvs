@@ -5,18 +5,38 @@
 # shellcheck source=./../../../../packages/common/scripts/source-all.sh
 . /blockbash/packages/common/scripts/source-all.sh --absolute_paths="true" --die_on_error="false"
 
+#The while loop will continue as long as there are arguments to process.
+while [[ $# -gt 0 ]]; do
+  argument_name="${1}"
+  case "${argument_name}" in
+    --challenge-group-guid=*)
+      flag_name="$(get_cli_flag_name "${argument_name}")"
+      flag_value="$(get_cli_flag_value "${argument_name}")"
+
+      challenge_group_guid="${flag_value}"
+      log_debug "Setting ${flag_name} to: ${challenge_group_guid}"
+      ;;
+    *)
+      flag_name="$(get_cli_flag_name "${argument_name}")"
+      die "${flag_name} is not a valid argument"
+      ;;
+  esac
+  unset argument_name flag_value flag_name
+  shift
+done
+
 main() {
   log_info "Invoking cvs"
-  local challenge_guid_bash
-  challenge_guid_bash="$(get_container_challenge_guid_bash)"
+  local lab_guid_bash
+  lab_guid_bash="$(get_container_lab_guid_bash)"
 
-  local challenge_solution_guid_typescript
-  challenge_solution_guid_typescript="$(get_challenge_metadata_value "${key_challenge_solution_guid_typescript}" "${challenge_guid_bash}")"
+  local default_challenge_solution_group_guid_typescript
+  default_challenge_solution_group_guid_typescript="$(get_lab_metadata_value "${key_default_challenge_solution_group_guid_typescript}" "${lab_guid_bash}")"
 
   # Use workaround to disable command echoing.  Once the issue (below) is
   # fixed, we can leverage the command (above)
   # https://github.com/pnpm/pnpm/issues/4802
-  cd "${container_repo_dir_path}" && pnpm --filter @blockbash/lab-shell exec -- pnpm --silent challenge:verify_solution "${challenge_solution_guid_typescript}" && cd -
+  invoke_lab "${challenge_group_guid:-$default_challenge_solution_group_guid_typescript}" "${true}"
 }
 
 # https://unix.stackexchange.com/a/333204

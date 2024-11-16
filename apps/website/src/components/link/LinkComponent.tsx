@@ -3,7 +3,7 @@ import DocusaurusLink from "@docusaurus/Link";
 import { useDependencies } from "@hooks";
 import React from "react";
 
-interface LinkComponentProps {
+export interface LinkComponentProps {
   children: React.ReactNode;
   href: string;
   shouldOpenTab?: boolean;

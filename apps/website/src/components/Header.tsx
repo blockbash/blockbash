@@ -1,11 +1,11 @@
+import { tutorialConfigConst } from "@blockbash/common";
 import { Heading, type HeadingProps } from "@chakra-ui/react";
 import React from "react";
 export type HeaderLevel = 2 | 3 | 4;
 
 export interface HeaderProps {
-  children: React.ReactNode;
+  anchorGUID: tutorialConfigConst.AnchorGUID;
   headerMarginBottomOverride?: HeadingProps["marginBottom"];
-  headerSizeOverride?: HeadingProps["size"];
   level: HeaderLevel;
 }
 
@@ -23,34 +23,21 @@ function getHeaderElement({
       return "h4";
   }
 }
-
-function getHeaderSize({
-  level,
-}: {
-  level: HeaderLevel;
-}): NonNullable<HeadingProps["size"]> {
-  switch (level) {
-    case 2:
-      return "xl";
-    case 3:
-      return "lg";
-    case 4:
-      return "md";
-  }
-}
 export function Header({
-  children,
+  anchorGUID,
   headerMarginBottomOverride = 0,
-  headerSizeOverride,
   level,
 }: HeaderProps): JSX.Element {
   return (
     <Heading
       as={getHeaderElement({ level })}
+      fontFamily={"var(--ifm-heading-font-family)"}
+      fontSize={`var(--ifm-h${level}-font-size)`}
+      fontWeight={"var(--ifm-heading-font-weight)"}
+      id={anchorGUID}
       marginBottom={headerMarginBottomOverride}
-      size={headerSizeOverride ?? getHeaderSize({ level })}
     >
-      {children}
+      {tutorialConfigConst.AnchorName[anchorGUID]}
     </Heading>
   );
 }
